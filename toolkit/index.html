@@ -359,7 +359,7 @@ body {
 // ===================================================================
 //  I18N
 // ===================================================================
-let lang = 'zh';
+let lang = localStorage.getItem('withyou-lang') || 'zh';
 const I18N = {
   zh: {
     back: '返回', title: '随身工具包',
@@ -434,7 +434,7 @@ function applyLang() {
   const cp = document.getElementById('contact-phone');
   if (cp) cp.placeholder = t('phone_placeholder');
 }
-function toggleLang() { lang = lang === 'zh' ? 'en' : 'zh'; applyLang(); renderAll(); }
+function toggleLang() { lang = lang === 'zh' ? 'en' : 'zh'; localStorage.setItem('withyou-lang', lang); applyLang(); renderAll(); }
 
 // ===================================================================
 //  DATA
@@ -469,28 +469,28 @@ const EXPLAIN_CONTENT = {
     EN: { title: 'Understanding Autism', body: '{name} has autism spectrum disorder. They may communicate, behave, or interact differently. This is neurological, not a choice. They may need extra time, patience, and understanding. Please speak calmly and directly.' },
     ZH: { title: '了解自闭症', body: '{name}患有自闭症谱系障碍。他/她可能在沟通、行为或互动方面有所不同。这是神经发育差异，而非选择。他/她可能需要更多的时间、耐心和理解。请平静、直接地说话。' },
     NL: { title: 'Autisme Begrijpen', body: '{name} heeft een autismespectrumstoornis. Hij/zij kan anders communiceren, zich anders gedragen of anders omgaan met mensen. Dit is neurologisch, geen keuze. Hij/zij heeft mogelijk extra tijd, geduld en begrip nodig.' },
-    DE: { title: 'Autismus Verstehen', body: '{name} hat eine Autismus-Spektrum-Storung. Er/sie kommuniziert, verhalt sich oder interagiert moglicherweise anders. Dies ist neurologisch bedingt, keine Wahl. Er/sie braucht moglicherweise mehr Zeit, Geduld und Verstandnis.' },
-    FR: { title: "Comprendre l'Autisme", body: "{name} a un trouble du spectre de l'autisme. Il/elle peut communiquer, se comporter ou interagir differemment. C'est neurologique, pas un choix. Il/elle peut avoir besoin de plus de temps, de patience et de comprehension." },
-    PT: { title: 'Compreender o Autismo', body: '{name} tem transtorno do espectro autista. Ele/ela pode se comunicar, comportar ou interagir de forma diferente. Isso e neurologico, nao uma escolha. Ele/ela pode precisar de mais tempo, paciencia e compreensao.' },
-    ES: { title: 'Comprender el Autismo', body: '{name} tiene trastorno del espectro autista. Puede comunicarse, comportarse o interactuar de manera diferente. Esto es neurologico, no una eleccion. Puede necesitar mas tiempo, paciencia y comprension.' },
-    IT: { title: "Capire l'Autismo", body: "{name} ha un disturbo dello spettro autistico. Potrebbe comunicare, comportarsi o interagire in modo diverso. Questo e neurologico, non una scelta. Potrebbe aver bisogno di piu tempo, pazienza e comprensione." }
+    DE: { title: 'Autismus Verstehen', body: '{name} hat eine Autismus-Spektrum-St\u00f6rung. Er/sie kommuniziert, verh\u00e4lt sich oder interagiert m\u00f6glicherweise anders. Dies ist neurologisch bedingt, keine Wahl. Er/sie braucht m\u00f6glicherweise mehr Zeit, Geduld und Verst\u00e4ndnis.' },
+    FR: { title: "Comprendre l'Autisme", body: "{name} a un trouble du spectre de l'autisme. Il/elle peut communiquer, se comporter ou interagir diff\u00e9remment. C'est neurologique, pas un choix. Il/elle peut avoir besoin de plus de temps, de patience et de compr\u00e9hension." },
+    PT: { title: 'Compreender o Autismo', body: '{name} tem transtorno do espectro autista. Ele/ela pode se comunicar, comportar ou interagir de forma diferente. Isso \u00e9 neurol\u00f3gico, n\u00e3o uma escolha. Ele/ela pode precisar de mais tempo, paci\u00eancia e compreens\u00e3o.' },
+    ES: { title: 'Comprender el Autismo', body: '{name} tiene trastorno del espectro autista. Puede comunicarse, comportarse o interactuar de manera diferente. Esto es neurol\u00f3gico, no una elecci\u00f3n. Puede necesitar m\u00e1s tiempo, paciencia y comprensi\u00f3n.' },
+    IT: { title: "Capire l'Autismo", body: "{name} ha un disturbo dello spettro autistico. Potrebbe comunicare, comportarsi o interagire in modo diverso. Questo \u00e8 neurologico, non una scelta. Potrebbe aver bisogno di pi\u00f9 tempo, pazienza e comprensione." }
   },
   tpl_meltdown: {
     EN: { title: 'This Is a Meltdown, Not a Tantrum', body: '{name} is experiencing a meltdown — an involuntary response to overwhelming sensory or emotional input. This is NOT a tantrum or bad behavior. Please: stay calm, reduce noise/light, give space, do not touch without permission, do not stare.' },
     ZH: { title: '这是情绪崩溃，不是发脾气', body: '{name}正在经历情绪崩溃——这是对过度感觉或情绪刺激的不自主反应。这不是发脾气或不良行为。请：保持冷静，减少噪音/光线，给予空间，未经允许不要触碰，不要盯着看。' },
     NL: { title: 'Dit Is een Meltdown, Geen Driftbui', body: '{name} heeft een meltdown — een onvrijwillige reactie op overweldigende sensorische of emotionele input. Dit is GEEN driftbui. Blijf alstublieft kalm, verminder geluid/licht, geef ruimte, raak niet aan zonder toestemming.' },
-    DE: { title: 'Das Ist ein Meltdown, Kein Wutanfall', body: '{name} erlebt einen Meltdown — eine unwillkurliche Reaktion auf uberweltigende sensorische oder emotionale Reize. Dies ist KEIN Wutanfall. Bitte: bleiben Sie ruhig, reduzieren Sie Larm/Licht, geben Sie Raum.' },
-    FR: { title: "C'est une Crise, Pas un Caprice", body: "{name} fait une crise — une reponse involontaire a une surcharge sensorielle ou emotionnelle. Ce n'est PAS un caprice. S'il vous plait: restez calme, reduisez le bruit/la lumiere, donnez de l'espace." },
-    PT: { title: 'Isso e uma Crise, Nao uma Birra', body: '{name} esta tendo uma crise — uma resposta involuntaria a uma sobrecarga sensorial ou emocional. Isso NAO e uma birra. Por favor: mantenha a calma, reduza ruido/luz, de espaco.' },
-    ES: { title: 'Es una Crisis, No un Berrinche', body: '{name} esta experimentando una crisis — una respuesta involuntaria a una sobrecarga sensorial o emocional. NO es un berrinche. Por favor: mantenga la calma, reduzca ruido/luz, de espacio.' },
+    DE: { title: 'Das Ist ein Meltdown, Kein Wutanfall', body: '{name} erlebt einen Meltdown \u2014 eine unwillk\u00fcrliche Reaktion auf \u00fcberw\u00e4ltigende sensorische oder emotionale Reize. Dies ist KEIN Wutanfall. Bitte: bleiben Sie ruhig, reduzieren Sie L\u00e4rm/Licht, geben Sie Raum.' },
+    FR: { title: "C'est une Crise, Pas un Caprice", body: "{name} fait une crise \u2014 une r\u00e9ponse involontaire \u00e0 une surcharge sensorielle ou \u00e9motionnelle. Ce n'est PAS un caprice. S'il vous pla\u00eet: restez calme, r\u00e9duisez le bruit/la lumi\u00e8re, donnez de l'espace." },
+    PT: { title: 'Isso \u00e9 uma Crise, N\u00e3o uma Birra', body: '{name} est\u00e1 tendo uma crise \u2014 uma resposta involunt\u00e1ria a uma sobrecarga sensorial ou emocional. Isso N\u00c3O \u00e9 uma birra. Por favor: mantenha a calma, reduza ru\u00eddo/luz, d\u00ea espa\u00e7o.' },
+    ES: { title: 'Es una Crisis, No un Berrinche', body: '{name} est\u00e1 experimentando una crisis \u2014 una respuesta involuntaria a una sobrecarga sensorial o emocional. NO es un berrinche. Por favor: mantenga la calma, reduzca ruido/luz, d\u00e9 espacio.' },
     IT: { title: 'Questo e un Meltdown, Non un Capriccio', body: "{name} sta avendo un meltdown — una risposta involontaria a un sovraccarico sensoriale o emotivo. NON e un capriccio. Per favore: restate calmi, riducete rumore/luce, date spazio." }
   },
   tpl_nonverbal: {
     EN: { title: 'Non-Speaking Does Not Mean Non-Thinking', body: '{name} communicates without spoken words. They may use gestures, pictures, a device, or sign language. Please be patient, speak to them directly (not over them), and allow time for response. They understand more than you might expect.' },
     ZH: { title: '不说话不代表不会思考', body: '{name}不使用口语沟通。他/她可能使用手势、图片、设备或手语。请保持耐心，直接和他/她说话（而不是越过他/她），并给予回应时间。他/她的理解力可能超出你的预期。' },
     NL: { title: 'Niet Spreken Betekent Niet Niet Denken', body: '{name} communiceert zonder gesproken woorden. Hij/zij kan gebaren, afbeeldingen, een apparaat of gebarentaal gebruiken. Wees geduldig en spreek direct tegen hem/haar.' },
-    DE: { title: 'Nicht Sprechen Bedeutet Nicht Nicht Denken', body: '{name} kommuniziert ohne gesprochene Worte. Er/sie kann Gesten, Bilder, ein Gerat oder Gebardensprache verwenden. Bitte seien Sie geduldig und sprechen Sie direkt mit ihm/ihr.' },
-    FR: { title: 'Ne Pas Parler Ne Signifie Pas Ne Pas Penser', body: "{name} communique sans mots parles. Il/elle peut utiliser des gestes, des images, un appareil ou la langue des signes. Soyez patient et parlez-lui directement." },
+    DE: { title: 'Nicht Sprechen Bedeutet Nicht Nicht Denken', body: '{name} kommuniziert ohne gesprochene Worte. Er/sie kann Gesten, Bilder, ein Ger\u00e4t oder Geb\u00e4rdensprache verwenden. Bitte seien Sie geduldig und sprechen Sie direkt mit ihm/ihr.' },
+    FR: { title: 'Ne Pas Parler Ne Signifie Pas Ne Pas Penser', body: "{name} communique sans mots parl\u00e9s. Il/elle peut utiliser des gestes, des images, un appareil ou la langue des signes. Soyez patient et parlez-lui directement." },
     PT: { title: 'Nao Falar Nao Significa Nao Pensar', body: '{name} se comunica sem palavras faladas. Ele/ela pode usar gestos, imagens, um dispositivo ou lingua de sinais. Seja paciente e fale diretamente com ele/ela.' },
     ES: { title: 'No Hablar No Significa No Pensar', body: '{name} se comunica sin palabras habladas. Puede usar gestos, imagenes, un dispositivo o lengua de senas. Sea paciente y hablele directamente.' },
     IT: { title: 'Non Parlare Non Significa Non Pensare', body: "{name} comunica senza parole parlate. Puo usare gesti, immagini, un dispositivo o la lingua dei segni. Siate pazienti e parlategli/le direttamente." }
@@ -499,8 +499,8 @@ const EXPLAIN_CONTENT = {
     EN: { title: 'Sensory Overload', body: '{name} is experiencing sensory overload. Sounds, lights, textures, or crowds that seem normal to you may be overwhelming. Please help by: reducing noise, dimming lights, offering a quiet space, not forcing interaction.' },
     ZH: { title: '感觉过载', body: '{name}正在经历感觉过载。对你来说正常的声音、灯光、质感或人群可能让他/她难以承受。请帮助：降低噪音，调暗灯光，提供安静的空间，不要强迫互动。' },
     NL: { title: 'Sensorische Overbelasting', body: '{name} ervaart sensorische overbelasting. Geluiden, lichten of menigten die normaal lijken, kunnen overweldigend zijn. Help alstublieft door: geluid te verminderen, lichten te dimmen, een rustige ruimte aan te bieden.' },
-    DE: { title: 'Sensorische Uberlastung', body: '{name} erlebt eine sensorische Uberlastung. Gerausche, Lichter oder Menschenmengen konnen uberweltigend sein. Bitte helfen Sie: Larm reduzieren, Licht dimmen, einen ruhigen Raum anbieten.' },
-    FR: { title: 'Surcharge Sensorielle', body: "{name} subit une surcharge sensorielle. Les sons, lumieres ou foules peuvent etre accablants. Aidez en: reduisant le bruit, baissant les lumieres, offrant un espace calme." },
+    DE: { title: 'Sensorische \u00dcberlastung', body: '{name} erlebt eine sensorische \u00dcberlastung. Ger\u00e4usche, Lichter oder Menschenmengen k\u00f6nnen \u00fcberw\u00e4ltigend sein. Bitte helfen Sie: L\u00e4rm reduzieren, Licht dimmen, einen ruhigen Raum anbieten.' },
+    FR: { title: 'Surcharge Sensorielle', body: "{name} subit une surcharge sensorielle. Les sons, lumi\u00e8res ou foules peuvent \u00eatre accablants. Aidez en: r\u00e9duisant le bruit, baissant les lumi\u00e8res, offrant un espace calme." },
     PT: { title: 'Sobrecarga Sensorial', body: '{name} esta sofrendo sobrecarga sensorial. Sons, luzes ou multidoes podem ser avassaladores. Ajude: reduzindo ruido, diminuindo luzes, oferecendo um espaco tranquilo.' },
     ES: { title: 'Sobrecarga Sensorial', body: '{name} esta experimentando sobrecarga sensorial. Sonidos, luces o multitudes pueden ser abrumadores. Ayude: reduciendo ruido, atenuando luces, ofreciendo un espacio tranquilo.' },
     IT: { title: 'Sovraccarico Sensoriale', body: "{name} sta sperimentando un sovraccarico sensoriale. Suoni, luci o folle possono essere travolgenti. Aiutate: riducendo il rumore, abbassando le luci, offrendo uno spazio tranquillo." }
@@ -509,8 +509,8 @@ const EXPLAIN_CONTENT = {
     EN: { title: 'Food Allergy + Autism', body: '{name} has autism AND food allergies/restrictions. Their limited diet is not pickiness — sensory processing differences make certain textures/tastes intolerable. ALLERGIES: please check all ingredients. Do NOT offer food without parent permission.' },
     ZH: { title: '食物过敏+自闭症', body: '{name}同时有自闭症和食物过敏/限制。他/她的有限饮食不是挑食——感觉处理差异使某些质地/味道无法忍受。过敏：请检查所有成分。未经家长许可不要提供食物。' },
     NL: { title: 'Voedselallergie + Autisme', body: '{name} heeft autisme EN voedselallergien. Het beperkte dieet is geen kieskeurigheid. ALLERGIEN: controleer alle ingredienten. Geef GEEN eten zonder toestemming van ouders.' },
-    DE: { title: 'Lebensmittelallergie + Autismus', body: '{name} hat Autismus UND Lebensmittelallergien. Die eingeschrankte Ernahrung ist keine Wahlerischkeit. ALLERGIEN: bitte alle Zutaten prufen. Kein Essen ohne Erlaubnis der Eltern geben.' },
-    FR: { title: 'Allergie Alimentaire + Autisme', body: "{name} a de l'autisme ET des allergies alimentaires. Le regime limite n'est pas de la difficulte. ALLERGIES: verifiez tous les ingredients. Ne donnez PAS de nourriture sans permission parentale." },
+    DE: { title: 'Lebensmittelallergie + Autismus', body: '{name} hat Autismus UND Lebensmittelallergien. Die eingeschr\u00e4nkte Ern\u00e4hrung ist keine W\u00e4hlerischkeit. ALLERGIEN: bitte alle Zutaten pr\u00fcfen. Kein Essen ohne Erlaubnis der Eltern geben.' },
+    FR: { title: 'Allergie Alimentaire + Autisme', body: "{name} a de l'autisme ET des allergies alimentaires. Le r\u00e9gime limit\u00e9 n'est pas de la difficult\u00e9. ALLERGIES: v\u00e9rifiez tous les ingr\u00e9dients. Ne donnez PAS de nourriture sans permission parentale." },
     PT: { title: 'Alergia Alimentar + Autismo', body: '{name} tem autismo E alergias alimentares. A dieta limitada nao e frescura. ALERGIAS: verifique todos os ingredientes. NAO oferecea comida sem permissao dos pais.' },
     ES: { title: 'Alergia Alimentaria + Autismo', body: '{name} tiene autismo Y alergias alimentarias. La dieta limitada no es ser quisquilloso. ALERGIAS: verifique todos los ingredientes. NO ofrezca comida sin permiso de los padres.' },
     IT: { title: 'Allergia Alimentare + Autismo', body: "{name} ha l'autismo E allergie alimentari. La dieta limitata non e capriccio. ALLERGIE: controllare tutti gli ingredienti. NON offrire cibo senza permesso dei genitori." }
@@ -519,8 +519,8 @@ const EXPLAIN_CONTENT = {
     EN: { title: 'Medical Appointment', body: "{name} has autism. For this appointment: speak slowly and clearly, explain each step before doing it, allow extra time, minimize waiting in crowded areas, dim lights if possible, the parent/caregiver can help with communication." },
     ZH: { title: '就医说明', body: '{name}患有自闭症。本次就诊请注意：说话慢而清晰，每一步操作前先解释，留出额外时间，尽量减少在拥挤区域等待，如可能调暗灯光，家长/照护者可协助沟通。' },
     NL: { title: 'Medische Afspraak', body: '{name} heeft autisme. Voor deze afspraak: spreek langzaam en duidelijk, leg elke stap uit, neem extra tijd, minimaliseer wachten in drukke ruimtes.' },
-    DE: { title: 'Arzttermin', body: '{name} hat Autismus. Fur diesen Termin: sprechen Sie langsam und deutlich, erklaren Sie jeden Schritt, nehmen Sie sich extra Zeit, minimieren Sie das Warten in uberfullten Bereichen.' },
-    FR: { title: 'Rendez-vous Medical', body: "{name} a de l'autisme. Pour ce rendez-vous: parlez lentement et clairement, expliquez chaque etape, prenez du temps supplementaire, minimisez l'attente dans les zones bondees." },
+    DE: { title: 'Arzttermin', body: '{name} hat Autismus. F\u00fcr diesen Termin: sprechen Sie langsam und deutlich, erkl\u00e4ren Sie jeden Schritt, nehmen Sie sich extra Zeit, minimieren Sie das Warten in \u00fcberf\u00fcllten Bereichen.' },
+    FR: { title: 'Rendez-vous M\u00e9dical', body: "{name} a de l'autisme. Pour ce rendez-vous: parlez lentement et clairement, expliquez chaque \u00e9tape, prenez du temps suppl\u00e9mentaire, minimisez l'attente dans les zones bond\u00e9es." },
     PT: { title: 'Consulta Medica', body: '{name} tem autismo. Para esta consulta: fale devagar e claramente, explique cada passo, reserve tempo extra, minimize espera em areas lotadas.' },
     ES: { title: 'Cita Medica', body: '{name} tiene autismo. Para esta cita: hable despacio y claro, explique cada paso, permita tiempo extra, minimice la espera en areas concurridas.' },
     IT: { title: 'Appuntamento Medico', body: "{name} ha l'autismo. Per questo appuntamento: parlate lentamente e chiaramente, spiegate ogni passaggio, concedete tempo extra, minimizzate l'attesa in aree affollate." }

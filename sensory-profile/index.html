@@ -265,7 +265,7 @@ body {
 // ===================================================================
 //  I18N
 // ===================================================================
-let lang = 'zh';
+let lang = localStorage.getItem('withyou-lang') || 'zh';
 const I18N = {
   zh: {
     back: '返回', title: '感觉档案追踪',
@@ -327,7 +327,7 @@ function applyLang() {
     if (I18N[lang][k]) el.textContent = I18N[lang][k];
   });
 }
-function toggleLang() { lang = lang === 'zh' ? 'en' : 'zh'; renderAll(); }
+function toggleLang() { lang = lang === 'zh' ? 'en' : 'zh'; localStorage.setItem('withyou-lang', lang); renderAll(); }
 
 // ===================================================================
 //  DATA

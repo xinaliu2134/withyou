@@ -285,7 +285,7 @@ body {
 // ===================================================================
 //  I18N
 // ===================================================================
-let lang = 'zh';
+let lang = localStorage.getItem('withyou-lang') || 'zh';
 const I18N = {
   zh: {
     back: '返回', title: '学校工具包',
@@ -338,7 +338,7 @@ function applyLang() {
   const gs = document.getElementById('goal-search');
   if (gs) gs.placeholder = t('search_goals');
 }
-function toggleLang() { lang = lang === 'zh' ? 'en' : 'zh'; applyLang(); renderAll(); }
+function toggleLang() { lang = lang === 'zh' ? 'en' : 'zh'; localStorage.setItem('withyou-lang', lang); applyLang(); renderAll(); }
 
 // ===================================================================
 //  DATA
@@ -417,14 +417,14 @@ const RIGHTS = {
   },
   DE: {
     zh: [
-      { term: 'Forderschule (特殊学校)', desc: '为有特殊教育需求的学生提供的专门学校。德国有多种类型：学习障碍、智力障碍、情绪行为障碍、身体障碍等。' },
+      { term: 'F\u00f6rderschule (特殊学校)', desc: '为有特殊教育需求的学生提供的专门学校。德国有多种类型：学习障碍、智力障碍、情绪行为障碍、身体障碍等。' },
       { term: 'Inklusion (融合教育)', desc: '2009年联合国残障人士公约批准后，德国推动融合教育。各联邦州实施进度不同。目标是让更多残障学生在普通学校就读。' },
       { term: 'Schulbegleiter (学校陪伴员)', desc: '为有特殊需求的学生提供个人协助的专业人员。帮助学生参与课堂活动、组织学习材料、管理行为等。由社会福利局资助。' },
       { term: 'Feststellungsverfahren', desc: '确定特殊教育需求的正式评估程序。由学校或家长发起，包括教育心理学评估。结果决定支持类型和安置。' },
       { term: 'Nachteilsausgleich (不利补偿)', desc: '为残障学生提供的考试和学习调整。如延长时间、口头考试、技术辅助等。不改变学习内容要求。' }
     ],
     en: [
-      { term: 'Forderschule (Special School)', desc: 'Specialized schools for students with special educational needs. Germany has multiple types: learning disabilities, intellectual disabilities, emotional-behavioral, physical, etc.' },
+      { term: 'F\u00f6rderschule (Special School)', desc: 'Specialized schools for students with special educational needs. Germany has multiple types: learning disabilities, intellectual disabilities, emotional-behavioral, physical, etc.' },
       { term: 'Inklusion (Inclusive Education)', desc: 'Following the 2009 ratification of the UN CRPD, Germany promotes inclusive education. Implementation varies by federal state. Goal: more disabled students in mainstream schools.' },
       { term: 'Schulbegleiter (School Companion)', desc: 'Professional providing personal assistance to students with special needs. Helps with classroom participation, organizing materials, behavior management. Funded by social welfare office.' },
       { term: 'Feststellungsverfahren', desc: 'Formal assessment procedure to determine special educational needs. Initiated by school or parents, includes educational psychology evaluation. Results determine support type and placement.' },

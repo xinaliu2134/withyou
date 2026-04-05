@@ -14,11 +14,11 @@
   --lavender-light: #B8AED6;
   --lavender-pale: #EDE8F5;
   --lavender-dark: #7B6EA5;
-  --sage: #8FB09D;
-  --sage-light: #A8C4B3;
+  --sage: #6B8F7B;
+  --sage-light: #8FB09D;
   --sage-pale: #E8F0EB;
-  --sage-dark: #6B8F7B;
-  --cream: #FAF7F4;
+  --sage-dark: #4A6B56;
+  --cream: #FAF7F0;
   --cream-dark: #F0EBDF;
   --warm-text: #3D3D3D;
   --warm-text-light: #6B6B6B;
@@ -364,8 +364,10 @@ body {
       <span class="crisis-num"><a href="tel:988">988</a> (US)</span>
       <span class="crisis-num"><a href="tel:113">113</a> (NL)</span>
       <span class="crisis-num"><a href="tel:08001110111">0800-1110111</a> (DE)</span>
+      <span class="crisis-num"><a href="tel:116123">116 123</a> (UK)</span>
+      <span class="crisis-num"><a href="tel:3114">3114</a> (FR)</span>
       <span class="crisis-num"><a href="tel:4001619995">400-161-9995</a> (CN)</span>
-      <span class="crisis-num"><a href="tel:01011523175">010-82951332</a> (CN)</span>
+      <span class="crisis-num"><a href="tel:01082951332">010-82951332</a> (CN Beijing)</span>
     </div>
   </div>
 
@@ -386,7 +388,7 @@ body {
 // ===================================================================
 //  I18N
 // ===================================================================
-let lang = 'zh';
+let lang = localStorage.getItem('withyou-lang') || 'zh';
 const I18N = {
   zh: {
     back: '返回', title: '照护者健康',
@@ -453,7 +455,7 @@ function applyLang() {
   const gt = document.getElementById('good-thing');
   if (gt) gt.placeholder = t('good_placeholder');
 }
-function toggleLang() { lang = lang === 'zh' ? 'en' : 'zh'; applyLang(); renderAll(); }
+function toggleLang() { lang = lang === 'zh' ? 'en' : 'zh'; localStorage.setItem('withyou-lang', lang); applyLang(); renderAll(); }
 
 // ===================================================================
 //  DATA

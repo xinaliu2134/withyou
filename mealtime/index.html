@@ -431,7 +431,7 @@ body {
 // ===================================================================
 //  I18N
 // ===================================================================
-let lang = 'zh';
+let lang = localStorage.getItem('withyou-lang') || 'zh';
 const I18N = {
   zh: {
     back: '返回', title: '吃饭助手',
@@ -494,6 +494,7 @@ function applyLang() {
 
 function toggleLang() {
   lang = lang === 'zh' ? 'en' : 'zh';
+  localStorage.setItem('withyou-lang', lang);
   applyLang();
   renderAll();
 }

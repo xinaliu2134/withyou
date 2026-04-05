@@ -613,7 +613,7 @@ const DATA = {
     pathway: {
       zh: [
         { title: '初步关注', desc: '家长、PMI（母婴保护中心）或学校注意到发育差异' },
-        { title: '联系Medecin traitant', desc: '向家庭医生提出关注，获取转诊至专科' },
+        { title: '联系M\u00e9decin traitant', desc: '向家庭医生提出关注，获取转诊至专科' },
         { title: '转诊CRA', desc: '转诊至CRA（Centre de Ressources Autisme，自闭症资源中心）' },
         { title: '多学科评估', desc: 'CRA团队进行ADOS-2、ADI-R等标准化评估' },
         { title: '获得诊断', desc: 'CRA出具诊断报告和干预建议' },
@@ -629,12 +629,12 @@ const DATA = {
       ]
     },
     checklist: {
-      zh: ['Carte Vitale（医保卡）','Carnet de sante（健康手册）','Medecin traitant转诊信','以往医疗报告','学校/幼儿园观察报告','行为视频（3-5段）','日常作息记录','家族病史','PMI发育记录','筛查问卷填写结果','Mutuelle补充保险信息','孩子安抚物品'],
-      en: ['Carte Vitale (health insurance card)','Carnet de sante (health booklet)','Medecin traitant referral letter','Previous medical reports','School/nursery observation reports','Behavior videos (3-5 clips)','Daily routine notes','Family medical history','PMI developmental records','Screening questionnaire results','Mutuelle (supplementary insurance) information','Child\'s comfort items']
+      zh: ['Carte Vitale（医保卡）','Carnet de sant\u00e9（健康手册）','M\u00e9decin traitant转诊信','以往医疗报告','学校/幼儿园观察报告','行为视频（3-5段）','日常作息记录','家族病史','PMI发育记录','筛查问卷填写结果','Mutuelle补充保险信息','孩子安抚物品'],
+      en: ['Carte Vitale (health insurance card)','Carnet de sant\u00e9 (health booklet)','M\u00e9decin traitant referral letter','Previous medical reports','School/nursery observation reports','Behavior videos (3-5 clips)','Daily routine notes','Family medical history','PMI developmental records','Screening questionnaire results','Mutuelle (supplementary insurance) information','Child\'s comfort items']
     },
     questions: {
-      zh: ['CRA评估需要多长时间？等候期多久？','评估包括哪些部分？','推荐哪种干预方式？','如何向MDPH申请AEEH（教育津贴）？','孩子可以获得AVS（学校辅助人员）吗？','保险和Securite sociale覆盖哪些治疗？','有哪些本地干预机构（SESSAD/CAMSP）？','多久需要复查？','如何获得ALD（长期病症）认定？','学校可以提供哪些aménagements？','有哪些家长协会（如Autisme France）？','如何申请Prestation de Compensation du Handicap？'],
-      en: ['How long does CRA assessment take? What is the waiting period?','What does the assessment include?','What intervention approach do you recommend?','How to apply to MDPH for AEEH (education allowance)?','Can my child get an AVS (school aide)?','What does Securite sociale and insurance cover?','What local services (SESSAD/CAMSP) are available?','How often should follow-ups be scheduled?','How to obtain ALD (long-term condition) status?','What school accommodations (amenagements) are available?','What parent associations exist (e.g., Autisme France)?','How to apply for Prestation de Compensation du Handicap?']
+      zh: ['CRA评估需要多长时间？等候期多久？','评估包括哪些部分？','推荐哪种干预方式？','如何向MDPH申请AEEH（教育津贴）？','孩子可以获得AVS（学校辅助人员）吗？','保险和S\u00e9curit\u00e9 sociale覆盖哪些治疗？','有哪些本地干预机构（SESSAD/CAMSP）？','多久需要复查？','如何获得ALD（长期病症）认定？','学校可以提供哪些aménagements？','有哪些家长协会（如Autisme France）？','如何申请Prestation de Compensation du Handicap？'],
+      en: ['How long does CRA assessment take? What is the waiting period?','What does the assessment include?','What intervention approach do you recommend?','How to apply to MDPH for AEEH (education allowance)?','Can my child get an AVS (school aide)?','What does S\u00e9curit\u00e9 sociale and insurance cover?','What local services (SESSAD/CAMSP) are available?','How often should follow-ups be scheduled?','How to obtain ALD (long-term condition) status?','What school accommodations (amenagements) are available?','What parent associations exist (e.g., Autisme France)?','How to apply for Prestation de Compensation du Handicap?']
     }
   }
 };
@@ -875,6 +875,7 @@ function renderContent() {
       input.addEventListener('input', () => {
         if (!formData[fk]) formData[fk] = {};
         formData[fk][input.dataset.field] = input.value;
+        localStorage.setItem('withyou-appt-form', JSON.stringify(formData));
       });
     });
 
