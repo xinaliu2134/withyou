@@ -923,7 +923,7 @@ const ITEMS = {
       { id:"s0607", zh:"看到熟悉的人会表现出高兴吗？", en:"Does {name} show happiness when seeing familiar people?" },
       { id:"s0608", zh:"对陌生人会有警觉吗？", en:"Does {name} show wariness around strangers?" },
       { id:"s0609", zh:"会跟你来回"对话"（咿呀发声）吗？", en:"Does {name} take turns 'talking' with you (babbling back and forth)?" },
-      { id:"s0610", zh:"会看你指向的方向吗？", en:"Does {name} look where you point?" },
+      { id:"s0610", zh:"会看你指向的方向吗？（9个月以上）", en:"Does {name} look where you point? (9+ months)" },
       { id:"s0611", zh:"会展示有社交性的笑容（不只是反射性微笑）吗？", en:"Does {name} show social smiles (not just reflexive)?" },
       { id:"s0612", zh:"被逗笑时会大笑出声吗？", en:"Does {name} laugh out loud when amused?" },
       { id:"s0613", zh:"对你的情绪有反应吗（你难过时会看着你）？", en:"Does {name} respond to your emotions (watches you when you seem sad)?" },
@@ -935,8 +935,8 @@ const ITEMS = {
       { id:"l0602", zh:"会用不同的声音表达不同的情绪吗？", en:"Does {name} use different sounds for different emotions?" },
       { id:"l0603", zh:"会模仿你发出的声音吗？", en:"Does {name} imitate sounds you make?" },
       { id:"l0604", zh:"听到'不'或自己的名字时会停下来吗？", en:"Does {name} pause when hearing 'no' or their own name?" },
-      { id:"l0605", zh:"会用手势表达需求吗（如指向、伸手）？", en:"Does {name} use gestures to communicate (pointing, reaching)?" },
-      { id:"l0606", zh:"能理解简单的指令吗（如'过来'）？", en:"Does {name} understand simple commands like 'come here'?" },
+      { id:"l0605", zh:"会用手势表达需求吗（如伸手要抱、伸手够东西）？", en:"Does {name} use gestures to communicate (reaching up to be held, reaching for objects)?" },
+      { id:"l0606", zh:"能理解简单的指令吗（如'过来'）？（9个月以上）", en:"Does {name} understand simple commands like 'come here'? (9+ months)" },
       { id:"l0607", zh:"会发出辅音和元音的组合吗？", en:"Does {name} produce consonant-vowel combinations?" },
       { id:"l0608", zh:"对音乐或歌唱有反应吗？", en:"Does {name} respond to music or singing?" },
       { id:"l0609", zh:"会用不同的音量或音调吗？", en:"Does {name} vary volume or pitch when vocalizing?" },
@@ -1472,13 +1472,30 @@ const DOMAIN_KEYS = {
 //  PERSISTENCE
 // ===================================================================
 function save() {
-  localStorage.setItem('withyou_rft', JSON.stringify(state));
+  try {
+    localStorage.setItem('withyou_rft', JSON.stringify(state));
+  } catch(e) {
+    alert(lang === 'zh'
+      ? '\u5B58\u50A8\u7A7A\u95F4\u5DF2\u6EE1\uFF0C\u8BF7\u5BFC\u51FA\u6570\u636E\u540E\u6E05\u9664\u65E7\u6570\u636E\u3002'
+      : 'Storage is full. Please export your data and clear old records.');
+  }
 }
 
 function load() {
   const raw = localStorage.getItem('withyou_rft');
   if (raw) {
-    try { state = JSON.parse(raw); } catch(e) { /* ignore */ }
+    try {
+      const parsed = JSON.parse(raw);
+      if (parsed && parsed.child && Array.isArray(parsed.checkins)) {
+        state = parsed;
+      } else {
+        console.warn('WithYou: stored data has unexpected structure, using defaults.');
+        localStorage.removeItem('withyou_rft');
+      }
+    } catch(e) {
+      console.warn('WithYou: stored data corrupted, resetting.', e);
+      localStorage.removeItem('withyou_rft');
+    }
   }
 }
 
@@ -1523,16 +1540,24 @@ function getAgeMonths() {
   if (!state.child.birthdate) return 0;
   const bd = new Date(state.child.birthdate);
   const now = new Date();
-  return (now.getFullYear() - bd.getFullYear()) * 12 + (now.getMonth() - bd.getMonth());
+  let months = (now.getFullYear() - bd.getFullYear()) * 12 + (now.getMonth() - bd.getMonth());
+  // Adjust if the day-of-month hasn't been reached yet this month
+  if (now.getDate() < bd.getDate()) months--;
+  return Math.max(0, months);
 }
 
 function getAgeGroup() {
   const m = getAgeMonths();
+  // For babies under 6 months, use 6-12 group as the closest available
   if (m < 12) return '6-12';
   if (m < 18) return '12-18';
   if (m < 24) return '18-24';
   if (m < 36) return '24-36';
   return '36-60';
+}
+
+function isChildTooYoung() {
+  return getAgeMonths() < 6;
 }
 
 function getAgeLabel() {
@@ -1560,7 +1585,14 @@ function initOnboarding() {
     if (v) {
       state.child.birthdate = v;
       const ageLabel = getAgeLabel();
-      document.getElementById('age-text').textContent = ageLabel;
+      const ageMonths = getAgeMonths();
+      let displayText = ageLabel;
+      if (ageMonths < 6) {
+        displayText += (lang === 'zh'
+          ? ' \u2014 \u672C\u5DE5\u5177\u9002\u7528\u4E8E6\u4E2A\u6708\u4EE5\u4E0A\u7684\u5B9D\u5B9D\uFF0C\u89C2\u5BDF\u9879\u76EE\u53EF\u80FD\u8D85\u524D'
+          : ' \u2014 This tool is designed for 6+ months; items may be ahead of your child');
+      }
+      document.getElementById('age-text').textContent = displayText;
       document.getElementById('age-display').classList.remove('hidden');
       document.getElementById('btn-step2').disabled = false;
     }
@@ -1834,6 +1866,7 @@ function renderTrendChart() {
 //  CHECK-IN
 // ===================================================================
 function startCheckin() {
+  editingCheckinIdx = -1; // New check-in, not editing
   currentCheckin = {
     date: new Date().toISOString(),
     ageGroup: getAgeGroup(),
@@ -1940,8 +1973,13 @@ function nextDomain() {
     renderDomainTabs();
     renderCheckinDomain();
   } else {
-    // Save check-in
-    state.checkins.push(currentCheckin);
+    // Save check-in (update in place if editing, otherwise append)
+    if (editingCheckinIdx >= 0 && editingCheckinIdx < state.checkins.length) {
+      state.checkins[editingCheckinIdx] = currentCheckin;
+    } else {
+      state.checkins.push(currentCheckin);
+    }
+    editingCheckinIdx = -1;
     save();
     showScreen('dashboard');
   }
@@ -1974,7 +2012,10 @@ function renderTimeline() {
   }).join('') + '</div>';
 }
 
+let editingCheckinIdx = -1; // Track if we are editing an existing check-in
+
 function viewCheckin(idx) {
+  editingCheckinIdx = idx;
   currentCheckin = JSON.parse(JSON.stringify(state.checkins[idx]));
   currentDomainIdx = 0;
   showScreen('checkin');
@@ -2106,15 +2147,17 @@ function importJSON(event) {
   reader.onload = function(e) {
     try {
       const data = JSON.parse(e.target.result);
-      if (data.child && data.checkins !== undefined) {
+      if (data && typeof data.child === 'object' && Array.isArray(data.checkins)
+          && typeof data.child.name === 'string' && typeof data.child.birthdate === 'string') {
         state = data;
+        if (!state.onboarded) state.onboarded = true;
         save();
         location.reload();
       } else {
-        alert(lang === 'zh' ? '文件格式不正确' : 'Invalid file format');
+        alert(lang === 'zh' ? '\u6587\u4EF6\u683C\u5F0F\u4E0D\u6B63\u786E\uFF0C\u7F3A\u5C11\u5FC5\u8981\u5B57\u6BB5' : 'Invalid file format: missing required fields');
       }
     } catch(err) {
-      alert(lang === 'zh' ? '无法读取文件' : 'Could not read file');
+      alert(lang === 'zh' ? '\u65E0\u6CD5\u8BFB\u53D6\u6587\u4EF6' : 'Could not read file');
     }
   };
   reader.readAsText(file);

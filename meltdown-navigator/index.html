@@ -1,11 +1,13 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <title>Meltdown Navigator — 同路 WithYou</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
@@ -572,7 +574,8 @@ input[type="range"]::-webkit-slider-thumb {
 <div class="screen active" id="home">
   <div class="header">
     <div class="header-title">
-      <span>Meltdown Navigator</span>
+      <a href="../index.html" style="color:var(--text-muted);text-decoration:none;font-size:0.85rem;display:flex;align-items:center;gap:4px;">&#8592; <span id="t-back-hub">Home</span></a>
+      <span id="t-header-nav-title">Meltdown Navigator</span>
     </div>
     <div class="header-actions">
       <button class="lang-toggle" onclick="toggleLang()" id="langBtn">中文</button>
@@ -783,6 +786,7 @@ input[type="range"]::-webkit-slider-thumb {
   <div class="header">
     <button class="back-btn" onclick="showScreen('reflection')">&#8592; <span id="t-back-3">Back</span></button>
     <div class="header-actions">
+      <button class="btn-ghost" onclick="exportMeltdownData()" id="t-export-data" style="font-size:0.8rem">Export</button>
       <button class="btn-ghost" onclick="clearHistory()" id="t-clear" style="color:var(--red-soft);font-size:0.8rem">Clear All</button>
     </div>
   </div>
@@ -878,6 +882,9 @@ const T = {
     'toolkit-title': 'Sensory Toolkit',
     'toolkit-desc': 'Your go-bag checklist. Tap to check off packed items.',
     'btn-add': '+ Add',
+    'export-data': 'Export',
+    'back-hub': 'Home',
+    'header-nav-title': 'Meltdown Navigator',
     'toast-saved': 'Saved',
     'toast-cleared': 'History cleared',
     'no-data': 'Log 5 or more incidents to see patterns.',
@@ -967,6 +974,9 @@ const T = {
     'toolkit-title': '\u611F\u89C9\u5DE5\u5177\u5305',
     'toolkit-desc': '\u51FA\u95E8\u643A\u5E26\u6E05\u5355\u3002\u70B9\u51FB\u6807\u8BB0\u5DF2\u6253\u5305\u7269\u54C1\u3002',
     'btn-add': '+ \u6DFB\u52A0',
+    'export-data': '\u5BFC\u51FA',
+    'back-hub': '\u9996\u9875',
+    'header-nav-title': '\u5D29\u6E83\u5E94\u5BF9\u5BFC\u822A',
     'toast-saved': '\u5DF2\u4FDD\u5B58',
     'toast-cleared': '\u5386\u53F2\u5DF2\u6E05\u9664',
     'no-data': '\u8BB0\u5F555\u6B21\u4EE5\u4E0A\u4E8B\u4EF6\u540E\u53EF\u67E5\u770B\u6A21\u5F0F\u3002',
@@ -1132,7 +1142,8 @@ function applyLang() {
     'when','where','duration','intensity','before','behavior',
     'helped','nothelped','parentstate','notes','btn-save-reflect',
     'view-history','history-title','clear','patterns-title',
-    'toolkit-title','toolkit-desc','btn-add','exit-emergency'
+    'toolkit-title','toolkit-desc','btn-add','exit-emergency','export-data',
+    'back-hub','header-nav-title'
   ];
   keys.forEach(k => {
     const el = document.getElementById('t-' + k);
@@ -1230,8 +1241,8 @@ function renderEmergencyStep() {
           <div class="timer-time" id="timerTime">00:00</div>
           <div class="timer-label">${t('e4_timer_label')}</div>
           <div class="timer-controls">
-            <button class="timer-btn" onclick="toggleTimer()" id="timerToggle">Start</button>
-            <button class="timer-btn" onclick="resetTimer()">Reset</button>
+            <button class="timer-btn" onclick="toggleTimer()" id="timerToggle">${lang === 'zh' ? '\u5F00\u59CB' : 'Start'}</button>
+            <button class="timer-btn" onclick="resetTimer()">${lang === 'zh' ? '\u91CD\u7F6E' : 'Reset'}</button>
           </div>
         </div>
       `;
@@ -1311,7 +1322,7 @@ function toggleTimer() {
       if (el) el.textContent = `${m}:${s}`;
     }, 1000);
     const btn = document.getElementById('timerToggle');
-    if (btn) btn.textContent = 'Pause';
+    if (btn) btn.textContent = lang === 'zh' ? '\u6682\u505C' : 'Pause';
   }
 }
 
@@ -1325,7 +1336,7 @@ function resetTimer() {
 function stopEmergencyTimer() {
   if (emergencyTimer) { clearInterval(emergencyTimer); emergencyTimer = null; }
   const btn = document.getElementById('timerToggle');
-  if (btn) btn.textContent = 'Start';
+  if (btn) btn.textContent = lang === 'zh' ? '\u5F00\u59CB' : 'Start';
 }
 
 // ============================================================
@@ -1476,7 +1487,14 @@ function saveReflection() {
 
   const logs = JSON.parse(localStorage.getItem('mn-logs') || '[]');
   logs.push(entry);
-  localStorage.setItem('mn-logs', JSON.stringify(logs));
+  try {
+    localStorage.setItem('mn-logs', JSON.stringify(logs));
+  } catch(e) {
+    alert(lang === 'zh'
+      ? '\u5B58\u50A8\u7A7A\u95F4\u5DF2\u6EE1\uFF0C\u8BF7\u6E05\u9664\u65E7\u8BB0\u5F55\u540E\u91CD\u8BD5\u3002'
+      : 'Storage is full. Please clear old records and try again.');
+    return;
+  }
 
   toast(t('toast-saved'));
 
@@ -1519,14 +1537,16 @@ function viewEntry(id) {
   const logs = JSON.parse(localStorage.getItem('mn-logs') || '[]');
   const entry = logs.find(l => l.id === id);
   if (!entry) return;
+  // Build a plain-text summary (toast uses innerHTML, so escape user content)
+  function esc(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
   const details = [
-    entry.antecedents?.length ? `<b>${t('before')}</b> ${entry.antecedents.join(', ')}` : '',
-    entry.behaviors?.length ? `<b>${t('behavior')}</b> ${entry.behaviors.join(', ')}` : '',
-    entry.helped?.length ? `<b>${t('helped')}</b> ${entry.helped.join(', ')}` : '',
-    entry.notHelped?.length ? `<b>${t('nothelped')}</b> ${entry.notHelped.join(', ')}` : '',
-    entry.notes ? `<b>${t('notes')}</b> ${entry.notes}` : '',
+    entry.antecedents?.length ? `<b>${t('before')}</b> ${esc(entry.antecedents.join(', '))}` : '',
+    entry.behaviors?.length ? `<b>${t('behavior')}</b> ${esc(entry.behaviors.join(', '))}` : '',
+    entry.helped?.length ? `<b>${t('helped')}</b> ${esc(entry.helped.join(', '))}` : '',
+    entry.notHelped?.length ? `<b>${t('nothelped')}</b> ${esc(entry.notHelped.join(', '))}` : '',
+    entry.notes ? `<b>${t('notes')}</b> ${esc(entry.notes)}` : '',
   ].filter(Boolean).join('<br>');
-  toast(details || 'No details');
+  toast(details || (lang === 'zh' ? '\u65E0\u8BE6\u7EC6\u4FE1\u606F' : 'No details'));
 }
 
 function clearHistory() {
@@ -1672,7 +1692,13 @@ function getToolkit() {
 }
 
 function saveToolkit(items) {
-  localStorage.setItem('mn-toolkit', JSON.stringify(items));
+  try {
+    localStorage.setItem('mn-toolkit', JSON.stringify(items));
+  } catch(e) {
+    alert(lang === 'zh'
+      ? '\u5B58\u50A8\u7A7A\u95F4\u5DF2\u6EE1\u3002'
+      : 'Storage is full.');
+  }
 }
 
 function renderToolkit() {
@@ -1722,6 +1748,20 @@ function addToolkitItem() {
 // ============================================================
 // TOAST
 // ============================================================
+function exportMeltdownData() {
+  const logs = JSON.parse(localStorage.getItem('mn-logs') || '[]');
+  if (!logs.length) {
+    toast(lang === 'zh' ? '\u6CA1\u6709\u6570\u636E\u53EF\u5BFC\u51FA' : 'No data to export');
+    return;
+  }
+  const blob = new Blob([JSON.stringify(logs, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'withyou-meltdown-' + new Date().toISOString().slice(0, 10) + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
 function toast(msg) {
   const el = document.getElementById('toast');
   el.innerHTML = msg;
