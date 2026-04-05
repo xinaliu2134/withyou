@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>吃饭助手 — 同路 WithYou</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --sage: #6B8F7B;
+  --sage-light: #8FB09D;
+  --sage-pale: #E8F0EB;
+  --sage-dark: #4A6B56;
+  --cream: #FAF7F0;
+  --cream-dark: #F0EBDF;
+  --blue: #7BA7BC;
+  --blue-light: #A5C7D6;
+  --blue-pale: #E4EFF4;
+  --warm-text: #3D3D3D;
+  --warm-text-light: #6B6B6B;
+  --coral: #D4917B;
+  --coral-pale: #F5E0D8;
+  --yellow: #C9A84C;
+  --yellow-bg: #FDF6E3;
+  --red: #C47A6E;
+  --red-bg: #F8E8E5;
+  --green-bg: #E8F0EB;
+  --shadow: 0 2px 16px rgba(107,143,123,0.10);
+  --shadow-lg: 0 6px 28px rgba(107,143,123,0.14);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+  background: var(--cream);
+  color: var(--warm-text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.hidden { display: none !important; }
+.container { max-width: 680px; margin: 0 auto; padding: 0 20px; }
+
+/* ===== Top Bar ===== */
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.topbar-back {
+  color: var(--sage);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.topbar-title { font-size: 0.95rem; font-weight: 600; color: var(--sage); }
+.lang-toggle {
+  background: var(--sage-pale);
+  border: none;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--sage);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.lang-toggle:hover { background: var(--sage-light); color: #fff; }
+
+/* ===== Tabs ===== */
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 16px 20px 0;
+  max-width: 680px;
+  margin: 0 auto;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.tab {
+  padding: 10px 16px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  font-size: 0.82rem;
+  font-weight: 500;
+  background: var(--cream-dark);
+  color: var(--warm-text-light);
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.tab.active { background: #fff; color: var(--sage); font-weight: 600; }
+
+/* ===== Panels ===== */
+.panel {
+  background: #fff;
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 24px 20px;
+  margin: 0 auto;
+  max-width: 680px;
+  min-height: 400px;
+  box-shadow: var(--shadow);
+}
+
+/* ===== Cards ===== */
+.card {
+  background: #fff;
+  border: 1px solid var(--cream-dark);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.card-title { font-size: 0.92rem; font-weight: 600; color: var(--sage-dark); }
+
+/* ===== Buttons ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
+  font-weight: 600;
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-primary { background: var(--sage); color: #fff; width: 100%; }
+.btn-primary:hover { background: var(--sage-dark); }
+.btn-secondary { background: #fff; color: var(--sage); border: 2px solid var(--sage-pale); }
+.btn-secondary:hover { background: var(--sage-pale); }
+.btn-small { padding: 8px 16px; font-size: 0.82rem; }
+.btn-danger { background: var(--red-bg); color: var(--red); border: none; }
+
+/* ===== Form ===== */
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 6px; color: var(--warm-text); }
+.form-input, .form-select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--cream-dark);
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
+  font-family: inherit;
+  color: var(--warm-text);
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-input:focus, .form-select:focus { border-color: var(--sage-light); }
+
+/* ===== Food chips ===== */
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.chip {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid var(--cream-dark);
+  background: #fff;
+  color: var(--warm-text);
+}
+.chip.selected { background: var(--sage-pale); border-color: var(--sage); color: var(--sage-dark); }
+.chip-remove {
+  display: inline-block;
+  margin-left: 6px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+/* ===== Radar chart ===== */
+.radar-wrap { text-align: center; margin: 20px 0; }
+.radar-wrap svg { max-width: 340px; width: 100%; }
+
+/* ===== SOS stages ===== */
+.sos-stage {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 14px;
+  background: var(--cream);
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+}
+.sos-dot {
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.sos-tolerate { background: var(--red); }
+.sos-touch { background: var(--coral); }
+.sos-smell { background: var(--yellow); }
+.sos-taste { background: var(--blue); }
+.sos-eat { background: var(--sage); }
+
+/* ===== Gap flags ===== */
+.gap-flag {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 14px;
+  border-radius: var(--radius-sm);
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  font-weight: 500;
+}
+.gap-ok { background: var(--green-bg); color: var(--sage-dark); }
+.gap-warn { background: var(--yellow-bg); color: #8B7A2B; }
+.gap-alert { background: var(--red-bg); color: var(--red); }
+
+/* ===== Tips ===== */
+.tip-card {
+  background: var(--sage-pale);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+.tip-card strong { color: var(--sage-dark); }
+
+/* ===== Meal log list ===== */
+.meal-entry {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--cream-dark);
+}
+.meal-entry:last-child { border-bottom: none; }
+.meal-meta { font-size: 0.78rem; color: var(--warm-text-light); margin-bottom: 4px; }
+.meal-foods { font-size: 0.88rem; }
+.meal-refused { color: var(--red); font-size: 0.82rem; margin-top: 2px; }
+
+/* ===== Section header ===== */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.section-title { font-size: 1.05rem; font-weight: 600; color: var(--sage-dark); }
+.section-sub { font-size: 0.82rem; color: var(--warm-text-light); margin-bottom: 16px; }
+
+/* ===== Empty state ===== */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--warm-text-light);
+  font-size: 0.92rem;
+}
+.empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4; }
+
+/* ===== Slider row ===== */
+.slider-row { margin-bottom: 16px; }
+.slider-label { display: flex; justify-content: space-between; font-size: 0.82rem; color: var(--warm-text-light); margin-bottom: 4px; }
+.slider-row input[type="range"] {
+  width: 100%;
+  -webkit-appearance: none;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--cream-dark);
+  outline: none;
+}
+.slider-row input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  background: var(--sage);
+  cursor: pointer;
+  border: 3px solid #fff;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.15);
+}
+
+@media print {
+  .topbar, .tabs, .btn { display: none !important; }
+  .panel { box-shadow: none; border: 1px solid #ddd; }
+}
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="../index.html" class="topbar-back">&#8592; <span data-i18n="back">返回</span></a>
+    <span class="topbar-title" data-i18n="title">吃饭助手</span>
+  </div>
+  <button class="lang-toggle" onclick="toggleLang()">EN / 中</button>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab active" onclick="showTab('diary')" data-i18n="tab_diary">饮食日记</button>
+  <button class="tab" onclick="showTab('sensory')" data-i18n="tab_sensory">感觉偏好</button>
+  <button class="tab" onclick="showTab('sos')" data-i18n="tab_sos">食物拓展</button>
+  <button class="tab" onclick="showTab('gaps')" data-i18n="tab_gaps">营养检查</button>
+  <button class="tab" onclick="showTab('tips')" data-i18n="tab_tips">用餐技巧</button>
+</div>
+
+<!-- ==================== DIARY PANEL ==================== -->
+<div class="panel" id="panel-diary">
+  <div class="section-header">
+    <span class="section-title" data-i18n="diary_title">饮食日记</span>
+    <button class="btn btn-secondary btn-small" onclick="openAddMeal()" data-i18n="add_meal">+ 记录</button>
+  </div>
+
+  <!-- Add meal form (hidden by default) -->
+  <div id="meal-form" class="card hidden">
+    <div class="form-group">
+      <label class="form-label" data-i18n="meal_type">餐次</label>
+      <div class="chip-row" id="meal-type-chips"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="foods_eaten">吃了什么</label>
+      <div class="chip-row" id="food-eaten-chips"></div>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <input class="form-input" id="custom-eaten" style="flex:1" placeholder="">
+        <button class="btn btn-secondary btn-small" onclick="addCustomEaten()" data-i18n="add_btn">添加</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="foods_refused">拒绝的食物</label>
+      <div class="chip-row" id="food-refused-chips"></div>
+      <div style="display:flex;gap:8px;margin-top:8px;">
+        <input class="form-input" id="custom-refused" style="flex:1" placeholder="">
+        <button class="btn btn-secondary btn-small" onclick="addCustomRefused()" data-i18n="add_btn">添加</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="meal_notes">备注</label>
+      <input class="form-input" id="meal-notes" placeholder="">
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-primary" style="flex:1" onclick="saveMeal()" data-i18n="save">保存</button>
+      <button class="btn btn-secondary" style="flex:0" onclick="cancelMeal()" data-i18n="cancel">取消</button>
+    </div>
+  </div>
+
+  <!-- Meal log list -->
+  <div id="meal-list"></div>
+</div>
+
+<!-- ==================== SENSORY PANEL ==================== -->
+<div class="panel hidden" id="panel-sensory">
+  <div class="section-title" data-i18n="sensory_title" style="margin-bottom:6px;">食物感觉偏好</div>
+  <p class="section-sub" data-i18n="sensory_sub">记录孩子对不同食物特性的偏好</p>
+
+  <div class="slider-row">
+    <div class="slider-label"><span data-i18n="texture_smooth">顺滑</span><span data-i18n="texture_crunchy">脆硬</span></div>
+    <input type="range" min="1" max="5" value="3" id="pref-texture" oninput="updateRadar()">
+  </div>
+  <div class="slider-row">
+    <div class="slider-label"><span data-i18n="temp_cold">冷</span><span data-i18n="temp_warm">温热</span></div>
+    <input type="range" min="1" max="5" value="3" id="pref-temp" oninput="updateRadar()">
+  </div>
+  <div class="slider-row">
+    <div class="slider-label"><span data-i18n="flavor_mild">清淡</span><span data-i18n="flavor_strong">浓郁</span></div>
+    <input type="range" min="1" max="5" value="3" id="pref-flavor" oninput="updateRadar()">
+  </div>
+  <div class="slider-row">
+    <div class="slider-label"><span data-i18n="color_plain">素色</span><span data-i18n="color_bright">鲜艳</span></div>
+    <input type="range" min="1" max="5" value="3" id="pref-color" oninput="updateRadar()">
+  </div>
+
+  <div class="radar-wrap">
+    <svg id="radar-chart" viewBox="0 0 300 300"></svg>
+  </div>
+  <button class="btn btn-primary" onclick="saveSensory()" data-i18n="save_profile">保存偏好档案</button>
+</div>
+
+<!-- ==================== SOS PANEL ==================== -->
+<div class="panel hidden" id="panel-sos">
+  <div class="section-title" data-i18n="sos_title" style="margin-bottom:6px;">食物拓展计划</div>
+  <p class="section-sub" data-i18n="sos_sub">SOS方法: 容忍 → 触摸 → 闻 → 尝 → 吃</p>
+
+  <div id="sos-add" class="card">
+    <div class="form-group">
+      <label class="form-label" data-i18n="new_food">目标食物</label>
+      <div style="display:flex;gap:8px;">
+        <input class="form-input" id="sos-food-input" style="flex:1" placeholder="">
+        <button class="btn btn-primary btn-small" onclick="addSOSFood()" data-i18n="add_btn">添加</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="sos-list"></div>
+
+  <div class="card" style="margin-top:16px;background:var(--sage-pale);border:none;">
+    <div class="card-title" data-i18n="bridging_title" style="margin-bottom:8px;">桥接建议</div>
+    <div id="bridging-suggestions" style="font-size:0.85rem;line-height:1.6;"></div>
+  </div>
+</div>
+
+<!-- ==================== GAPS PANEL ==================== -->
+<div class="panel hidden" id="panel-gaps">
+  <div class="section-title" data-i18n="gaps_title" style="margin-bottom:6px;">营养差距检查</div>
+  <p class="section-sub" data-i18n="gaps_sub">根据饮食日记自动检测可能的营养缺口</p>
+  <div id="gap-flags"></div>
+</div>
+
+<!-- ==================== TIPS PANEL ==================== -->
+<div class="panel hidden" id="panel-tips">
+  <div class="section-title" data-i18n="tips_title" style="margin-bottom:6px;">循证用餐技巧</div>
+  <p class="section-sub" data-i18n="tips_sub">基于研究的实用策略 (Toomey & Ross 2011; Sharp et al. 2013)</p>
+  <div id="tips-list"></div>
+</div>
+
+<div style="height:40px;"></div>
+
+<script>
+// ===================================================================
+//  I18N
+// ===================================================================
+let lang = 'zh';
+const I18N = {
+  zh: {
+    back: '返回', title: '吃饭助手',
+    tab_diary: '饮食日记', tab_sensory: '感觉偏好', tab_sos: '食物拓展', tab_gaps: '营养检查', tab_tips: '用餐技巧',
+    diary_title: '饮食日记', add_meal: '+ 记录', meal_type: '餐次',
+    foods_eaten: '吃了什么', foods_refused: '拒绝的食物', meal_notes: '备注',
+    save: '保存', cancel: '取消', add_btn: '添加',
+    breakfast: '早餐', lunch: '午餐', dinner: '晚餐', snack: '加餐',
+    sensory_title: '食物感觉偏好', sensory_sub: '记录孩子对不同食物特性的偏好',
+    texture_smooth: '顺滑', texture_crunchy: '脆硬', temp_cold: '冷', temp_warm: '温热',
+    flavor_mild: '清淡', flavor_strong: '浓郁', color_plain: '素色', color_bright: '鲜艳',
+    save_profile: '保存偏好档案',
+    sos_title: '食物拓展计划', sos_sub: 'SOS方法: 容忍 → 触摸 → 闻 → 尝 → 吃',
+    new_food: '目标食物', bridging_title: '桥接建议',
+    gaps_title: '营养差距检查', gaps_sub: '根据饮食日记自动检测可能的营养缺口',
+    tips_title: '循证用餐技巧', tips_sub: '基于研究的实用策略 (Toomey & Ross 2011; Sharp et al. 2013)',
+    no_meals: '还没有记录，点击 "+ 记录" 开始',
+    stages: ['容忍', '触摸', '闻', '尝', '吃'],
+    texture: '质地', temperature: '温度', flavor: '口味', color: '颜色',
+    iron: '铁', calcium: '钙', vitamins: '维生素', fiber: '纤维', protein: '蛋白质',
+    ok: '可能充足', warn: '可能不足', alert: '需关注',
+    delete_confirm: '确定删除这条记录？',
+    no_sos: '添加要拓展的食物开始追踪',
+    bridge_intro: '基于当前食物拓展列表的建议：'
+  },
+  en: {
+    back: 'Back', title: 'Mealtime Manager',
+    tab_diary: 'Food Diary', tab_sensory: 'Sensory Profile', tab_sos: 'Food Expansion', tab_gaps: 'Nutrition Check', tab_tips: 'Tips',
+    diary_title: 'Food Diary', add_meal: '+ Log Meal', meal_type: 'Meal Type',
+    foods_eaten: 'Foods Eaten', foods_refused: 'Foods Refused', meal_notes: 'Notes',
+    save: 'Save', cancel: 'Cancel', add_btn: 'Add',
+    breakfast: 'Breakfast', lunch: 'Lunch', dinner: 'Dinner', snack: 'Snack',
+    sensory_title: 'Food Sensory Profile', sensory_sub: "Map your child's food texture, temperature, flavor & color preferences",
+    texture_smooth: 'Smooth', texture_crunchy: 'Crunchy', temp_cold: 'Cold', temp_warm: 'Warm',
+    flavor_mild: 'Mild', flavor_strong: 'Strong', color_plain: 'Plain', color_bright: 'Colorful',
+    save_profile: 'Save Sensory Profile',
+    sos_title: 'Food Expansion Plan', sos_sub: 'SOS Approach: Tolerate → Touch → Smell → Taste → Eat',
+    new_food: 'Target Food', bridging_title: 'Bridging Suggestions',
+    gaps_title: 'Nutritional Gap Flags', gaps_sub: 'Auto-checks based on your food diary entries',
+    tips_title: 'Evidence-Based Mealtime Tips', tips_sub: 'Research-backed strategies (Toomey & Ross 2011; Sharp et al. 2013)',
+    no_meals: 'No meals logged yet. Tap "+ Log Meal" to start.',
+    stages: ['Tolerate', 'Touch', 'Smell', 'Taste', 'Eat'],
+    texture: 'Texture', temperature: 'Temperature', flavor: 'Flavor', color: 'Color',
+    iron: 'Iron', calcium: 'Calcium', vitamins: 'Vitamins', fiber: 'Fiber', protein: 'Protein',
+    ok: 'Likely adequate', warn: 'Possibly low', alert: 'Needs attention',
+    delete_confirm: 'Delete this meal entry?',
+    no_sos: 'Add a target food to start tracking',
+    bridge_intro: 'Suggestions based on your current expansion list:'
+  }
+};
+
+function t(key) { return I18N[lang][key] || key; }
+
+function applyLang() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (I18N[lang][k]) el.textContent = I18N[lang][k];
+  });
+}
+
+function toggleLang() {
+  lang = lang === 'zh' ? 'en' : 'zh';
+  applyLang();
+  renderAll();
+}
+
+// ===================================================================
+//  DATA
+// ===================================================================
+const STORAGE_KEY = 'withyou_mealtime';
+let data = {
+  meals: [],
+  sensory: { texture: 3, temperature: 3, flavor: 3, color: 3 },
+  sosFood: [],
+  customFoods: []
+};
+
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+function load() {
+  const s = localStorage.getItem(STORAGE_KEY);
+  if (s) { try { data = JSON.parse(s); } catch(e) {} }
+}
+
+const COMMON_FOODS = {
+  zh: ['米饭','面条','面包','鸡蛋','牛奶','酸奶','苹果','香蕉','胡萝卜','西兰花','鸡肉','鱼','豆腐','番茄','黄瓜','土豆','玉米','饼干','奶酪','葡萄'],
+  en: ['Rice','Noodles','Bread','Egg','Milk','Yogurt','Apple','Banana','Carrot','Broccoli','Chicken','Fish','Tofu','Tomato','Cucumber','Potato','Corn','Crackers','Cheese','Grapes']
+};
+
+const MEAL_TYPES = ['breakfast','lunch','dinner','snack'];
+
+// ===================================================================
+//  TAB SWITCHING
+// ===================================================================
+let activeTab = 'diary';
+function showTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab').forEach((el, i) => {
+    el.classList.toggle('active', ['diary','sensory','sos','gaps','tips'][i] === tab);
+  });
+  ['diary','sensory','sos','gaps','tips'].forEach(p => {
+    document.getElementById('panel-' + p).classList.toggle('hidden', p !== tab);
+  });
+  renderAll();
+}
+
+// ===================================================================
+//  DIARY
+// ===================================================================
+let mealForm = { type: '', eaten: [], refused: [], notes: '' };
+
+function openAddMeal() {
+  mealForm = { type: '', eaten: [], refused: [], notes: '' };
+  document.getElementById('meal-form').classList.remove('hidden');
+  renderMealForm();
+}
+
+function cancelMeal() {
+  document.getElementById('meal-form').classList.add('hidden');
+}
+
+function renderMealForm() {
+  // Meal type chips
+  const tc = document.getElementById('meal-type-chips');
+  tc.innerHTML = MEAL_TYPES.map(mt =>
+    `<span class="chip ${mealForm.type === mt ? 'selected' : ''}" onclick="setMealType('${mt}')">${t(mt)}</span>`
+  ).join('');
+
+  // Food eaten chips
+  const ec = document.getElementById('food-eaten-chips');
+  const foods = COMMON_FOODS[lang];
+  ec.innerHTML = foods.map(f =>
+    `<span class="chip ${mealForm.eaten.includes(f) ? 'selected' : ''}" onclick="toggleFood('eaten','${f}')">${f}</span>`
+  ).join('') + mealForm.eaten.filter(f => !foods.includes(f)).map(f =>
+    `<span class="chip selected">${f}<span class="chip-remove" onclick="removeFood('eaten','${f}')">×</span></span>`
+  ).join('');
+
+  // Food refused chips
+  const rc = document.getElementById('food-refused-chips');
+  rc.innerHTML = foods.map(f =>
+    `<span class="chip ${mealForm.refused.includes(f) ? 'selected' : ''}" onclick="toggleFood('refused','${f}')">${f}</span>`
+  ).join('') + mealForm.refused.filter(f => !foods.includes(f)).map(f =>
+    `<span class="chip selected">${f}<span class="chip-remove" onclick="removeFood('refused','${f}')">×</span></span>`
+  ).join('');
+}
+
+function setMealType(mt) { mealForm.type = mt; renderMealForm(); }
+
+function toggleFood(which, food) {
+  const arr = mealForm[which];
+  const idx = arr.indexOf(food);
+  if (idx >= 0) arr.splice(idx, 1); else arr.push(food);
+  renderMealForm();
+}
+
+function removeFood(which, food) {
+  mealForm[which] = mealForm[which].filter(f => f !== food);
+  renderMealForm();
+}
+
+function addCustomEaten() {
+  const inp = document.getElementById('custom-eaten');
+  const v = inp.value.trim();
+  if (v && !mealForm.eaten.includes(v)) { mealForm.eaten.push(v); inp.value = ''; renderMealForm(); }
+}
+
+function addCustomRefused() {
+  const inp = document.getElementById('custom-refused');
+  const v = inp.value.trim();
+  if (v && !mealForm.refused.includes(v)) { mealForm.refused.push(v); inp.value = ''; renderMealForm(); }
+}
+
+function saveMeal() {
+  if (!mealForm.type) return;
+  const notes = document.getElementById('meal-notes').value.trim();
+  data.meals.unshift({
+    id: Date.now(),
+    date: new Date().toISOString(),
+    type: mealForm.type,
+    eaten: [...mealForm.eaten],
+    refused: [...mealForm.refused],
+    notes
+  });
+  save();
+  cancelMeal();
+  renderMealList();
+  renderGaps();
+}
+
+function deleteMeal(id) {
+  if (!confirm(t('delete_confirm'))) return;
+  data.meals = data.meals.filter(m => m.id !== id);
+  save();
+  renderMealList();
+}
+
+function renderMealList() {
+  const c = document.getElementById('meal-list');
+  if (!data.meals.length) {
+    c.innerHTML = `<div class="empty-state"><div class="empty-icon">🍽</div>${t('no_meals')}</div>`;
+    return;
+  }
+  let html = '';
+  let lastDate = '';
+  data.meals.forEach(m => {
+    const d = new Date(m.date);
+    const ds = d.toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US', { month: 'short', day: 'numeric' });
+    if (ds !== lastDate) {
+      html += `<div style="font-size:0.82rem;font-weight:600;color:var(--sage);margin-top:16px;margin-bottom:8px;">${ds}</div>`;
+      lastDate = ds;
+    }
+    html += `<div class="meal-entry">
+      <div class="meal-meta">${t(m.type)}${m.notes ? ' — ' + m.notes : ''}
+        <span style="float:right;cursor:pointer;color:var(--red);" onclick="deleteMeal(${m.id})">×</span>
+      </div>
+      <div class="meal-foods">${m.eaten.join(', ') || '—'}</div>
+      ${m.refused.length ? `<div class="meal-refused">${lang === 'zh' ? '拒绝' : 'Refused'}: ${m.refused.join(', ')}</div>` : ''}
+    </div>`;
+  });
+  c.innerHTML = html;
+}
+
+// ===================================================================
+//  SENSORY PROFILE
+// ===================================================================
+function updateRadar() {
+  const dims = ['texture','temperature','flavor','color'];
+  dims.forEach(d => { data.sensory[d] = parseInt(document.getElementById('pref-' + d.replace('temperature','temp')).value); });
+  drawRadar();
+}
+
+function drawRadar() {
+  const svg = document.getElementById('radar-chart');
+  const cx = 150, cy = 150, r = 110;
+  const dims = ['texture','temperature','flavor','color'];
+  const labels = [t('texture'), t('temperature'), t('flavor'), t('color')];
+  const vals = dims.map(d => data.sensory[d] / 5);
+  const n = 4;
+
+  let html = '';
+  // Grid
+  for (let lev = 1; lev <= 5; lev++) {
+    const rr = r * lev / 5;
+    let pts = [];
+    for (let i = 0; i < n; i++) {
+      const a = (Math.PI * 2 * i / n) - Math.PI / 2;
+      pts.push(`${cx + rr * Math.cos(a)},${cy + rr * Math.sin(a)}`);
+    }
+    html += `<polygon points="${pts.join(' ')}" fill="none" stroke="${lev === 5 ? 'var(--sage-light)' : 'var(--cream-dark)'}" stroke-width="1"/>`;
+  }
+  // Axes
+  for (let i = 0; i < n; i++) {
+    const a = (Math.PI * 2 * i / n) - Math.PI / 2;
+    html += `<line x1="${cx}" y1="${cy}" x2="${cx + r * Math.cos(a)}" y2="${cy + r * Math.sin(a)}" stroke="var(--cream-dark)" stroke-width="1"/>`;
+    const lx = cx + (r + 20) * Math.cos(a);
+    const ly = cy + (r + 20) * Math.sin(a);
+    html += `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="central" fill="var(--warm-text)" font-size="12" font-weight="500">${labels[i]}</text>`;
+  }
+  // Data polygon
+  let pts = [];
+  for (let i = 0; i < n; i++) {
+    const a = (Math.PI * 2 * i / n) - Math.PI / 2;
+    pts.push(`${cx + r * vals[i] * Math.cos(a)},${cy + r * vals[i] * Math.sin(a)}`);
+  }
+  html += `<polygon points="${pts.join(' ')}" fill="rgba(107,143,123,0.2)" stroke="var(--sage)" stroke-width="2"/>`;
+  // Dots
+  for (let i = 0; i < n; i++) {
+    const a = (Math.PI * 2 * i / n) - Math.PI / 2;
+    html += `<circle cx="${cx + r * vals[i] * Math.cos(a)}" cy="${cy + r * vals[i] * Math.sin(a)}" r="5" fill="var(--sage)"/>`;
+  }
+  svg.innerHTML = html;
+}
+
+function saveSensory() {
+  save();
+  const btn = document.querySelector('#panel-sensory .btn-primary');
+  const orig = btn.textContent;
+  btn.textContent = lang === 'zh' ? '已保存 ✓' : 'Saved ✓';
+  setTimeout(() => btn.textContent = orig, 1500);
+}
+
+function loadSensory() {
+  ['texture','temperature','flavor','color'].forEach(d => {
+    const el = document.getElementById('pref-' + d.replace('temperature','temp'));
+    if (el) el.value = data.sensory[d] || 3;
+  });
+  drawRadar();
+}
+
+// ===================================================================
+//  SOS FOOD EXPANSION
+// ===================================================================
+const SOS_STAGES = ['tolerate','touch','smell','taste','eat'];
+const SOS_CLASSES = ['sos-tolerate','sos-touch','sos-smell','sos-taste','sos-eat'];
+
+function addSOSFood() {
+  const inp = document.getElementById('sos-food-input');
+  const v = inp.value.trim();
+  if (!v) return;
+  data.sosFood.push({ name: v, stage: 0, added: new Date().toISOString() });
+  inp.value = '';
+  save();
+  renderSOS();
+}
+
+function advanceSOS(idx) {
+  if (data.sosFood[idx].stage < 4) { data.sosFood[idx].stage++; save(); renderSOS(); }
+}
+
+function regressSOS(idx) {
+  if (data.sosFood[idx].stage > 0) { data.sosFood[idx].stage--; save(); renderSOS(); }
+}
+
+function removeSOS(idx) {
+  data.sosFood.splice(idx, 1);
+  save();
+  renderSOS();
+}
+
+function renderSOS() {
+  const c = document.getElementById('sos-list');
+  if (!data.sosFood.length) {
+    c.innerHTML = `<div class="empty-state">${t('no_sos')}</div>`;
+  } else {
+    c.innerHTML = data.sosFood.map((f, i) => `
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">${f.name}</span>
+          <span style="cursor:pointer;color:var(--red);font-size:0.8rem;" onclick="removeSOS(${i})">×</span>
+        </div>
+        <div style="display:flex;gap:4px;margin-bottom:10px;">
+          ${SOS_STAGES.map((s, si) => `<div style="flex:1;height:6px;border-radius:3px;background:${si <= f.stage ? 'var(--sage)' : 'var(--cream-dark)'};"></div>`).join('')}
+        </div>
+        <div class="sos-stage">
+          <div class="sos-dot ${SOS_CLASSES[f.stage]}"></div>
+          <span>${t('stages')[f.stage]}</span>
+          <div style="margin-left:auto;display:flex;gap:6px;">
+            <button class="btn btn-secondary btn-small" onclick="regressSOS(${i})" ${f.stage === 0 ? 'disabled style="opacity:0.3"' : ''}>←</button>
+            <button class="btn btn-primary btn-small" onclick="advanceSOS(${i})" ${f.stage === 4 ? 'disabled style="opacity:0.3"' : ''}>→</button>
+          </div>
+        </div>
+      </div>
+    `).join('');
+  }
+  renderBridging();
+}
+
+function renderBridging() {
+  const c = document.getElementById('bridging-suggestions');
+  const bridging = {
+    zh: [
+      '如果孩子接受脆片类食物，尝试将新蔬菜做成薄片烘烤',
+      '把新食物放在已接受的食物旁边，不要求品尝',
+      '让孩子参与食物准备过程（洗菜、搅拌）',
+      '使用喜欢的蘸料搭配新食物',
+      '先从相似质地的食物过渡（如：接受饼干→尝试吐司）',
+      '用有趣的模具将食物切成有趣的形状'
+    ],
+    en: [
+      'If child accepts chips/crackers, try baking new vegetables as thin chips',
+      'Place new food next to accepted foods without requiring a taste',
+      'Involve child in food preparation (washing, stirring)',
+      'Use favorite dips/sauces with new foods',
+      'Bridge through similar textures (e.g., crackers accepted → try toast)',
+      'Use fun cookie cutters to make food into interesting shapes'
+    ]
+  };
+  if (!data.sosFood.length) {
+    c.innerHTML = `<p style="color:var(--warm-text-light)">${t('no_sos')}</p>`;
+    return;
+  }
+  c.innerHTML = `<p style="margin-bottom:8px;">${t('bridge_intro')}</p><ul style="padding-left:18px;">${bridging[lang].map(b => `<li style="margin-bottom:6px;">${b}</li>`).join('')}</ul>`;
+}
+
+// ===================================================================
+//  NUTRITIONAL GAP FLAGS
+// ===================================================================
+const NUTRIENT_FOODS = {
+  iron: { zh: ['牛肉','猪肉','鸡肉','鱼','菠菜','豆腐','鸡蛋','红豆'], en: ['Beef','Pork','Chicken','Fish','Spinach','Tofu','Egg','Red beans'] },
+  calcium: { zh: ['牛奶','酸奶','奶酪','豆腐','西兰花','芝麻'], en: ['Milk','Yogurt','Cheese','Tofu','Broccoli','Sesame'] },
+  vitamins: { zh: ['苹果','香蕉','橙子','胡萝卜','西兰花','番茄','菠菜','蓝莓','葡萄'], en: ['Apple','Banana','Orange','Carrot','Broccoli','Tomato','Spinach','Blueberry','Grapes'] },
+  fiber: { zh: ['米饭','面包','燕麦','红薯','土豆','苹果','胡萝卜','西兰花','玉米'], en: ['Rice','Bread','Oats','Sweet potato','Potato','Apple','Carrot','Broccoli','Corn'] },
+  protein: { zh: ['鸡肉','鱼','牛肉','猪肉','鸡蛋','牛奶','酸奶','豆腐','奶酪'], en: ['Chicken','Fish','Beef','Pork','Egg','Milk','Yogurt','Tofu','Cheese'] }
+};
+
+function renderGaps() {
+  const c = document.getElementById('gap-flags');
+  const recent = data.meals.filter(m => {
+    const d = new Date(m.date);
+    return (Date.now() - d.getTime()) < 7 * 86400000;
+  });
+
+  if (!recent.length) {
+    c.innerHTML = `<div class="empty-state"><div class="empty-icon">📊</div>${lang === 'zh' ? '需要至少一周的饮食记录来分析' : 'Need at least a week of food logs to analyze'}</div>`;
+    return;
+  }
+
+  const allEaten = recent.flatMap(m => m.eaten.map(f => f.toLowerCase()));
+  const nutrients = ['iron','calcium','vitamins','fiber','protein'];
+
+  c.innerHTML = nutrients.map(n => {
+    const sources = NUTRIENT_FOODS[n][lang];
+    const found = sources.filter(f => allEaten.some(e => e.includes(f.toLowerCase()) || f.toLowerCase().includes(e)));
+    const ratio = found.length / sources.length;
+    let cls, status;
+    if (ratio >= 0.3) { cls = 'gap-ok'; status = t('ok'); }
+    else if (ratio > 0) { cls = 'gap-warn'; status = t('warn'); }
+    else { cls = 'gap-alert'; status = t('alert'); }
+    return `<div class="gap-flag ${cls}">
+      <span style="font-weight:600;min-width:70px;">${t(n)}</span>
+      <span>${status}</span>
+      <span style="margin-left:auto;font-size:0.78rem;">${found.length}/${sources.length}</span>
+    </div>`;
+  }).join('');
+}
+
+// ===================================================================
+//  MEALTIME TIPS
+// ===================================================================
+const TIPS = [
+  { zh: '不施压原则：不强迫、不哄骗、不贿赂。让孩子决定吃多少。', en: 'No-pressure rule: Don\'t force, coax, or bribe. Let the child decide how much to eat.', source: 'Satter Division of Responsibility' },
+  { zh: '全家一起吃饭：孩子在家庭餐桌上看到别人吃各种食物，更容易接受新食物。', en: 'Family meals: Children who see others eating a variety are more likely to try new foods.', source: 'Toomey & Ross 2011' },
+  { zh: '食物展示：用有趣的摆盘、颜色搭配让食物更有吸引力，但不要过度装饰。', en: 'Food presentation: Make food visually appealing with colors and arrangement, but don\'t over-decorate.', source: 'Sharp et al. 2013' },
+  { zh: '小份量开始：提供很小的份量减少压迫感，孩子总可以要更多。', en: 'Start small: Offer tiny portions to reduce overwhelm. The child can always ask for more.', source: 'SOS Approach' },
+  { zh: '规律用餐时间：固定的用餐时间表帮助孩子建立饥饿/饱腹节奏。', en: 'Regular meal schedule: Consistent meal times help establish hunger/fullness rhythms.', source: 'AAP Guidelines' },
+  { zh: '反复接触：研究表明需要15-20次接触新食物才可能接受。每次看到都算一次接触。', en: 'Repeated exposure: Research shows 15-20 exposures may be needed. Just seeing the food counts as exposure.', source: 'Birch & Fisher 1998' },
+  { zh: '减少干扰：关掉电视和平板，用餐时间专注于食物和交流。', en: 'Minimize distractions: Turn off screens during meals. Focus on food and conversation.', source: 'AAP Media Guidelines' },
+  { zh: '让孩子参与：一起购物、洗菜、简单的准备工作增加对食物的兴趣。', en: 'Involve the child: Shopping together, washing vegetables, simple prep increases food interest.', source: 'Toomey & Ross 2011' },
+  { zh: '安全食物策略：每餐至少包含一种孩子已接受的食物，减少焦虑。', en: 'Safe food strategy: Include at least one accepted food at each meal to reduce anxiety.', source: 'SOS Approach' },
+  { zh: '注意感觉问题：某些食物的质地、温度或气味可能引发感觉不适，不是"挑食"。', en: 'Sensory awareness: Some textures, temperatures, or smells may cause genuine sensory discomfort — it\'s not "picky eating".', source: 'Dunn 2014' },
+  { zh: '积极描述食物：用描述性语言（"脆脆的""冰凉的"）而不是评价（"好吃""难吃"）。', en: 'Describe, don\'t judge: Use descriptive language ("crunchy", "cool") instead of judgments ("yummy", "gross").', source: 'SOS Approach' },
+  { zh: '用餐环境：确保座椅高度合适，脚能踩到支撑物，使用适合的餐具。', en: 'Seating & tools: Ensure proper chair height, foot support, and age-appropriate utensils.', source: 'OT Practice Guidelines' }
+];
+
+function renderTips() {
+  const c = document.getElementById('tips-list');
+  c.innerHTML = TIPS.map(tip => `
+    <div class="tip-card">
+      <div>${lang === 'zh' ? tip.zh : tip.en}</div>
+      <div style="font-size:0.75rem;color:var(--warm-text-light);margin-top:6px;">📎 ${tip.source}</div>
+    </div>
+  `).join('');
+}
+
+// ===================================================================
+//  RENDER ALL
+// ===================================================================
+function renderAll() {
+  applyLang();
+  renderMealList();
+  loadSensory();
+  renderSOS();
+  renderGaps();
+  renderTips();
+  renderMealForm();
+}
+
+// ===================================================================
+//  INIT
+// ===================================================================
+load();
+renderAll();
+</script>
+</body>
+</html>

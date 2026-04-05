@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>家长知识库 — 同路 WithYou</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --sage: #6B8F7B;
+  --sage-light: #8FB09D;
+  --sage-pale: #E8F0EB;
+  --sage-dark: #4A6B56;
+  --cream: #FAF7F0;
+  --cream-dark: #F0EBDF;
+  --blue: #7BA7BC;
+  --blue-light: #A5C7D6;
+  --blue-pale: #E4EFF4;
+  --warm-text: #3D3D3D;
+  --warm-text-light: #6B6B6B;
+  --coral: #D4917B;
+  --coral-pale: #F5E0D8;
+  --yellow: #C9A84C;
+  --yellow-bg: #FDF6E3;
+  --red: #C47A6E;
+  --red-bg: #F8E8E5;
+  --green-bg: #E8F0EB;
+  --shadow: 0 2px 16px rgba(107,143,123,0.10);
+  --shadow-lg: 0 6px 28px rgba(107,143,123,0.14);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+  background: var(--cream);
+  color: var(--warm-text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.hidden { display: none !important; }
+.container { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+
+/* ===== Top Bar ===== */
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.topbar-back {
+  color: var(--sage);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.topbar-title { font-size: 0.95rem; font-weight: 600; color: var(--sage); }
+.topbar-right { display: flex; gap: 8px; }
+.lang-toggle {
+  background: var(--sage-pale);
+  border: none;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--sage);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.lang-toggle:hover { background: var(--sage-light); color: #fff; }
+.lang-toggle.active { background: var(--sage); color: #fff; }
+
+/* ===== Hero ===== */
+.hero {
+  text-align: center;
+  padding: 32px 20px 24px;
+}
+.hero-icon { font-size: 2.8rem; margin-bottom: 10px; }
+.hero h1 { font-size: 1.5rem; font-weight: 700; color: var(--sage-dark); margin-bottom: 4px; }
+.hero p { font-size: 0.92rem; color: var(--warm-text-light); max-width: 520px; margin: 0 auto; }
+
+/* ===== Section Nav ===== */
+.section-nav {
+  display: flex;
+  gap: 6px;
+  padding: 0 20px 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.section-nav::-webkit-scrollbar { display: none; }
+.nav-pill {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: #fff;
+  border: 1.5px solid var(--cream-dark);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--warm-text-light);
+  cursor: pointer;
+  transition: all 0.2s;
+  text-decoration: none;
+}
+.nav-pill:hover { border-color: var(--sage-light); color: var(--sage); }
+
+/* ===== Accordion ===== */
+.accordion-section {
+  margin-bottom: 16px;
+}
+
+.accordion-header {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+.accordion-header:hover { box-shadow: var(--shadow-lg); }
+.accordion-section.open .accordion-header { border-color: var(--sage-light); border-radius: var(--radius) var(--radius) 0 0; }
+
+.acc-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+.acc-info { flex: 1; }
+.acc-title { font-size: 1rem; font-weight: 600; color: var(--warm-text); }
+.acc-subtitle { font-size: 0.82rem; color: var(--warm-text-light); margin-top: 2px; }
+.acc-arrow { font-size: 1rem; color: var(--warm-text-light); transition: transform 0.3s; }
+.accordion-section.open .acc-arrow { transform: rotate(180deg); }
+
+.accordion-body {
+  display: none;
+  background: #fff;
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 0 20px 20px;
+  box-shadow: var(--shadow);
+}
+.accordion-section.open .accordion-body { display: block; }
+
+/* ===== Content Cards ===== */
+.info-card {
+  background: var(--cream);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.info-card h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--sage-dark);
+  margin-bottom: 8px;
+}
+.info-card p, .info-card li {
+  font-size: 0.84rem;
+  color: var(--warm-text-light);
+  line-height: 1.6;
+}
+.info-card ul, .info-card ol { padding-left: 18px; }
+.info-card li { margin-bottom: 4px; }
+
+.highlight-card {
+  background: var(--sage-pale);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.highlight-card p {
+  font-size: 0.86rem;
+  color: var(--sage-dark);
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* ===== Flip Cards (Myths) ===== */
+.myths-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+}
+.flip-card {
+  perspective: 800px;
+  min-height: 120px;
+  cursor: pointer;
+}
+.flip-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 120px;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+}
+.flip-card.flipped .flip-inner { transform: rotateY(180deg); }
+
+.flip-front, .flip-back {
+  position: absolute;
+  width: 100%;
+  min-height: 120px;
+  backface-visibility: hidden;
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.flip-front {
+  background: var(--red-bg);
+  border: 2px solid var(--red);
+}
+.flip-back {
+  background: var(--green-bg);
+  border: 2px solid var(--sage);
+  transform: rotateY(180deg);
+}
+.flip-label {
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+.flip-front .flip-label { color: var(--red); }
+.flip-back .flip-label { color: var(--sage); }
+.flip-text {
+  font-size: 0.86rem;
+  line-height: 1.5;
+}
+.flip-front .flip-text { color: var(--warm-text); }
+.flip-back .flip-text { color: var(--warm-text); }
+.flip-hint {
+  font-size: 0.72rem;
+  color: var(--warm-text-light);
+  margin-top: 8px;
+  text-align: right;
+}
+
+/* Fix flip card height */
+.flip-card, .flip-inner, .flip-front, .flip-back {
+  min-height: auto;
+}
+.flip-front, .flip-back {
+  position: relative;
+}
+.flip-back {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+/* ===== Treatment Cards ===== */
+.treatment-good {
+  background: var(--green-bg);
+  border-left: 4px solid var(--sage);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.treatment-bad {
+  background: var(--red-bg);
+  border-left: 4px solid var(--red);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.treatment-good h4 { color: var(--sage-dark); font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
+.treatment-bad h4 { color: var(--red); font-size: 0.88rem; font-weight: 600; margin-bottom: 4px; }
+.treatment-good p, .treatment-bad p { font-size: 0.82rem; color: var(--warm-text-light); line-height: 1.5; }
+
+.warning-box {
+  background: var(--yellow-bg);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin-top: 12px;
+}
+.warning-box h4 { color: var(--yellow); font-size: 0.88rem; font-weight: 600; margin-bottom: 6px; }
+.warning-box ul { padding-left: 16px; }
+.warning-box li { font-size: 0.82rem; color: var(--warm-text-light); margin-bottom: 3px; }
+
+/* ===== Script Cards (Telling) ===== */
+.script-card {
+  background: var(--blue-pale);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.script-card h4 { color: var(--blue); font-size: 0.88rem; font-weight: 600; margin-bottom: 8px; }
+.script-quote {
+  font-size: 0.84rem;
+  color: var(--warm-text);
+  font-style: italic;
+  line-height: 1.6;
+  border-left: 3px solid var(--blue-light);
+  padding-left: 12px;
+  margin-bottom: 8px;
+}
+.script-note { font-size: 0.78rem; color: var(--warm-text-light); }
+
+/* ===== Resource Links ===== */
+.resource-group { margin-bottom: 16px; }
+.resource-group h4 {
+  font-size: 0.88rem;
+  font-weight: 600;
+  color: var(--sage-dark);
+  margin-bottom: 8px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--cream-dark);
+}
+.resource-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--cream-dark);
+}
+.resource-item:last-child { border-bottom: none; }
+.resource-icon { font-size: 1.1rem; flex-shrink: 0; }
+.resource-info { flex: 1; }
+.resource-name { font-size: 0.84rem; font-weight: 500; color: var(--warm-text); }
+.resource-desc { font-size: 0.76rem; color: var(--warm-text-light); }
+.resource-tag {
+  font-size: 0.7rem;
+  padding: 2px 8px;
+  border-radius: 8px;
+  background: var(--cream-dark);
+  color: var(--warm-text-light);
+  flex-shrink: 0;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+  .hero h1 { font-size: 1.3rem; }
+  .accordion-header { padding: 14px 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="../index.html" class="topbar-back">&#8592; <span data-zh="返回" data-en="Back">返回</span></a>
+    <span class="topbar-title" data-zh="家长知识库" data-en="Knowledge Base">家长知识库</span>
+  </div>
+  <div class="topbar-right">
+    <button class="lang-toggle active" onclick="setLang('zh')">中文</button>
+    <button class="lang-toggle" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-icon">&#128218;</div>
+  <h1 data-zh="家长知识库" data-en="Parent Knowledge Base">家长知识库</h1>
+  <p data-zh="用温暖、可靠的方式了解自闭症——你不是一个人在面对这一切" data-en="Understand autism in a warm, reliable way — you are not alone in this journey">用温暖、可靠的方式了解自闭症——你不是一个人在面对这一切</p>
+</div>
+
+<!-- Section Nav -->
+<div class="section-nav" id="sectionNav"></div>
+
+<!-- Content -->
+<div class="container">
+  <div id="contentArea" style="padding-bottom:60px;"></div>
+</div>
+
+<script>
+// ===== Data =====
+const SECTIONS = [
+  {
+    id: 'what-is',
+    icon: '&#129504;',
+    iconBg: '#E4EFF4',
+    zh: {
+      title: '什么是自闭症',
+      subtitle: '用简单的方式理解',
+      content: `
+        <div class="highlight-card"><p>自闭症不是一种疾病，而是一种不同的神经发育方式。就像有的人是左撇子，有的人是右撇子——不同，不是错误。</p></div>
+        <div class="info-card"><h4>简单解释</h4><p>自闭症谱系障碍（ASD）是一种神经发育状况，主要影响社交沟通和行为模式。"谱系"意味着每个自闭症个体都是独特的——有些人需要很多支持，有些人则非常独立。</p></div>
+        <div class="info-card"><h4>谱系的概念</h4><p>把自闭症想象成一个调色板而不是一条线：</p><ul>
+          <li><strong>社交沟通：</strong>从不说话到滔滔不绝（但可能不善于"闲聊"）</li>
+          <li><strong>感官体验：</strong>从极度敏感到寻求刺激</li>
+          <li><strong>兴趣模式：</strong>从深度专注某个领域到广泛但独特的兴趣</li>
+          <li><strong>日常需求：</strong>从需要全面支持到独立生活</li>
+        </ul></div>
+        <div class="info-card"><h4>DSM-5-TR 诊断标准（简化版）</h4><p>医生会评估两个核心领域：</p><ol>
+          <li><strong>社交沟通与互动：</strong>眼神接触、表情理解、交友、分享兴趣等方面的差异</li>
+          <li><strong>局限性、重复性行为：</strong>重复动作、坚持常规、特殊兴趣、感官反应特点</li>
+        </ol><p style="margin-top:8px">这些特点必须在早期发育阶段就存在（即使后来才被注意到），并且影响日常功能。</p></div>
+        <div class="info-card"><h4>神经多样性视角</h4><p>越来越多的专家和自闭症人士倡导"神经多样性"理念：自闭症大脑不是"有缺陷的"大脑，而是"不同的"大脑。这个视角帮助我们：</p><ul>
+          <li>看到孩子的优势和独特才能</li>
+          <li>理解行为背后的原因而不仅仅试图"纠正"</li>
+          <li>尊重孩子的方式同时提供需要的支持</li>
+          <li>建立孩子的自我认同和自信</li>
+        </ul></div>
+      `
+    },
+    en: {
+      title: 'What is Autism',
+      subtitle: 'Understanding it simply',
+      content: `
+        <div class="highlight-card"><p>Autism is not a disease — it's a different way of neurological development. Like some people are left-handed and others right-handed — different, not wrong.</p></div>
+        <div class="info-card"><h4>Simple Explanation</h4><p>Autism Spectrum Disorder (ASD) is a neurodevelopmental condition that primarily affects social communication and behavioral patterns. "Spectrum" means every autistic individual is unique — some need significant support, while others are highly independent.</p></div>
+        <div class="info-card"><h4>The Spectrum Concept</h4><p>Think of autism as a color palette rather than a line:</p><ul>
+          <li><strong>Social communication:</strong> From non-speaking to very talkative (but may struggle with "small talk")</li>
+          <li><strong>Sensory experience:</strong> From extremely sensitive to sensory-seeking</li>
+          <li><strong>Interest patterns:</strong> From deep focus on one area to broad but unique interests</li>
+          <li><strong>Support needs:</strong> From requiring comprehensive support to independent living</li>
+        </ul></div>
+        <div class="info-card"><h4>DSM-5-TR Diagnostic Criteria (Simplified)</h4><p>Doctors assess two core areas:</p><ol>
+          <li><strong>Social communication & interaction:</strong> Differences in eye contact, understanding expressions, making friends, sharing interests</li>
+          <li><strong>Restricted, repetitive behaviors:</strong> Repetitive movements, insistence on routines, special interests, sensory response patterns</li>
+        </ol><p style="margin-top:8px">These characteristics must be present from early development (even if noticed later) and affect daily functioning.</p></div>
+        <div class="info-card"><h4>The Neurodiversity Perspective</h4><p>More and more experts and autistic individuals advocate for "neurodiversity": the autistic brain is not "broken" but "different." This perspective helps us:</p><ul>
+          <li>See your child's strengths and unique talents</li>
+          <li>Understand reasons behind behaviors rather than just trying to "correct" them</li>
+          <li>Respect your child's way of being while providing needed support</li>
+          <li>Build your child's self-identity and confidence</li>
+        </ul></div>
+      `
+    }
+  },
+  {
+    id: 'myths',
+    icon: '&#128165;',
+    iconBg: '#F5E0D8',
+    zh: {
+      title: '误解澄清',
+      subtitle: '点击卡片翻转查看真相',
+      content: 'MYTHS'
+    },
+    en: {
+      title: 'Myths Debunked',
+      subtitle: 'Tap cards to flip and see the truth',
+      content: 'MYTHS'
+    }
+  },
+  {
+    id: 'assessments',
+    icon: '&#128200;',
+    iconBg: '#E4EFF4',
+    zh: {
+      title: '了解评估工具',
+      subtitle: '常见评估量表和测试',
+      content: `
+        <div class="info-card"><h4>ADOS-2 自闭症诊断观察量表</h4><p>被称为自闭症诊断的"金标准"之一。评估师通过半结构化的互动活动（游戏、对话、展示图片等）观察孩子的社交沟通能力。</p><ul>
+          <li><strong>时长：</strong>40-60分钟</li>
+          <li><strong>方式：</strong>评估师与孩子互动，家长在旁观察</li>
+          <li><strong>评估内容：</strong>语言沟通、社交回应、想象力游戏、刻板行为</li>
+          <li><strong>要点：</strong>不是考试，没有"通过"或"不通过"；需要看到孩子的真实状态</li>
+        </ul></div>
+        <div class="info-card"><h4>ADI-R 自闭症诊断访谈（修订版）</h4><p>针对家长的深度结构化访谈，了解孩子的发育历史和当前行为。</p><ul>
+          <li><strong>时长：</strong>1.5-3小时</li>
+          <li><strong>方式：</strong>评估师对家长进行访谈</li>
+          <li><strong>评估内容：</strong>社交互动、沟通能力、重复行为、早期发育历史</li>
+          <li><strong>准备：</strong>回忆孩子各阶段发育情况，准备具体行为例子</li>
+        </ul></div>
+        <div class="info-card"><h4>Vineland 适应行为量表</h4><p>评估孩子在日常生活中的实际能力水平，不仅是"会不会"，更是"做不做"。</p><ul>
+          <li><strong>评估领域：</strong>沟通、日常生活技能、社交、运动技能</li>
+          <li><strong>方式：</strong>家长/照护者访谈或问卷</li>
+          <li><strong>用途：</strong>确定支持需求，制定干预目标，跟踪进步</li>
+        </ul></div>
+        <div class="info-card"><h4>认知/智力测试</h4><p>根据年龄可能使用不同工具：</p><ul>
+          <li><strong>Bayley-4：</strong>婴幼儿发育评估（1-42个月）</li>
+          <li><strong>WISC-V / WPPSI-IV：</strong>韦氏智力量表（学龄/学前）</li>
+          <li><strong>Mullen早期学习量表：</strong>适用于低龄或有发育迟缓的孩子</li>
+          <li><strong>注意：</strong>智力测试只反映某种能力的一个快照，不代表孩子的全部潜力</li>
+        </ul></div>
+        <div class="highlight-card"><p>评估的目的不是给孩子贴标签，而是了解他们的独特需求，为他们量身定制最好的支持方案。</p></div>
+      `
+    },
+    en: {
+      title: 'Understanding Assessments',
+      subtitle: 'Common evaluation tools and tests',
+      content: `
+        <div class="info-card"><h4>ADOS-2 Autism Diagnostic Observation Schedule</h4><p>Known as one of the "gold standards" for autism diagnosis. The assessor observes social communication through semi-structured interactive activities (play, conversation, picture tasks).</p><ul>
+          <li><strong>Duration:</strong> 40-60 minutes</li>
+          <li><strong>Format:</strong> Assessor interacts with child; parents observe</li>
+          <li><strong>Assesses:</strong> Verbal communication, social reciprocity, imaginative play, stereotyped behaviors</li>
+          <li><strong>Key point:</strong> Not a test with pass/fail; needs to see child's natural behavior</li>
+        </ul></div>
+        <div class="info-card"><h4>ADI-R Autism Diagnostic Interview - Revised</h4><p>In-depth structured interview with parents about child's developmental history and current behaviors.</p><ul>
+          <li><strong>Duration:</strong> 1.5-3 hours</li>
+          <li><strong>Format:</strong> Assessor interviews parent(s)</li>
+          <li><strong>Assesses:</strong> Social interaction, communication, repetitive behaviors, early developmental history</li>
+          <li><strong>Preparation:</strong> Recall developmental milestones; prepare specific behavior examples</li>
+        </ul></div>
+        <div class="info-card"><h4>Vineland Adaptive Behavior Scales</h4><p>Evaluates child's actual functioning in daily life — not just "can they" but "do they."</p><ul>
+          <li><strong>Domains:</strong> Communication, daily living skills, socialization, motor skills</li>
+          <li><strong>Format:</strong> Parent/caregiver interview or questionnaire</li>
+          <li><strong>Purpose:</strong> Determine support needs, set intervention goals, track progress</li>
+        </ul></div>
+        <div class="info-card"><h4>Cognitive / IQ Testing</h4><p>Different tools may be used depending on age:</p><ul>
+          <li><strong>Bayley-4:</strong> Infant/toddler development (1-42 months)</li>
+          <li><strong>WISC-V / WPPSI-IV:</strong> Wechsler Intelligence Scales (school-age / preschool)</li>
+          <li><strong>Mullen Scales of Early Learning:</strong> For younger children or those with developmental delays</li>
+          <li><strong>Note:</strong> IQ tests are just one snapshot of certain abilities; they don't represent your child's full potential</li>
+        </ul></div>
+        <div class="highlight-card"><p>The purpose of assessment isn't to label your child — it's to understand their unique needs and create the best possible support plan tailored just for them.</p></div>
+      `
+    }
+  },
+  {
+    id: 'treatments',
+    icon: '&#128154;',
+    iconBg: '#E8F0EB',
+    zh: {
+      title: '治疗方法',
+      subtitle: '循证方法与需要警惕的做法',
+      content: 'TREATMENTS'
+    },
+    en: {
+      title: 'Treatment Approaches',
+      subtitle: 'Evidence-based methods & red flags for quackery',
+      content: 'TREATMENTS'
+    }
+  },
+  {
+    id: 'telling',
+    icon: '&#128149;',
+    iconBg: '#E4EFF4',
+    zh: {
+      title: '告诉家人和朋友',
+      subtitle: '实用的沟通话术和建议',
+      content: 'TELLING'
+    },
+    en: {
+      title: 'Telling Family & Friends',
+      subtitle: 'Practical scripts and advice',
+      content: 'TELLING'
+    }
+  },
+  {
+    id: 'support',
+    icon: '&#127760;',
+    iconBg: '#FDF6E3',
+    zh: {
+      title: '寻找支持',
+      subtitle: '社区、书籍、播客和组织',
+      content: 'SUPPORT'
+    },
+    en: {
+      title: 'Finding Support',
+      subtitle: 'Communities, books, podcasts & organizations',
+      content: 'SUPPORT'
+    }
+  }
+];
+
+// Myths Data
+const MYTHS = {
+  zh: [
+    { myth: '自闭症是因为父母不够关爱孩子', truth: '自闭症是神经发育差异，与养育方式无关。"冰箱妈妈"理论早在上世纪70年代就被科学界否定了。' },
+    { myth: '疫苗导致了自闭症', truth: '大量研究（涉及数百万儿童）已明确证明：疫苗不会导致自闭症。原始"研究"的作者因造假已被吊销医师执照。' },
+    { myth: '自闭症的人没有感情', truth: '自闭症的人有丰富的情感，只是表达方式可能不同。他们可能不擅长识别或表达情绪，但感受一样深刻。' },
+    { myth: '"贵人语迟"——说话晚的孩子更聪明', truth: '语言发育迟缓是重要的预警信号。虽然有些孩子确实说话晚，但这不是应该等待的理由。早期干预窗口期非常宝贵。' },
+    { myth: '自闭症是"前世报应"或"风水问题"', truth: '自闭症是基因和环境因素共同作用的结果，与命运、风水、祖先完全无关。这种观念只会带来不必要的愧疚和延误治疗。' },
+    { myth: '中药/偏方可以治愈自闭症', truth: '目前没有任何药物或偏方可以"治愈"自闭症。但通过循证干预方法，孩子可以取得很大进步。请警惕任何声称"根治"的产品或疗法。' },
+    { myth: '自闭症的人都是天才', truth: '虽然有些自闭症人士在特定领域有超常能力，但大多数和普通人一样——各有长处和短处。每个人都是独特的。' },
+    { myth: '孩子长大就好了', truth: '自闭症是终身的神经差异，但随着适当的支持和干预，很多人能够过上充实、幸福的生活。关键是尽早开始支持。' },
+    { myth: '自闭症只有男孩才会得', truth: '女孩也会有自闭症，但由于表现方式不同（更善于"伪装"），女孩往往更晚被诊断。男女比例约为3-4:1，部分原因是诊断偏差。' },
+    { myth: '屏幕时间过多导致了自闭症', truth: '过多的屏幕时间可能影响所有孩子的发育，但不会导致自闭症。自闭症在屏幕普及前就存在了。不过，减少屏幕时间、增加互动对所有孩子都有益。' }
+  ],
+  en: [
+    { myth: 'Autism is caused by cold, unloving parents', truth: 'Autism is a neurodevelopmental difference unrelated to parenting. The "refrigerator mother" theory was debunked by science in the 1970s.' },
+    { myth: 'Vaccines cause autism', truth: 'Extensive research (involving millions of children) has clearly proven: vaccines do not cause autism. The original "study" author lost his medical license for fraud.' },
+    { myth: 'Autistic people don\'t have emotions', truth: 'Autistic people have rich emotions — they may just express them differently. They might struggle to identify or express feelings, but feel just as deeply.' },
+    { myth: '"Late talkers are just gifted" (Chinese: 贵人语迟)', truth: 'Language delay is an important warning sign. While some children do talk late, that\'s not a reason to wait. The early intervention window is precious.' },
+    { myth: '"It\'s karma / bad feng shui" (Chinese cultural myth)', truth: 'Autism results from genetic and environmental factors — it has nothing to do with fate, feng shui, or ancestors. Such beliefs only cause unnecessary guilt and delayed treatment.' },
+    { myth: 'Traditional herbal medicine can cure autism', truth: 'Currently no medication or remedy can "cure" autism. But with evidence-based intervention, children can make significant progress. Be wary of any product claiming to "cure" it.' },
+    { myth: 'All autistic people are geniuses', truth: 'While some autistic individuals have exceptional abilities in specific areas, most are like everyone else — with unique strengths and challenges. Each person is unique.' },
+    { myth: 'They\'ll grow out of it', truth: 'Autism is a lifelong neurological difference, but with appropriate support, many people lead fulfilling, happy lives. The key is starting support early.' },
+    { myth: 'Only boys get autism', truth: 'Girls can be autistic too, but because they often present differently (better at "masking"), they tend to be diagnosed later. The ratio is about 3-4:1, partly due to diagnostic bias.' },
+    { myth: 'Too much screen time causes autism', truth: 'Excessive screen time may affect all children\'s development, but it doesn\'t cause autism. Autism existed before screens. However, reducing screen time and increasing interaction benefits all children.' }
+  ]
+};
+
+// Treatments Data
+const TREATMENTS = {
+  zh: {
+    good: [
+      { title: 'ABA 应用行为分析', desc: '最广泛研究的干预方法，通过正向强化帮助孩子学习新技能。现代ABA注重自然环境教学和孩子的主动性。选择强调正向方法、尊重孩子的ABA机构。' },
+      { title: 'ESDM 早期丹佛模式', desc: '专为12-48个月幼儿设计，将行为策略融入自然的游戏互动中。研究表明能显著改善认知、语言和社交能力。' },
+      { title: '言语语言治疗', desc: '帮助改善语言理解、表达、社交沟通。包括口语训练、AAC（辅助沟通）等。建议尽早开始。' },
+      { title: '职业治疗（OT）', desc: '帮助提高精细运动、感官调节、日常生活技能。对感觉统合问题特别有帮助。' },
+      { title: 'PECS 图片交换沟通系统', desc: '通过图片帮助非口语或语言有限的孩子表达需求。是有效的辅助沟通方式。' },
+      { title: '社交技能训练', desc: '在结构化环境中练习社交互动、理解情绪、解决冲突。适合学龄前和学龄儿童。' }
+    ],
+    bad: [
+      { title: '螯合疗法（Chelation）', desc: '声称清除体内"重金属毒素"。无科学依据且可能致命。FDA已发出警告。' },
+      { title: 'MMS（二氧化氯"神奇矿物质"）', desc: '本质上是工业漂白剂。已造成严重伤害。这是虐待，不是治疗。' },
+      { title: '干细胞疗法（未经批准的）', desc: '未经过临床试验验证的干细胞注射可能导致肿瘤、感染等严重后果。目前无批准用于自闭症的干细胞治疗。' },
+      { title: '高压氧舱治疗', desc: '声称能"修复大脑损伤"。对自闭症无有效证据，且存在安全风险。' }
+    ],
+    redFlags: [
+      '声称能"治愈"或"逆转"自闭症',
+      '要求立即支付大额费用',
+      '拒绝提供具体的资质证明',
+      '使用"秘方"或"独家技术"等措辞',
+      '不允许家长观察治疗过程',
+      '利用家长的焦虑和愧疚心理'
+    ]
+  },
+  en: {
+    good: [
+      { title: 'ABA - Applied Behavior Analysis', desc: 'The most extensively researched intervention. Uses positive reinforcement to teach new skills. Modern ABA emphasizes naturalistic teaching and child initiative. Choose providers who use positive, child-respectful approaches.' },
+      { title: 'ESDM - Early Start Denver Model', desc: 'Designed for toddlers 12-48 months, integrating behavioral strategies into natural play interactions. Research shows significant improvements in cognition, language, and social skills.' },
+      { title: 'Speech-Language Therapy', desc: 'Helps improve language comprehension, expression, and social communication. Includes verbal training and AAC (augmentative communication). Start as early as possible.' },
+      { title: 'Occupational Therapy (OT)', desc: 'Improves fine motor skills, sensory regulation, and daily living skills. Especially helpful for sensory integration challenges.' },
+      { title: 'PECS - Picture Exchange Communication', desc: 'Uses pictures to help non-speaking or limited-verbal children express needs. An effective augmentative communication method.' },
+      { title: 'Social Skills Training', desc: 'Practice social interaction, understanding emotions, and conflict resolution in structured settings. Suitable for preschool and school-age children.' }
+    ],
+    bad: [
+      { title: 'Chelation Therapy', desc: 'Claims to remove "heavy metal toxins" from the body. No scientific basis and can be fatal. FDA has issued warnings.' },
+      { title: 'MMS (Miracle Mineral Solution)', desc: 'Essentially industrial bleach. Has caused serious harm. This is abuse, not treatment.' },
+      { title: 'Unapproved Stem Cell Therapy', desc: 'Unverified stem cell injections can cause tumors, infections, and other serious consequences. No approved stem cell treatment for autism exists.' },
+      { title: 'Hyperbaric Oxygen Therapy', desc: 'Claims to "repair brain damage." No effective evidence for autism, with safety risks.' }
+    ],
+    redFlags: [
+      'Claims to "cure" or "reverse" autism',
+      'Demands large upfront payments',
+      'Refuses to provide specific credentials',
+      'Uses language like "secret formula" or "exclusive technique"',
+      'Won\'t allow parents to observe treatment',
+      'Exploits parents\' anxiety and guilt'
+    ]
+  }
+};
+
+// Telling Data
+const TELLING = {
+  zh: [
+    { who: '告诉祖父母/外祖父母', quote: '"爸妈/公婆，我们带孩子做了专业评估。医生说孩子在社交和沟通方面需要一些额外帮助。这不是谁的错，也不是养育的问题。现在最重要的是尽早给孩子支持。我们需要你们的理解和帮助。"', note: '老人可能会否认或自责。给他们时间消化，推荐简单的资料帮助理解。避免争论"是不是自闭症"，聚焦于"孩子需要什么帮助"。' },
+    { who: '告诉伴侣', quote: '"我注意到孩子在某些方面和同龄人不太一样。我查了一些资料，想带孩子去做个评估。不管结果如何，我们一起面对。你愿意一起了解一下吗？"', note: '伴侣可能处于不同的接受阶段。避免指责，用"我们"代替"你应该"。一起参加医生咨询有助于建立共识。' },
+    { who: '告诉兄弟姐妹（其他孩子）', quote: '"你知道每个人的大脑都不一样吗？弟弟/妹妹的大脑工作方式有点特别，所以他/她学习一些东西的方式跟你不一样。这不是谁的错，他/她还是一样爱你。"', note: '根据孩子年龄调整用词。让兄弟姐妹知道他们的感受也很重要。可以找关于自闭症兄弟姐妹的绘本一起读。' },
+    { who: '告诉学校/幼儿园', quote: '"我想和您聊聊孩子的情况。他/她被诊断为自闭症谱系。我们希望和学校合作，了解可以做哪些调整来帮助他/她在学校更好地学习和交朋友。"', note: '带上诊断报告和医生建议。询问学校有哪些支持资源。建立定期沟通机制。' },
+    { who: '面对文化偏见和"好心建议"', quote: '"谢谢你的关心。我们已经咨询了专业医生，正在按照科学的方法帮助孩子。每个孩子都不一样，我们相信他/她会以自己的方式成长。"', note: '你不需要向每个人解释。面对"贵人语迟""等等就好了"等说法，可以简短回应。保护好自己和孩子的情绪比说服所有人更重要。' }
+  ],
+  en: [
+    { who: 'Telling Grandparents', quote: '"Mom/Dad, we had our child professionally evaluated. The doctor found they need some extra help with social skills and communication. This isn\'t anyone\'s fault — it\'s not about parenting. What matters most now is getting early support. We need your understanding and help."', note: 'Grandparents may deny or blame themselves. Give them time to process. Share simple resources. Avoid debating "is it really autism" and focus on "what help does the child need."' },
+    { who: 'Telling Your Partner', quote: '"I\'ve noticed our child is different from peers in some ways. I\'ve been reading about it and would like us to get a professional evaluation. Whatever the result, we\'ll face it together. Would you be open to learning about this with me?"', note: 'Partners may be at different stages of acceptance. Avoid blame; use "we" instead of "you should." Attending doctor appointments together helps build consensus.' },
+    { who: 'Telling Siblings', quote: '"Did you know everyone\'s brain works a bit differently? Your brother/sister\'s brain works in a special way, so they learn some things differently than you. It\'s nobody\'s fault, and they still love you just the same."', note: 'Adjust language based on sibling\'s age. Let them know their feelings matter too. Consider reading books about autism siblings together.' },
+    { who: 'Telling School / Teachers', quote: '"I\'d like to discuss my child\'s situation. They\'ve been diagnosed on the autism spectrum. We\'d like to work with the school to understand what adjustments can help them learn and make friends better."', note: 'Bring the diagnostic report and doctor\'s recommendations. Ask about available support resources. Establish regular communication.' },
+    { who: 'Handling Cultural Stigma & "Helpful" Advice', quote: '"Thank you for your concern. We\'ve consulted with professional doctors and are following evidence-based approaches to help our child. Every child is different, and we believe they\'ll grow in their own way."', note: 'You don\'t owe everyone an explanation. For comments like "late talkers are just gifted" or "they\'ll grow out of it," a brief response is fine. Protecting your own and your child\'s emotional wellbeing matters more than convincing everyone.' }
+  ]
+};
+
+// Support Data
+const SUPPORT = {
+  zh: {
+    communities: [
+      { name: '以琳自闭症论坛', desc: '中国最大的自闭症家长社区', tag: 'ZH' },
+      { name: '星星雨教育研究所', desc: '中国第一家自闭症教育机构', tag: 'ZH' },
+      { name: '大米和小米', desc: '自闭症干预服务与家长社区', tag: 'ZH' },
+      { name: 'Wrong Planet', desc: '全球最大的自闭症在线社区', tag: 'EN' },
+      { name: 'Reddit r/autism', desc: '活跃的自闭症讨论社区', tag: 'EN' },
+      { name: 'Facebook 自闭症家长群', desc: '搜索 "autism parents" 加入当地群组', tag: 'EN/ZH' }
+    ],
+    books: [
+      { name: '《不同的是我们》', desc: '自闭症家长必读，温暖而实用' },
+      { name: '《孤独症儿童行为管理》邹小兵', desc: '中国权威专家的实用指南' },
+      { name: 'An Early Start for Your Child with Autism', desc: 'ESDM创始人的家长指南（有中文版）' },
+      { name: 'Uniquely Human — Barry Prizant', desc: '用理解和尊重的视角看自闭症' },
+      { name: 'The Reason I Jump — Naoki Higashida', desc: '一位自闭症少年自己写的心声' }
+    ],
+    podcasts: [
+      { name: 'Autism Stories', desc: '自闭症人士和家庭的真实故事', tag: 'EN' },
+      { name: 'The Autism Dad Podcast', desc: '自闭症爸爸的经验分享', tag: 'EN' },
+      { name: 'Autism in Real Life', desc: '专业人士和家长的对话', tag: 'EN' }
+    ],
+    orgs: [
+      { name: '中国精神残疾人及亲友协会', desc: '全国性组织，政策倡导', country: 'CN' },
+      { name: 'NVA (Nederlandse Vereniging voor Autisme)', desc: '荷兰自闭症协会', country: 'NL' },
+      { name: 'autismus Deutschland e.V.', desc: '德国自闭症协会', country: 'DE' },
+      { name: 'National Autistic Society', desc: '英国国家自闭症协会', country: 'UK' },
+      { name: 'Autism Speaks / ASAN', desc: '美国主要自闭症组织', country: 'US' },
+      { name: 'Autisme France', desc: '法国自闭症协会', country: 'FR' }
+    ]
+  },
+  en: {
+    communities: [
+      { name: 'Yilin Autism Forum (以琳)', desc: 'Largest Chinese autism parent community', tag: 'ZH' },
+      { name: 'Star Rain Institute (星星雨)', desc: 'China\'s first autism education institute', tag: 'ZH' },
+      { name: 'DaMi & XiaoMi (大米和小米)', desc: 'Autism intervention services & parent community', tag: 'ZH' },
+      { name: 'Wrong Planet', desc: 'World\'s largest autism online community', tag: 'EN' },
+      { name: 'Reddit r/autism', desc: 'Active autism discussion community', tag: 'EN' },
+      { name: 'Facebook Autism Parent Groups', desc: 'Search "autism parents" + your country/city', tag: 'EN/ZH' }
+    ],
+    books: [
+      { name: 'An Early Start for Your Child with Autism', desc: 'ESDM founders\' parent guide (Chinese edition available)' },
+      { name: 'Uniquely Human — Barry Prizant', desc: 'Understanding autism with respect and compassion' },
+      { name: 'The Reason I Jump — Naoki Higashida', desc: 'Written by an autistic teenager, his inner world' },
+      { name: 'NeuroTribes — Steve Silberman', desc: 'The history and science of neurodiversity' },
+      { name: 'Thinking in Pictures — Temple Grandin', desc: 'An autistic scientist\'s perspective on how she thinks' }
+    ],
+    podcasts: [
+      { name: 'Autism Stories', desc: 'Real stories from autistic people and families', tag: 'EN' },
+      { name: 'The Autism Dad Podcast', desc: 'Experiences shared by an autism dad', tag: 'EN' },
+      { name: 'Autism in Real Life', desc: 'Conversations between professionals and parents', tag: 'EN' }
+    ],
+    orgs: [
+      { name: 'CDPF Autism Committee (China)', desc: 'National organization, policy advocacy', country: 'CN' },
+      { name: 'NVA (Nederlandse Vereniging voor Autisme)', desc: 'Dutch Autism Association', country: 'NL' },
+      { name: 'autismus Deutschland e.V.', desc: 'German Autism Association', country: 'DE' },
+      { name: 'National Autistic Society', desc: 'UK National Autistic Society', country: 'UK' },
+      { name: 'Autism Speaks / ASAN', desc: 'Major US autism organizations', country: 'US' },
+      { name: 'Autisme France', desc: 'French Autism Association', country: 'FR' }
+    ]
+  }
+};
+
+// ===== State =====
+let currentLang = localStorage.getItem('withyou-lang') || 'zh';
+let openSections = new Set();
+
+// ===== Language =====
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('withyou-lang', lang);
+  document.querySelectorAll('.lang-toggle').forEach(b => b.classList.toggle('active', b.textContent.trim() === (lang === 'zh' ? '中文' : 'EN')));
+  document.querySelectorAll('[data-zh]').forEach(el => el.textContent = el.getAttribute('data-' + lang));
+  renderNav();
+  renderSections();
+}
+
+// ===== Nav =====
+function renderNav() {
+  const nav = document.getElementById('sectionNav');
+  nav.innerHTML = SECTIONS.map(s => {
+    const d = s[currentLang];
+    return `<a class="nav-pill" href="#section-${s.id}" onclick="openAndScroll('${s.id}')">${d.title}</a>`;
+  }).join('');
+}
+
+function openAndScroll(id) {
+  openSections.add(id);
+  renderSections();
+  setTimeout(() => {
+    document.getElementById('section-' + id)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }, 50);
+}
+
+// ===== Render =====
+function renderSections() {
+  const area = document.getElementById('contentArea');
+  const lang = currentLang;
+
+  area.innerHTML = SECTIONS.map(s => {
+    const d = s[lang];
+    const isOpen = openSections.has(s.id);
+    let bodyContent = d.content;
+
+    // Special renderers
+    if (d.content === 'MYTHS') bodyContent = renderMyths(lang);
+    else if (d.content === 'TREATMENTS') bodyContent = renderTreatments(lang);
+    else if (d.content === 'TELLING') bodyContent = renderTelling(lang);
+    else if (d.content === 'SUPPORT') bodyContent = renderSupport(lang);
+
+    return `<div class="accordion-section ${isOpen ? 'open' : ''}" id="section-${s.id}">
+      <div class="accordion-header" onclick="toggleSection('${s.id}')">
+        <div class="acc-icon" style="background:${s.iconBg}">${s.icon}</div>
+        <div class="acc-info">
+          <div class="acc-title">${d.title}</div>
+          <div class="acc-subtitle">${d.subtitle}</div>
+        </div>
+        <div class="acc-arrow">&#9660;</div>
+      </div>
+      <div class="accordion-body">${bodyContent}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleSection(id) {
+  if (openSections.has(id)) openSections.delete(id);
+  else openSections.add(id);
+  renderSections();
+}
+
+// ===== Myths Renderer =====
+function renderMyths(lang) {
+  const data = MYTHS[lang];
+  const tapHint = lang === 'zh' ? '点击翻转' : 'Tap to flip';
+  const mythLabel = lang === 'zh' ? '误解' : 'MYTH';
+  const truthLabel = lang === 'zh' ? '真相' : 'TRUTH';
+
+  return `<div class="myths-grid">${data.map((m, i) => `
+    <div class="flip-card" onclick="this.classList.toggle('flipped')">
+      <div class="flip-inner">
+        <div class="flip-front">
+          <div class="flip-label">&#10060; ${mythLabel}</div>
+          <div class="flip-text">${m.myth}</div>
+          <div class="flip-hint">${tapHint} &#8594;</div>
+        </div>
+        <div class="flip-back">
+          <div class="flip-label">&#9989; ${truthLabel}</div>
+          <div class="flip-text">${m.truth}</div>
+        </div>
+      </div>
+    </div>
+  `).join('')}</div>`;
+}
+
+// ===== Treatments Renderer =====
+function renderTreatments(lang) {
+  const d = TREATMENTS[lang];
+  const goodTitle = lang === 'zh' ? '循证干预方法' : 'Evidence-Based Interventions';
+  const badTitle = lang === 'zh' ? '需要警惕的"疗法"' : 'Dangerous "Treatments" to Avoid';
+  const flagTitle = lang === 'zh' ? '识别骗局的红旗信号' : 'Red Flags for Quack Treatments';
+
+  return `
+    <h3 style="font-size:0.95rem;font-weight:600;color:var(--sage-dark);margin-bottom:12px">&#9989; ${goodTitle}</h3>
+    ${d.good.map(t => `<div class="treatment-good"><h4>${t.title}</h4><p>${t.desc}</p></div>`).join('')}
+    <h3 style="font-size:0.95rem;font-weight:600;color:var(--red);margin:20px 0 12px">&#9888; ${badTitle}</h3>
+    ${d.bad.map(t => `<div class="treatment-bad"><h4>${t.title}</h4><p>${t.desc}</p></div>`).join('')}
+    <div class="warning-box"><h4>&#128681; ${flagTitle}</h4><ul>${d.redFlags.map(f => `<li>${f}</li>`).join('')}</ul></div>
+  `;
+}
+
+// ===== Telling Renderer =====
+function renderTelling(lang) {
+  const data = TELLING[lang];
+  const intro = lang === 'zh'
+    ? '<div class="highlight-card"><p>告诉别人孩子的诊断是一个过程，不是一次对话。以下是一些可以参考的话术——你可以根据自己的情况调整。记住：你不需要向所有人解释。</p></div>'
+    : '<div class="highlight-card"><p>Telling others about your child\'s diagnosis is a process, not a single conversation. Here are some scripts you can adapt to your situation. Remember: you don\'t owe everyone an explanation.</p></div>';
+
+  return intro + data.map(s => `
+    <div class="script-card">
+      <h4>${s.who}</h4>
+      <div class="script-quote">${s.quote}</div>
+      <div class="script-note">${s.note}</div>
+    </div>
+  `).join('');
+}
+
+// ===== Support Renderer =====
+function renderSupport(lang) {
+  const d = SUPPORT[lang];
+  const labels = lang === 'zh'
+    ? { communities: '在线社区', books: '推荐书籍', podcasts: '播客节目', orgs: '各国组织' }
+    : { communities: 'Online Communities', books: 'Recommended Books', podcasts: 'Podcasts', orgs: 'Organizations by Country' };
+
+  return `
+    <div class="resource-group">
+      <h4>&#128101; ${labels.communities}</h4>
+      ${d.communities.map(r => `<div class="resource-item"><span class="resource-icon">&#128172;</span><div class="resource-info"><div class="resource-name">${r.name}</div><div class="resource-desc">${r.desc}</div></div><span class="resource-tag">${r.tag}</span></div>`).join('')}
+    </div>
+    <div class="resource-group">
+      <h4>&#128214; ${labels.books}</h4>
+      ${d.books.map(r => `<div class="resource-item"><span class="resource-icon">&#128218;</span><div class="resource-info"><div class="resource-name">${r.name}</div><div class="resource-desc">${r.desc}</div></div></div>`).join('')}
+    </div>
+    <div class="resource-group">
+      <h4>&#127911; ${labels.podcasts}</h4>
+      ${d.podcasts.map(r => `<div class="resource-item"><span class="resource-icon">&#127911;</span><div class="resource-info"><div class="resource-name">${r.name}</div><div class="resource-desc">${r.desc}</div></div><span class="resource-tag">${r.tag}</span></div>`).join('')}
+    </div>
+    <div class="resource-group">
+      <h4>&#127963; ${labels.orgs}</h4>
+      ${d.orgs.map(r => `<div class="resource-item"><span class="resource-icon">&#127760;</span><div class="resource-info"><div class="resource-name">${r.name}</div><div class="resource-desc">${r.desc}</div></div><span class="resource-tag">${r.country}</span></div>`).join('')}
+    </div>
+  `;
+}
+
+// ===== Init =====
+setLang(currentLang);
+</script>
+</body>
+</html>

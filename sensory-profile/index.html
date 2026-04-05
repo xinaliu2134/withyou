@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>感觉档案追踪 — 同路 WithYou</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --sage: #6B8F7B;
+  --sage-light: #8FB09D;
+  --sage-pale: #E8F0EB;
+  --sage-dark: #4A6B56;
+  --cream: #FAF7F0;
+  --cream-dark: #F0EBDF;
+  --blue: #7BA7BC;
+  --blue-light: #A5C7D6;
+  --blue-pale: #E4EFF4;
+  --warm-text: #3D3D3D;
+  --warm-text-light: #6B6B6B;
+  --coral: #D4917B;
+  --coral-pale: #F5E0D8;
+  --yellow: #C9A84C;
+  --yellow-bg: #FDF6E3;
+  --red: #C47A6E;
+  --red-bg: #F8E8E5;
+  --green-bg: #E8F0EB;
+  --shadow: 0 2px 16px rgba(107,143,123,0.10);
+  --shadow-lg: 0 6px 28px rgba(107,143,123,0.14);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+  background: var(--cream); color: var(--warm-text); line-height: 1.6; min-height: 100vh;
+}
+.hidden { display: none !important; }
+
+.topbar {
+  background: #fff; border-bottom: 1px solid var(--cream-dark); padding: 12px 20px;
+  display: flex; align-items: center; justify-content: space-between; position: sticky; top: 0; z-index: 100;
+}
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.topbar-back { color: var(--sage); text-decoration: none; font-size: 0.88rem; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+.topbar-title { font-size: 0.95rem; font-weight: 600; color: var(--sage); }
+.lang-toggle {
+  background: var(--sage-pale); border: none; border-radius: 20px; padding: 4px 12px;
+  font-size: 0.78rem; font-weight: 500; color: var(--sage); cursor: pointer; transition: background 0.2s;
+}
+.lang-toggle:hover { background: var(--sage-light); color: #fff; }
+
+.tabs {
+  display: flex; gap: 4px; padding: 16px 20px 0; max-width: 720px; margin: 0 auto;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.tab {
+  padding: 10px 14px; border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  font-size: 0.82rem; font-weight: 500; background: var(--cream-dark);
+  color: var(--warm-text-light); border: none; cursor: pointer; white-space: nowrap; transition: all 0.2s;
+}
+.tab.active { background: #fff; color: var(--sage); font-weight: 600; }
+
+.panel {
+  background: #fff; border-radius: 0 0 var(--radius) var(--radius);
+  padding: 24px 20px; margin: 0 auto; max-width: 720px; min-height: 400px; box-shadow: var(--shadow);
+}
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 24px; border-radius: var(--radius-sm); font-size: 0.92rem;
+  font-weight: 600; font-family: inherit; border: none; cursor: pointer; transition: all 0.2s;
+}
+.btn-primary { background: var(--sage); color: #fff; width: 100%; }
+.btn-primary:hover { background: var(--sage-dark); }
+.btn-secondary { background: #fff; color: var(--sage); border: 2px solid var(--sage-pale); }
+.btn-secondary:hover { background: var(--sage-pale); }
+.btn-small { padding: 8px 16px; font-size: 0.82rem; }
+
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 6px; }
+.form-input, .form-select, .form-textarea {
+  width: 100%; padding: 12px 14px; border: 2px solid var(--cream-dark);
+  border-radius: var(--radius-sm); font-size: 0.92rem; font-family: inherit;
+  color: var(--warm-text); background: #fff; outline: none; transition: border-color 0.2s;
+}
+.form-textarea { resize: vertical; min-height: 80px; }
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--sage-light); }
+
+.section-title { font-size: 1.05rem; font-weight: 600; color: var(--sage-dark); margin-bottom: 6px; }
+.section-sub { font-size: 0.82rem; color: var(--warm-text-light); margin-bottom: 16px; }
+.empty-state { text-align: center; padding: 40px 20px; color: var(--warm-text-light); font-size: 0.92rem; }
+
+/* ===== Assessment ===== */
+.sense-section {
+  margin-bottom: 24px; border: 1px solid var(--cream-dark); border-radius: var(--radius-sm); overflow: hidden;
+}
+.sense-header {
+  display: flex; align-items: center; gap: 10px; padding: 14px 16px;
+  background: var(--cream); cursor: pointer; font-weight: 600; font-size: 0.92rem;
+}
+.sense-header .icon { font-size: 1.2rem; }
+.sense-body { padding: 12px 16px; }
+.sense-item {
+  display: flex; align-items: center; gap: 8px; padding: 8px 0;
+  border-bottom: 1px solid var(--cream-dark); font-size: 0.85rem;
+}
+.sense-item:last-child { border-bottom: none; }
+.sense-item-label { flex: 1; min-width: 0; }
+.rating-group { display: flex; gap: 4px; flex-shrink: 0; }
+.rating-btn {
+  padding: 4px 8px; border-radius: 6px; font-size: 0.72rem; font-weight: 500;
+  border: 1.5px solid var(--cream-dark); background: #fff; cursor: pointer; transition: all 0.2s;
+  font-family: inherit;
+}
+.rating-btn.active-seeks { background: var(--coral-pale); border-color: var(--coral); color: #8B5A4A; }
+.rating-btn.active-typical { background: var(--green-bg); border-color: var(--sage); color: var(--sage-dark); }
+.rating-btn.active-avoids { background: var(--blue-pale); border-color: var(--blue); color: #4A7A8F; }
+.rating-btn.active-variable { background: var(--yellow-bg); border-color: var(--yellow); color: #8B7A2B; }
+
+/* Radar */
+.radar-wrap { text-align: center; margin: 20px 0; }
+.radar-wrap svg { max-width: 400px; width: 100%; }
+
+/* Sensory diet */
+.diet-section { margin-bottom: 20px; }
+.diet-title { font-size: 0.92rem; font-weight: 600; color: var(--sage-dark); margin-bottom: 8px; }
+.diet-card {
+  background: var(--cream); border-radius: var(--radius-sm); padding: 12px 16px;
+  margin-bottom: 8px; font-size: 0.85rem; line-height: 1.5;
+}
+.diet-card.calming { border-left: 4px solid var(--blue); }
+.diet-card.alerting { border-left: 4px solid var(--coral); }
+
+/* Strategy log */
+.strat-entry {
+  padding: 12px 0; border-bottom: 1px solid var(--cream-dark);
+}
+.strat-entry:last-child { border-bottom: none; }
+.strat-meta { font-size: 0.78rem; color: var(--warm-text-light); margin-bottom: 4px; }
+.strat-text { font-size: 0.88rem; }
+.effectiveness {
+  display: inline-flex; gap: 2px;
+}
+.eff-dot {
+  width: 10px; height: 10px; border-radius: 50%; background: var(--cream-dark);
+}
+.eff-dot.filled { background: var(--sage); }
+
+/* Print profile */
+.print-section { margin-bottom: 24px; }
+.print-section h3 { font-size: 0.95rem; font-weight: 600; color: var(--sage-dark); margin-bottom: 8px; }
+.print-table { width: 100%; border-collapse: collapse; font-size: 0.82rem; }
+.print-table th, .print-table td { padding: 8px 10px; border: 1px solid var(--cream-dark); text-align: left; }
+.print-table th { background: var(--sage-pale); font-weight: 600; }
+
+@media print {
+  .topbar, .tabs, .btn, .form-group, .rating-group { display: none !important; }
+  .panel { box-shadow: none; border: 1px solid #ddd; }
+  .sense-section { break-inside: avoid; }
+  body { background: #fff; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="../index.html" class="topbar-back">&#8592; <span data-i18n="back">返回</span></a>
+    <span class="topbar-title" data-i18n="title">感觉档案追踪</span>
+  </div>
+  <button class="lang-toggle" onclick="toggleLang()">EN / 中</button>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('assess')" data-i18n="tab_assess">感觉评估</button>
+  <button class="tab" onclick="showTab('map')" data-i18n="tab_map">感觉地图</button>
+  <button class="tab" onclick="showTab('diet')" data-i18n="tab_diet">感觉饮食</button>
+  <button class="tab" onclick="showTab('tracker')" data-i18n="tab_tracker">策略追踪</button>
+  <button class="tab" onclick="showTab('share')" data-i18n="tab_share">分享报告</button>
+</div>
+
+<!-- ==================== ASSESSMENT ==================== -->
+<div class="panel" id="panel-assess">
+  <div class="section-title" data-i18n="assess_title">感觉处理评估</div>
+  <p class="section-sub" data-i18n="assess_sub">对每项评价：寻求 / 典型 / 回避 / 多变 (参考: Dunn 2014 Sensory Profile 2)</p>
+  <div id="assessment-form"></div>
+  <button class="btn btn-primary" style="margin-top:16px;" onclick="saveAssessment()" data-i18n="save_assess">保存评估</button>
+</div>
+
+<!-- ==================== SENSORY MAP ==================== -->
+<div class="panel hidden" id="panel-map">
+  <div class="section-title" data-i18n="map_title">视觉感觉地图</div>
+  <p class="section-sub" data-i18n="map_sub">雷达图显示各感觉通道的高敏/低敏倾向</p>
+  <div class="radar-wrap">
+    <svg id="radar-chart" viewBox="0 0 400 400"></svg>
+  </div>
+  <div id="map-legend" style="display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin-top:12px;font-size:0.82rem;"></div>
+</div>
+
+<!-- ==================== SENSORY DIET ==================== -->
+<div class="panel hidden" id="panel-diet">
+  <div class="section-title" data-i18n="diet_title">感觉饮食建议</div>
+  <p class="section-sub" data-i18n="diet_sub">根据档案推荐镇静和唤醒活动 (Schaaf & Mailloux 2015)</p>
+  <div id="diet-morning" class="diet-section"></div>
+  <div id="diet-afternoon" class="diet-section"></div>
+  <div id="diet-evening" class="diet-section"></div>
+</div>
+
+<!-- ==================== STRATEGY TRACKER ==================== -->
+<div class="panel hidden" id="panel-tracker">
+  <div class="section-title" data-i18n="tracker_title">策略追踪器</div>
+  <p class="section-sub" data-i18n="tracker_sub">记录策略效果，建立"有效方法"参考库</p>
+
+  <div id="strat-form" class="card" style="border:1px solid var(--cream-dark);border-radius:var(--radius-sm);padding:16px;margin-bottom:16px;">
+    <div class="form-group">
+      <label class="form-label" data-i18n="strategy_name">策略名称</label>
+      <input class="form-input" id="strat-name" placeholder="">
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="context">使用情境</label>
+      <input class="form-input" id="strat-context" placeholder="">
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="effectiveness">效果评分 (1-5)</label>
+      <div style="display:flex;gap:8px;">
+        <input class="form-input" type="number" id="strat-eff" min="1" max="5" value="3" style="width:80px;">
+        <div id="strat-eff-dots" style="display:flex;align-items:center;gap:4px;"></div>
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="notes">备注</label>
+      <textarea class="form-textarea" id="strat-notes" rows="2"></textarea>
+    </div>
+    <button class="btn btn-primary" onclick="saveStrategy()" data-i18n="save_strategy">保存策略记录</button>
+  </div>
+
+  <div id="strat-filter" style="margin-bottom:12px;">
+    <span style="font-size:0.82rem;font-weight:500;color:var(--warm-text-light);margin-right:8px;" data-i18n="filter_eff">筛选效果:</span>
+    <select class="form-select" id="strat-filter-select" onchange="renderStrategies()" style="width:auto;display:inline;padding:6px 10px;font-size:0.82rem;">
+      <option value="all">All</option>
+      <option value="5">★★★★★ (5)</option>
+      <option value="4">★★★★ (4+)</option>
+      <option value="3">★★★ (3+)</option>
+    </select>
+  </div>
+  <div id="strat-list"></div>
+</div>
+
+<!-- ==================== SHARE / PRINT ==================== -->
+<div class="panel hidden" id="panel-share">
+  <div class="section-title" data-i18n="share_title">分享感觉档案</div>
+  <p class="section-sub" data-i18n="share_sub">生成可打印的感觉档案摘要，分享给学校或治疗师</p>
+  <div id="share-preview"></div>
+  <button class="btn btn-primary" style="margin-top:16px;" onclick="window.print()" data-i18n="print_profile">打印档案</button>
+</div>
+
+<div style="height:40px;"></div>
+
+<script>
+// ===================================================================
+//  I18N
+// ===================================================================
+let lang = 'zh';
+const I18N = {
+  zh: {
+    back: '返回', title: '感觉档案追踪',
+    tab_assess: '感觉评估', tab_map: '感觉地图', tab_diet: '感觉饮食', tab_tracker: '策略追踪', tab_share: '分享报告',
+    assess_title: '感觉处理评估', assess_sub: '对每项评价：寻求 / 典型 / 回避 / 多变 (参考: Dunn 2014)',
+    save_assess: '保存评估',
+    map_title: '视觉感觉地图', map_sub: '雷达图显示各感觉通道的高敏/低敏倾向',
+    diet_title: '感觉饮食建议', diet_sub: '根据档案推荐镇静和唤醒活动 (Schaaf & Mailloux 2015)',
+    tracker_title: '策略追踪器', tracker_sub: '记录策略效果，建立"有效方法"参考库',
+    strategy_name: '策略名称', context: '使用情境', effectiveness: '效果评分 (1-5)',
+    notes: '备注', save_strategy: '保存策略记录', filter_eff: '筛选效果:',
+    share_title: '分享感觉档案', share_sub: '生成可打印的感觉档案摘要，分享给学校或治疗师',
+    print_profile: '打印档案',
+    seeks: '寻求', typical: '典型', avoids: '回避', variable: '多变',
+    saved: '已保存 ✓',
+    no_strats: '还没有策略记录',
+    delete_confirm: '确定删除？',
+    morning: '上午', afternoon: '下午', evening: '晚上',
+    calming: '镇静活动', alerting: '唤醒活动',
+    hyper: '高敏', hypo: '低敏',
+    visual: '视觉', auditory: '听觉', tactile: '触觉', gustatory: '味觉',
+    olfactory: '嗅觉', vestibular: '前庭觉', proprioceptive: '本体觉',
+    profile_for: '感觉档案 —',
+    date_generated: '生成日期',
+    sense_channel: '感觉通道', pattern: '模式', key_items: '关键项目',
+    top_strategies: '高效策略'
+  },
+  en: {
+    back: 'Back', title: 'Sensory Profile Tracker',
+    tab_assess: 'Assessment', tab_map: 'Sensory Map', tab_diet: 'Sensory Diet', tab_tracker: 'Strategies', tab_share: 'Share',
+    assess_title: 'Sensory Processing Assessment', assess_sub: 'Rate each item: Seeks / Typical / Avoids / Variable (Ref: Dunn 2014)',
+    save_assess: 'Save Assessment',
+    map_title: 'Visual Sensory Map', map_sub: 'Radar chart showing hyper/hypo sensitivity per channel',
+    diet_title: 'Sensory Diet Suggestions', diet_sub: 'Calming & alerting activities based on profile (Schaaf & Mailloux 2015)',
+    tracker_title: 'Strategy Tracker', tracker_sub: 'Log what works to build a "what helps" reference',
+    strategy_name: 'Strategy', context: 'Context', effectiveness: 'Effectiveness (1-5)',
+    notes: 'Notes', save_strategy: 'Save Strategy', filter_eff: 'Filter:',
+    share_title: 'Share Sensory Profile', share_sub: 'Generate a printable summary for school or therapist',
+    print_profile: 'Print Profile',
+    seeks: 'Seeks', typical: 'Typical', avoids: 'Avoids', variable: 'Variable',
+    saved: 'Saved ✓',
+    no_strats: 'No strategies logged yet',
+    delete_confirm: 'Delete this entry?',
+    morning: 'Morning', afternoon: 'Afternoon', evening: 'Evening',
+    calming: 'Calming Activities', alerting: 'Alerting Activities',
+    hyper: 'Hyper', hypo: 'Hypo',
+    visual: 'Visual', auditory: 'Auditory', tactile: 'Tactile', gustatory: 'Gustatory',
+    olfactory: 'Olfactory', vestibular: 'Vestibular', proprioceptive: 'Proprioceptive',
+    profile_for: 'Sensory Profile —',
+    date_generated: 'Generated',
+    sense_channel: 'Channel', pattern: 'Pattern', key_items: 'Key Items',
+    top_strategies: 'Top Strategies'
+  }
+};
+function t(k) { return I18N[lang][k] || k; }
+function applyLang() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (I18N[lang][k]) el.textContent = I18N[lang][k];
+  });
+}
+function toggleLang() { lang = lang === 'zh' ? 'en' : 'zh'; renderAll(); }
+
+// ===================================================================
+//  DATA
+// ===================================================================
+const STORAGE_KEY = 'withyou_sensory_profile';
+let data = { assessment: {}, strategies: [] };
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+function load() { const s = localStorage.getItem(STORAGE_KEY); if (s) try { data = JSON.parse(s); } catch(e){} }
+
+// 7 Sensory channels with items
+const CHANNELS = [
+  { id: 'visual', icon: '👁', items: [
+    { id: 'v1', zh: '对明亮灯光敏感', en: 'Sensitive to bright lights' },
+    { id: 'v2', zh: '喜欢看旋转物体', en: 'Enjoys watching spinning objects' },
+    { id: 'v3', zh: '避免眼神接触', en: 'Avoids eye contact' },
+    { id: 'v4', zh: '容易被视觉细节吸引', en: 'Drawn to visual details' },
+    { id: 'v5', zh: '在视觉繁忙的环境中不安', en: 'Distressed in visually busy environments' },
+    { id: 'v6', zh: '喜欢看光影变化', en: 'Fascinated by light and shadow changes' }
+  ]},
+  { id: 'auditory', icon: '👂', items: [
+    { id: 'a1', zh: '对突然的声音敏感', en: 'Sensitive to sudden sounds' },
+    { id: 'a2', zh: '捂耳朵回避声音', en: 'Covers ears to block sound' },
+    { id: 'a3', zh: '喜欢制造噪音', en: 'Enjoys making noise' },
+    { id: 'a4', zh: '在嘈杂环境中焦虑', en: 'Anxious in noisy environments' },
+    { id: 'a5', zh: '对特定声音有强烈反应', en: 'Strong reaction to specific sounds' },
+    { id: 'a6', zh: '喜欢音乐或节奏', en: 'Enjoys music or rhythmic sounds' },
+    { id: 'a7', zh: '难以在背景噪音中集中注意力', en: 'Difficulty focusing with background noise' }
+  ]},
+  { id: 'tactile', icon: '✋', items: [
+    { id: 't1', zh: '不喜欢某些衣服材质', en: 'Dislikes certain clothing textures' },
+    { id: 't2', zh: '回避脏手/黏腻触感', en: 'Avoids messy/sticky textures' },
+    { id: 't3', zh: '寻求深压觉（紧抱等）', en: 'Seeks deep pressure (tight hugs etc.)' },
+    { id: 't4', zh: '对轻触敏感', en: 'Sensitive to light touch' },
+    { id: 't5', zh: '喜欢触摸各种质地', en: 'Likes touching different textures' },
+    { id: 't6', zh: '不喜欢洗头/剪发', en: 'Dislikes hair washing/cutting' },
+    { id: 't7', zh: '脚不喜欢踩某些表面', en: 'Feet sensitive to certain surfaces' },
+    { id: 't8', zh: '对温度变化敏感', en: 'Sensitive to temperature changes' }
+  ]},
+  { id: 'gustatory', icon: '👅', items: [
+    { id: 'g1', zh: '极度偏食/食物种类有限', en: 'Very selective eater / limited food range' },
+    { id: 'g2', zh: '对食物质地敏感', en: 'Sensitive to food textures' },
+    { id: 'g3', zh: '寻求强烈味道（酸/辣）', en: 'Seeks strong flavors (sour/spicy)' },
+    { id: 'g4', zh: '喜欢把非食物放入嘴里', en: 'Mouths non-food objects' },
+    { id: 'g5', zh: '容易作呕', en: 'Gags easily' }
+  ]},
+  { id: 'olfactory', icon: '👃', items: [
+    { id: 'o1', zh: '对气味敏感', en: 'Sensitive to smells' },
+    { id: 'o2', zh: '喜欢闻物体/人', en: 'Likes smelling objects/people' },
+    { id: 'o3', zh: '气味引发恶心', en: 'Smells trigger nausea' },
+    { id: 'o4', zh: '注意到别人忽略的气味', en: 'Notices smells others miss' },
+    { id: 'o5', zh: '回避某些场所因气味', en: 'Avoids certain places due to smell' }
+  ]},
+  { id: 'vestibular', icon: '🔄', items: [
+    { id: 'vt1', zh: '害怕脚离开地面', en: 'Fearful when feet leave the ground' },
+    { id: 'vt2', zh: '寻求旋转/摇摆', en: 'Seeks spinning/swinging' },
+    { id: 'vt3', zh: '容易晕车/晕动', en: 'Gets motion sick easily' },
+    { id: 'vt4', zh: '喜欢爬高', en: 'Enjoys climbing high' },
+    { id: 'vt5', zh: '不喜欢头部位置改变', en: 'Dislikes head position changes' },
+    { id: 'vt6', zh: '不停地动/很难静坐', en: 'Constantly moving / hard to sit still' }
+  ]},
+  { id: 'proprioceptive', icon: '💪', items: [
+    { id: 'p1', zh: '喜欢碰撞/重物', en: 'Enjoys crashing/heavy work' },
+    { id: 'p2', zh: '握笔力度控制困难', en: 'Difficulty controlling pencil pressure' },
+    { id: 'p3', zh: '经常碰撞到人/物', en: 'Frequently bumps into things/people' },
+    { id: 'p4', zh: '喜欢被紧紧包裹', en: 'Likes being wrapped tightly' },
+    { id: 'p5', zh: '咀嚼衣物/物品', en: 'Chews on clothing/objects' },
+    { id: 'p6', zh: '动作力度不协调', en: 'Uncoordinated force in movements' },
+    { id: 'p7', zh: '喜欢推拉重物', en: 'Enjoys pushing/pulling heavy things' }
+  ]}
+];
+
+const RATINGS = ['seeks','typical','avoids','variable'];
+
+// ===================================================================
+//  TABS
+// ===================================================================
+const TABS = ['assess','map','diet','tracker','share'];
+let activeTab = 'assess';
+function showTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab').forEach((el, i) => el.classList.toggle('active', TABS[i] === tab));
+  TABS.forEach(p => document.getElementById('panel-' + p).classList.toggle('hidden', p !== tab));
+  renderAll();
+}
+
+// ===================================================================
+//  ASSESSMENT
+// ===================================================================
+function renderAssessment() {
+  const c = document.getElementById('assessment-form');
+  c.innerHTML = CHANNELS.map(ch => {
+    const chName = t(ch.id);
+    return `<div class="sense-section">
+      <div class="sense-header"><span class="icon">${ch.icon}</span> ${chName}</div>
+      <div class="sense-body">${ch.items.map(item => {
+        const current = data.assessment[item.id] || '';
+        return `<div class="sense-item">
+          <span class="sense-item-label">${lang === 'zh' ? item.zh : item.en}</span>
+          <div class="rating-group">
+            ${RATINGS.map(r => `<button class="rating-btn ${current === r ? 'active-' + r : ''}" onclick="rateItem('${item.id}','${r}')">${t(r)}</button>`).join('')}
+          </div>
+        </div>`;
+      }).join('')}</div>
+    </div>`;
+  }).join('');
+}
+
+function rateItem(itemId, rating) {
+  data.assessment[itemId] = rating;
+  save();
+  renderAssessment();
+}
+
+function saveAssessment() {
+  save();
+  const btn = document.querySelector('#panel-assess .btn-primary');
+  const orig = btn.textContent;
+  btn.textContent = t('saved');
+  setTimeout(() => btn.textContent = orig, 1500);
+}
+
+// ===================================================================
+//  RADAR MAP
+// ===================================================================
+function getChannelScores() {
+  return CHANNELS.map(ch => {
+    let seekCount = 0, avoidCount = 0, total = ch.items.length;
+    ch.items.forEach(item => {
+      const r = data.assessment[item.id];
+      if (r === 'seeks') seekCount++;
+      if (r === 'avoids') avoidCount++;
+    });
+    return {
+      id: ch.id,
+      label: t(ch.id),
+      icon: ch.icon,
+      seeks: seekCount / total,
+      avoids: avoidCount / total
+    };
+  });
+}
+
+function drawRadar() {
+  const svg = document.getElementById('radar-chart');
+  const scores = getChannelScores();
+  const n = scores.length;
+  const cx = 200, cy = 200, r = 140;
+
+  let html = '';
+  // Grid
+  for (let lev = 1; lev <= 5; lev++) {
+    const rr = r * lev / 5;
+    let pts = [];
+    for (let i = 0; i < n; i++) {
+      const a = (Math.PI * 2 * i / n) - Math.PI / 2;
+      pts.push(`${cx + rr * Math.cos(a)},${cy + rr * Math.sin(a)}`);
+    }
+    html += `<polygon points="${pts.join(' ')}" fill="none" stroke="${lev === 5 ? '#ccc' : 'var(--cream-dark)'}" stroke-width="1"/>`;
+  }
+
+  // Axes & labels
+  for (let i = 0; i < n; i++) {
+    const a = (Math.PI * 2 * i / n) - Math.PI / 2;
+    html += `<line x1="${cx}" y1="${cy}" x2="${cx + r * Math.cos(a)}" y2="${cy + r * Math.sin(a)}" stroke="var(--cream-dark)" stroke-width="1"/>`;
+    const lx = cx + (r + 28) * Math.cos(a);
+    const ly = cy + (r + 28) * Math.sin(a);
+    html += `<text x="${lx}" y="${ly}" text-anchor="middle" dominant-baseline="central" fill="var(--warm-text)" font-size="11" font-weight="500">${scores[i].icon} ${scores[i].label}</text>`;
+  }
+
+  // Seeks polygon (hypo-responsive / sensory seeking)
+  let seekPts = [];
+  for (let i = 0; i < n; i++) {
+    const a = (Math.PI * 2 * i / n) - Math.PI / 2;
+    const val = scores[i].seeks;
+    seekPts.push(`${cx + r * val * Math.cos(a)},${cy + r * val * Math.sin(a)}`);
+  }
+  html += `<polygon points="${seekPts.join(' ')}" fill="rgba(212,145,123,0.25)" stroke="var(--coral)" stroke-width="2"/>`;
+
+  // Avoids polygon (hyper-responsive / sensory avoiding)
+  let avoidPts = [];
+  for (let i = 0; i < n; i++) {
+    const a = (Math.PI * 2 * i / n) - Math.PI / 2;
+    const val = scores[i].avoids;
+    avoidPts.push(`${cx + r * val * Math.cos(a)},${cy + r * val * Math.sin(a)}`);
+  }
+  html += `<polygon points="${avoidPts.join(' ')}" fill="rgba(123,167,188,0.25)" stroke="var(--blue)" stroke-width="2"/>`;
+
+  // Dots
+  for (let i = 0; i < n; i++) {
+    const a = (Math.PI * 2 * i / n) - Math.PI / 2;
+    if (scores[i].seeks > 0) html += `<circle cx="${cx + r * scores[i].seeks * Math.cos(a)}" cy="${cy + r * scores[i].seeks * Math.sin(a)}" r="4" fill="var(--coral)"/>`;
+    if (scores[i].avoids > 0) html += `<circle cx="${cx + r * scores[i].avoids * Math.cos(a)}" cy="${cy + r * scores[i].avoids * Math.sin(a)}" r="4" fill="var(--blue)"/>`;
+  }
+
+  svg.innerHTML = html;
+
+  // Legend
+  document.getElementById('map-legend').innerHTML = `
+    <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--coral);margin-right:4px;vertical-align:middle;"></span>${t('seeks')} (${t('hypo')})</span>
+    <span><span style="display:inline-block;width:12px;height:12px;border-radius:50%;background:var(--blue);margin-right:4px;vertical-align:middle;"></span>${t('avoids')} (${t('hyper')})</span>
+  `;
+}
+
+// ===================================================================
+//  SENSORY DIET
+// ===================================================================
+const DIET_ACTIVITIES = {
+  calming: {
+    visual: { zh: '调暗灯光，使用柔和颜色', en: 'Dim lights, use soft colors' },
+    auditory: { zh: '白噪音或安静音乐', en: 'White noise or calm music' },
+    tactile: { zh: '深压觉按摩，加重毯', en: 'Deep pressure massage, weighted blanket' },
+    gustatory: { zh: '嚼口香糖或吸吮冰棒', en: 'Chew gum or suck on popsicle' },
+    olfactory: { zh: '薰衣草或香草精油', en: 'Lavender or vanilla essential oil' },
+    vestibular: { zh: '缓慢摇摆，摇椅', en: 'Slow rocking, rocking chair' },
+    proprioceptive: { zh: '紧紧拥抱，包裹在毯子里', en: 'Firm hugs, wrap in blanket' }
+  },
+  alerting: {
+    visual: { zh: '明亮色彩的活动，闪光玩具', en: 'Bright colored activities, light-up toys' },
+    auditory: { zh: '有节奏的音乐，打击乐器', en: 'Rhythmic music, percussion instruments' },
+    tactile: { zh: '玩沙/水/橡皮泥', en: 'Play with sand/water/playdough' },
+    gustatory: { zh: '酸味或脆食物（酸糖、脆饼干）', en: 'Sour or crunchy foods (sour candy, crackers)' },
+    olfactory: { zh: '薄荷或柑橘香味', en: 'Peppermint or citrus scents' },
+    vestibular: { zh: '蹦床，旋转，荡秋千', en: 'Trampoline, spinning, swinging' },
+    proprioceptive: { zh: '推重物，搬东西，爬行', en: 'Push heavy objects, carry items, crawling' }
+  }
+};
+
+function renderDiet() {
+  const scores = getChannelScores();
+  const periods = [
+    { id: 'morning', key: 'morning' },
+    { id: 'afternoon', key: 'afternoon' },
+    { id: 'evening', key: 'evening' }
+  ];
+
+  periods.forEach(period => {
+    const c = document.getElementById('diet-' + period.id);
+    let html = `<div class="diet-title">${t(period.key)}</div>`;
+
+    // For over-stimulated channels (high avoids) → suggest calming
+    const overStim = scores.filter(s => s.avoids >= 0.3);
+    if (overStim.length) {
+      html += `<div style="font-size:0.82rem;font-weight:600;color:var(--blue);margin-bottom:6px;">${t('calming')}</div>`;
+      overStim.forEach(s => {
+        const act = DIET_ACTIVITIES.calming[s.id];
+        if (act) html += `<div class="diet-card calming">${s.icon} <strong>${s.label}</strong>: ${lang === 'zh' ? act.zh : act.en}</div>`;
+      });
+    }
+
+    // For under-responsive channels (high seeks) → suggest alerting
+    const underResp = scores.filter(s => s.seeks >= 0.3);
+    if (underResp.length) {
+      html += `<div style="font-size:0.82rem;font-weight:600;color:var(--coral);margin:8px 0 6px;">${t('alerting')}</div>`;
+      underResp.forEach(s => {
+        const act = DIET_ACTIVITIES.alerting[s.id];
+        if (act) html += `<div class="diet-card alerting">${s.icon} <strong>${s.label}</strong>: ${lang === 'zh' ? act.zh : act.en}</div>`;
+      });
+    }
+
+    if (!overStim.length && !underResp.length) {
+      html += `<div class="diet-card" style="color:var(--warm-text-light);">${lang === 'zh' ? '完成感觉评估后，这里会显示个性化建议' : 'Complete the assessment to see personalized suggestions here'}</div>`;
+    }
+
+    c.innerHTML = html;
+  });
+}
+
+// ===================================================================
+//  STRATEGY TRACKER
+// ===================================================================
+function saveStrategy() {
+  const name = document.getElementById('strat-name').value.trim();
+  const context = document.getElementById('strat-context').value.trim();
+  const eff = parseInt(document.getElementById('strat-eff').value) || 3;
+  const notes = document.getElementById('strat-notes').value.trim();
+  if (!name) return;
+
+  data.strategies.unshift({
+    id: Date.now(),
+    date: new Date().toISOString().slice(0, 10),
+    name, context, effectiveness: Math.min(5, Math.max(1, eff)), notes
+  });
+  save();
+  document.getElementById('strat-name').value = '';
+  document.getElementById('strat-context').value = '';
+  document.getElementById('strat-notes').value = '';
+  document.getElementById('strat-eff').value = '3';
+  renderStrategies();
+}
+
+function deleteStrategy(id) {
+  if (!confirm(t('delete_confirm'))) return;
+  data.strategies = data.strategies.filter(s => s.id !== id);
+  save();
+  renderStrategies();
+}
+
+function renderStrategies() {
+  const c = document.getElementById('strat-list');
+  const filterVal = document.getElementById('strat-filter-select').value;
+  let filtered = data.strategies;
+  if (filterVal !== 'all') {
+    const minEff = parseInt(filterVal);
+    filtered = filtered.filter(s => s.effectiveness >= minEff);
+  }
+
+  if (!filtered.length) {
+    c.innerHTML = `<div class="empty-state">${t('no_strats')}</div>`;
+    return;
+  }
+
+  c.innerHTML = filtered.map(s => `
+    <div class="strat-entry">
+      <div class="strat-meta">${s.date} | ${s.context || '—'}
+        <span style="float:right;cursor:pointer;color:var(--red);" onclick="deleteStrategy(${s.id})">×</span>
+      </div>
+      <div class="strat-text">
+        <strong>${s.name}</strong>
+        <span class="effectiveness" style="margin-left:8px;">${Array(5).fill(0).map((_,i) => `<span class="eff-dot ${i < s.effectiveness ? 'filled' : ''}"></span>`).join('')}</span>
+      </div>
+      ${s.notes ? `<div style="font-size:0.82rem;color:var(--warm-text-light);margin-top:4px;">${s.notes}</div>` : ''}
+    </div>
+  `).join('');
+
+  // Update effectiveness preview dots
+  const effVal = parseInt(document.getElementById('strat-eff').value) || 3;
+  document.getElementById('strat-eff-dots').innerHTML = Array(5).fill(0).map((_,i) =>
+    `<span class="eff-dot ${i < effVal ? 'filled' : ''}"></span>`
+  ).join('');
+}
+
+// ===================================================================
+//  SHARE / PRINT PREVIEW
+// ===================================================================
+function renderShare() {
+  const c = document.getElementById('share-preview');
+  const scores = getChannelScores();
+  const topStrats = data.strategies.filter(s => s.effectiveness >= 4).slice(0, 5);
+  const today = new Date().toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US');
+
+  let html = `
+    <div class="print-section">
+      <h3>${t('profile_for')} ${lang === 'zh' ? '感觉档案追踪' : 'Sensory Profile Tracker'}</h3>
+      <p style="font-size:0.82rem;color:var(--warm-text-light);">${t('date_generated')}: ${today}</p>
+    </div>
+
+    <div class="print-section">
+      <h3>${t('assess_title')}</h3>
+      <table class="print-table">
+        <thead><tr>
+          <th>${t('sense_channel')}</th>
+          <th>${t('seeks')}</th>
+          <th>${t('avoids')}</th>
+          <th>${t('pattern')}</th>
+        </tr></thead>
+        <tbody>${scores.map(s => {
+          let pattern = '—';
+          if (s.seeks > 0.4) pattern = lang === 'zh' ? '低敏/寻求型' : 'Hypo / Seeking';
+          else if (s.avoids > 0.4) pattern = lang === 'zh' ? '高敏/回避型' : 'Hyper / Avoiding';
+          else if (s.seeks > 0.2 && s.avoids > 0.2) pattern = lang === 'zh' ? '混合型' : 'Mixed';
+          else pattern = lang === 'zh' ? '基本典型' : 'Mostly Typical';
+          return `<tr>
+            <td>${s.icon} ${s.label}</td>
+            <td>${Math.round(s.seeks * 100)}%</td>
+            <td>${Math.round(s.avoids * 100)}%</td>
+            <td>${pattern}</td>
+          </tr>`;
+        }).join('')}</tbody>
+      </table>
+    </div>
+  `;
+
+  if (topStrats.length) {
+    html += `<div class="print-section">
+      <h3>${t('top_strategies')}</h3>
+      ${topStrats.map(s => `<div class="diet-card" style="border-left:4px solid var(--sage);"><strong>${s.name}</strong> — ${s.context || ''}
+        <span class="effectiveness" style="margin-left:8px;">${Array(5).fill(0).map((_,i) => `<span class="eff-dot ${i < s.effectiveness ? 'filled' : ''}"></span>`).join('')}</span>
+      </div>`).join('')}
+    </div>`;
+  }
+
+  html += `<div style="font-size:0.75rem;color:var(--warm-text-light);margin-top:20px;padding-top:12px;border-top:1px solid var(--cream-dark);">
+    ${lang === 'zh'
+      ? '参考文献: Dunn, W. (2014). Sensory Profile 2. Schaaf, R.C. & Mailloux, Z. (2015). Clinician\'s Guide for Implementing Ayres Sensory Integration.'
+      : 'References: Dunn, W. (2014). Sensory Profile 2. Schaaf, R.C. & Mailloux, Z. (2015). Clinician\'s Guide for Implementing Ayres Sensory Integration.'}
+  </div>`;
+
+  c.innerHTML = html;
+}
+
+// ===================================================================
+//  RENDER ALL
+// ===================================================================
+function renderAll() {
+  applyLang();
+  renderAssessment();
+  drawRadar();
+  renderDiet();
+  renderStrategies();
+  renderShare();
+}
+
+load();
+renderAll();
+
+// Effectiveness input live preview
+document.getElementById('strat-eff').addEventListener('input', function() {
+  const v = parseInt(this.value) || 3;
+  document.getElementById('strat-eff-dots').innerHTML = Array(5).fill(0).map((_,i) =>
+    `<span class="eff-dot ${i < v ? 'filled' : ''}"></span>`
+  ).join('');
+});
+</script>
+</body>
+</html>

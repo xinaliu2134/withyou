@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>就诊准备包 — 同路 WithYou</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --sage: #6B8F7B;
+  --sage-light: #8FB09D;
+  --sage-pale: #E8F0EB;
+  --sage-dark: #4A6B56;
+  --cream: #FAF7F0;
+  --cream-dark: #F0EBDF;
+  --blue: #7BA7BC;
+  --blue-light: #A5C7D6;
+  --blue-pale: #E4EFF4;
+  --warm-text: #3D3D3D;
+  --warm-text-light: #6B6B6B;
+  --coral: #D4917B;
+  --coral-pale: #F5E0D8;
+  --yellow: #C9A84C;
+  --yellow-bg: #FDF6E3;
+  --shadow: 0 2px 16px rgba(107,143,123,0.10);
+  --shadow-lg: 0 6px 28px rgba(107,143,123,0.14);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+  background: var(--cream);
+  color: var(--warm-text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.hidden { display: none !important; }
+.container { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+
+/* ===== Top Bar ===== */
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+
+.topbar-back {
+  color: var(--sage);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.topbar-title { font-size: 0.95rem; font-weight: 600; color: var(--sage); }
+
+.topbar-right { display: flex; gap: 8px; }
+
+.lang-toggle {
+  background: var(--sage-pale);
+  border: none;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--sage);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.lang-toggle:hover { background: var(--sage-light); color: #fff; }
+.lang-toggle.active { background: var(--sage); color: #fff; }
+
+/* ===== Hero ===== */
+.hero {
+  text-align: center;
+  padding: 32px 20px 24px;
+}
+.hero-icon { font-size: 2.8rem; margin-bottom: 10px; }
+.hero h1 { font-size: 1.5rem; font-weight: 700; color: var(--sage-dark); margin-bottom: 4px; }
+.hero p { font-size: 0.92rem; color: var(--warm-text-light); max-width: 500px; margin: 0 auto; }
+
+/* ===== Country Tabs ===== */
+.country-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 12px 20px;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.country-tabs::-webkit-scrollbar { display: none; }
+
+.country-tab {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-radius: 24px;
+  border: 1.5px solid var(--cream-dark);
+  background: #fff;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--warm-text-light);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.country-tab:hover { border-color: var(--sage-light); color: var(--sage); }
+.country-tab.active {
+  background: var(--sage);
+  color: #fff;
+  border-color: var(--sage);
+}
+.country-tab .flag { font-size: 1.1rem; }
+
+/* ===== Section Tabs ===== */
+.section-tabs {
+  display: flex;
+  gap: 4px;
+  padding: 8px 20px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.section-tabs::-webkit-scrollbar { display: none; }
+
+.section-tab {
+  flex-shrink: 0;
+  padding: 6px 14px;
+  border-radius: 20px;
+  background: var(--cream-dark);
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--warm-text-light);
+  cursor: pointer;
+  border: none;
+  transition: all 0.2s;
+}
+.section-tab:hover { background: var(--sage-pale); color: var(--sage); }
+.section-tab.active { background: var(--blue); color: #fff; }
+
+/* ===== Content Area ===== */
+.content-area { padding: 16px 0 80px; }
+
+.card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+}
+.card h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--sage-dark);
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.card h3 .icon { font-size: 1.2rem; }
+
+/* ===== Pathway ===== */
+.pathway-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+}
+.pathway-step {
+  display: flex;
+  gap: 14px;
+  padding: 12px 0;
+}
+.step-marker {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+}
+.step-dot {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: var(--sage);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.step-line {
+  flex: 1;
+  width: 2px;
+  background: var(--sage-pale);
+  min-height: 20px;
+}
+.step-content h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--warm-text);
+  margin-bottom: 4px;
+}
+.step-content p {
+  font-size: 0.84rem;
+  color: var(--warm-text-light);
+  line-height: 1.5;
+}
+
+/* ===== Checklist ===== */
+.checklist { list-style: none; }
+.checklist li {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--cream-dark);
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.checklist li:last-child { border-bottom: none; }
+.checklist li.checked { opacity: 0.55; text-decoration: line-through; }
+
+.checkbox {
+  width: 22px;
+  height: 22px;
+  border-radius: 6px;
+  border: 2px solid var(--sage-light);
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+  margin-top: 1px;
+}
+.checkbox.checked {
+  background: var(--sage);
+  border-color: var(--sage);
+  color: #fff;
+}
+
+.check-progress {
+  background: var(--sage-pale);
+  border-radius: 10px;
+  height: 6px;
+  margin-top: 14px;
+  overflow: hidden;
+}
+.check-progress-bar {
+  height: 100%;
+  background: var(--sage);
+  border-radius: 10px;
+  transition: width 0.4s ease;
+}
+.check-count {
+  font-size: 0.78rem;
+  color: var(--warm-text-light);
+  margin-top: 6px;
+  text-align: right;
+}
+
+/* ===== Assessment Info ===== */
+.assess-block {
+  background: var(--blue-pale);
+  border-radius: var(--radius-sm);
+  padding: 14px;
+  margin-bottom: 10px;
+}
+.assess-block h4 {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--blue);
+  margin-bottom: 6px;
+}
+.assess-block p, .assess-block li {
+  font-size: 0.84rem;
+  color: var(--warm-text-light);
+  line-height: 1.55;
+}
+.assess-block ul { padding-left: 16px; margin-top: 6px; }
+.assess-block ul li { margin-bottom: 4px; }
+
+/* ===== Questions ===== */
+.question-list { list-style: none; counter-reset: q; }
+.question-list li {
+  padding: 10px 0;
+  border-bottom: 1px solid var(--cream-dark);
+  font-size: 0.88rem;
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.question-list li:last-child { border-bottom: none; }
+.q-num {
+  flex-shrink: 0;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--coral-pale);
+  color: var(--coral);
+  font-size: 0.72rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ===== Behavior Summary Form ===== */
+.form-section { margin-bottom: 16px; }
+.form-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--sage-dark);
+  margin-bottom: 6px;
+  display: block;
+}
+.form-input, .form-textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1.5px solid var(--cream-dark);
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-family: inherit;
+  color: var(--warm-text);
+  background: #fff;
+  transition: border-color 0.2s;
+}
+.form-input:focus, .form-textarea:focus {
+  outline: none;
+  border-color: var(--sage-light);
+}
+.form-textarea { min-height: 80px; resize: vertical; }
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.btn-print {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 24px;
+  background: var(--sage);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 10px;
+}
+.btn-print:hover { background: var(--sage-dark); }
+
+.btn-save {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 12px 24px;
+  background: var(--blue);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+  margin-top: 10px;
+  margin-left: 8px;
+}
+.btn-save:hover { background: #6894A8; }
+
+.form-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 14px;
+}
+
+/* ===== Print ===== */
+@media print {
+  .topbar, .country-tabs, .section-tabs, .btn-print, .btn-save, .form-actions { display: none !important; }
+  .card { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+  body { background: #fff; }
+  .content-area { padding: 0; }
+  .print-header { display: block !important; text-align: center; margin-bottom: 20px; }
+  .print-header h2 { font-size: 1.2rem; }
+}
+
+.print-header { display: none; }
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+  .form-row { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 1.3rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="../index.html" class="topbar-back">&#8592; <span data-zh="返回" data-en="Back">返回</span></a>
+    <span class="topbar-title" data-zh="就诊准备包" data-en="Appointment Prep">就诊准备包</span>
+  </div>
+  <div class="topbar-right">
+    <button class="lang-toggle active" onclick="setLang('zh')">中文</button>
+    <button class="lang-toggle" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-icon">&#128203;</div>
+  <h1 data-zh="就诊准备包" data-en="Appointment Preparation Kit">就诊准备包</h1>
+  <p data-zh="为孩子的发育评估做好充分准备，从容面对每一次就诊" data-en="Prepare thoroughly for your child's developmental assessment, face every visit with confidence">为孩子的发育评估做好充分准备，从容面对每一次就诊</p>
+</div>
+
+<!-- Country Tabs -->
+<div class="country-tabs" id="countryTabs">
+  <button class="country-tab active" data-country="CN"><span class="flag">&#127464;&#127475;</span> <span data-zh="中国" data-en="China">中国</span></button>
+  <button class="country-tab" data-country="NL"><span class="flag">&#127475;&#127473;</span> <span data-zh="荷兰" data-en="Netherlands">荷兰</span></button>
+  <button class="country-tab" data-country="DE"><span class="flag">&#127465;&#127466;</span> <span data-zh="德国" data-en="Germany">德国</span></button>
+  <button class="country-tab" data-country="UK"><span class="flag">&#127468;&#127463;</span> <span data-zh="英国" data-en="UK">英国</span></button>
+  <button class="country-tab" data-country="US"><span class="flag">&#127482;&#127480;</span> <span data-zh="美国" data-en="US">美国</span></button>
+  <button class="country-tab" data-country="FR"><span class="flag">&#127467;&#127479;</span> <span data-zh="法国" data-en="France">法国</span></button>
+</div>
+
+<!-- Section Tabs -->
+<div class="section-tabs" id="sectionTabs">
+  <button class="section-tab active" data-section="pathway" data-zh="诊断路径" data-en="Diagnostic Pathway">诊断路径</button>
+  <button class="section-tab" data-section="checklist" data-zh="携带清单" data-en="What to Bring">携带清单</button>
+  <button class="section-tab" data-section="assessment" data-zh="评估说明" data-en="Assessment Info">评估说明</button>
+  <button class="section-tab" data-section="questions" data-zh="提问清单" data-en="Questions to Ask">提问清单</button>
+  <button class="section-tab" data-section="summary" data-zh="行为小结" data-en="Behavior Summary">行为小结</button>
+</div>
+
+<!-- Content -->
+<div class="container">
+  <div class="content-area" id="contentArea"></div>
+</div>
+
+<!-- Print Header (shown only in print) -->
+<div class="print-header">
+  <h2 data-zh="行为观察小结 — 同路 WithYou" data-en="Behavior Summary — WithYou">行为观察小结 — 同路 WithYou</h2>
+</div>
+
+<script>
+// ===== Data =====
+const DATA = {
+  CN: {
+    pathway: {
+      zh: [
+        { title: '发现异常', desc: '家长、幼儿园老师或儿保医生发现孩子发育与同龄人不同' },
+        { title: '儿保科/社区医院初筛', desc: '在社区卫生中心或妇幼保健院进行M-CHAT等初步筛查' },
+        { title: '三甲医院转诊', desc: '获取转诊单，前往三甲医院的儿童精神科或发育行为科' },
+        { title: '专业评估', desc: '由儿童精神科医生进行ADOS-2、ADI-R等标准化评估，通常需要2-3次就诊' },
+        { title: '获得诊断', desc: '医生出具诊断报告，包含诊断结果和干预建议' },
+        { title: '制定干预计划', desc: '根据诊断结果，医生推荐康复训练机构和干预方案' }
+      ],
+      en: [
+        { title: 'Notice Differences', desc: 'Parents, kindergarten teachers, or pediatricians notice developmental differences' },
+        { title: 'Community Screening', desc: 'Initial screening (M-CHAT etc.) at community health center or maternal-child hospital' },
+        { title: 'Referral to Tier-3 Hospital', desc: 'Get a referral to the Child Psychiatry or Developmental Behavioral department at a top-tier hospital' },
+        { title: 'Professional Assessment', desc: 'Standardized assessment (ADOS-2, ADI-R) by child psychiatrist, usually 2-3 visits' },
+        { title: 'Receive Diagnosis', desc: 'Doctor provides diagnostic report with results and intervention recommendations' },
+        { title: 'Intervention Plan', desc: 'Based on diagnosis, doctor recommends rehabilitation centers and intervention approaches' }
+      ]
+    },
+    checklist: {
+      zh: ['孩子的出生证明/身份证明','疫苗接种本','以往就诊病历和检查报告','母子手册（妊娠和出生记录）','幼儿园/早教老师的观察报告','家庭中观察到的行为视频（3-5段）','孩子日常作息时间表','过敏/用药史记录','家族中ASD或发育障碍病史','筛查量表（M-CHAT）填写结果','社保卡/医保卡','转诊单（如需要）'],
+      en: ['Birth certificate / ID documents','Vaccination record','Previous medical records and test reports','Mother-child handbook (pregnancy & birth records)','Observation reports from kindergarten/preschool teachers','Videos of behaviors observed at home (3-5 clips)','Daily routine schedule','Allergy / medication history','Family history of ASD or developmental conditions','Screening questionnaire results (M-CHAT)','Social insurance / medical insurance card','Referral letter (if needed)']
+    },
+    questions: {
+      zh: ['我的孩子需要做哪些评估？大概需要多长时间？','评估结果什么时候出来？以什么形式告知？','孩子目前的发育水平处于什么阶段？','最推荐的干预方式是什么？','需要多久复查一次？','日常生活中我们可以做些什么来帮助孩子？','饮食方面需要注意什么？','推荐本地哪些康复训练机构？','是否需要申请残疾证？有什么福利政策？','如何判断干预是否有效？','孩子以后能上普通学校吗？','有没有家长支持小组可以加入？'],
+      en: ['What assessments does my child need? How long will they take?','When will results be available? In what format?','What developmental stage is my child at currently?','What intervention approach do you most recommend?','How often should we schedule follow-ups?','What can we do at home to help our child?','Are there dietary considerations?','Which local rehabilitation centers do you recommend?','Should we apply for a disability certificate? What benefits are available?','How do we know if intervention is working?','Will my child be able to attend mainstream school?','Are there parent support groups we can join?']
+    }
+  },
+  NL: {
+    pathway: {
+      zh: [
+        { title: '初步关注', desc: '家长或Consultatiebureau（儿童保健中心）注意到发育差异' },
+        { title: '联系Huisarts', desc: '向家庭医生（Huisarts）提出关注，请求转诊' },
+        { title: '转诊至GGZ', desc: '家庭医生转诊至GGZ（心理健康机构）或发育诊断中心' },
+        { title: '多学科评估', desc: '由心理学家、精神科医生等团队进行ADOS-2和ADI-R评估' },
+        { title: '获得诊断', desc: '团队讨论后出具诊断报告和建议' },
+        { title: '联系Samenwerkingsverband', desc: '如需学校支持，联系Samenwerkingsverband申请额外辅助' }
+      ],
+      en: [
+        { title: 'Initial Concerns', desc: 'Parents or Consultatiebureau (child health center) notice developmental differences' },
+        { title: 'Contact Huisarts', desc: 'Raise concerns with your family doctor (Huisarts) and request a referral' },
+        { title: 'Referral to GGZ', desc: 'Huisarts refers to GGZ (mental health institution) or developmental diagnostic center' },
+        { title: 'Multidisciplinary Assessment', desc: 'Team of psychologists, psychiatrists conduct ADOS-2 and ADI-R assessment' },
+        { title: 'Receive Diagnosis', desc: 'Team discussion leads to diagnostic report and recommendations' },
+        { title: 'Contact Samenwerkingsverband', desc: 'For school support, contact Samenwerkingsverband for additional assistance' }
+      ]
+    },
+    checklist: {
+      zh: ['BSN号码和身份证明','Consultatiebureau成长记录','Huisarts转诊信','以往医疗报告','幼儿园/学校观察报告','行为视频（3-5段）','日常作息说明','家族病史','填写好的筛查问卷','保险信息（Zorgverzekering）','学校联系信息','孩子喜欢的安抚物品'],
+      en: ['BSN number and ID','Consultatiebureau growth records','Huisarts referral letter','Previous medical reports','Daycare/school observation reports','Behavior videos (3-5 clips)','Daily routine description','Family medical history','Completed screening questionnaires','Insurance information (Zorgverzekering)','School contact information','Child\'s comfort items']
+    },
+    questions: {
+      zh: ['评估过程包括哪些部分？需要多少次就诊？','评估报告多久能拿到？','我的孩子可以获得哪些GGZ服务？','学校方面如何获得额外支持？','如何联系Samenwerkingsverband？','有哪些干预方式推荐？','荷兰有哪些ASD家长互助组织？','保险能覆盖哪些治疗费用？','PGB（个人预算）如何申请？','多久需要复查一次？','如何与学校沟通孩子的需求？','有哪些适合的课后活动？'],
+      en: ['What does the assessment process include? How many visits?','How long until we receive the assessment report?','What GGZ services is my child eligible for?','How do we get extra support at school?','How to contact the Samenwerkingsverband?','What intervention approaches do you recommend?','What ASD parent organizations exist in NL?','What treatment costs does insurance cover?','How do we apply for PGB (personal budget)?','How often should we schedule follow-ups?','How to communicate our child\'s needs to school?','What suitable after-school activities are available?']
+    }
+  },
+  DE: {
+    pathway: {
+      zh: [
+        { title: '初步关注', desc: '家长或Kinderarzt（儿科医生）在U-Untersuchung中注意到差异' },
+        { title: '联系Kinderarzt', desc: '与儿科医生讨论关注点，获取转诊（Überweisung）' },
+        { title: '转诊专科', desc: '转诊至Kinder- und Jugendpsychiater（儿童青少年精神科医生）' },
+        { title: '专业评估', desc: '精神科医生进行ADOS-2、ADI-R等标准化评估' },
+        { title: '获得诊断', desc: '出具诊断报告（Befundbericht）和治疗建议' },
+        { title: '申请支持', desc: '通过Sozialamt或Jugendamt申请Eingliederungshilfe等支持服务' }
+      ],
+      en: [
+        { title: 'Initial Concerns', desc: 'Parents or Kinderarzt notice differences during U-Untersuchung check-ups' },
+        { title: 'Contact Kinderarzt', desc: 'Discuss concerns with pediatrician, obtain referral (Überweisung)' },
+        { title: 'Specialist Referral', desc: 'Referral to Kinder- und Jugendpsychiater (child & adolescent psychiatrist)' },
+        { title: 'Professional Assessment', desc: 'Psychiatrist conducts standardized assessments (ADOS-2, ADI-R)' },
+        { title: 'Receive Diagnosis', desc: 'Diagnostic report (Befundbericht) issued with treatment recommendations' },
+        { title: 'Apply for Support', desc: 'Apply for Eingliederungshilfe through Sozialamt or Jugendamt' }
+      ]
+    },
+    checklist: {
+      zh: ['孩子的出生证明','U-Heft（儿童体检手册）','Kinderarzt转诊单（Überweisung）','以往医疗报告','幼儿园/学校报告','行为视频（3-5段）','日常作息记录','家族病史','Krankenkasse保险卡','发育里程碑记录','过敏和用药清单','孩子安抚物品'],
+      en: ['Birth certificate','U-Heft (child examination booklet)','Kinderarzt referral (Überweisung)','Previous medical reports','Kindergarten/school reports','Behavior videos (3-5 clips)','Daily routine notes','Family medical history','Krankenkasse insurance card','Developmental milestone records','Allergy and medication list','Child\'s comfort items']
+    },
+    questions: {
+      zh: ['评估包括哪些测试？需要多久？','诊断报告何时出具？','推荐哪种治疗方式（Frühförderung/Therapie）？','如何申请Eingliederungshilfe？','保险覆盖哪些治疗？','如何获得学校额外支持（Nachteilsausgleich）？','Autismus-Therapie-Zentrum在哪里？','多久需要复查？','Schulbegleitung如何申请？','有哪些家长互助组织？','Pflegegrad如何评定？','孩子能上Regelschule吗？'],
+      en: ['What tests are included? How long does assessment take?','When will the diagnostic report be issued?','What therapy do you recommend (Frühförderung/Therapie)?','How to apply for Eingliederungshilfe?','What treatments does insurance cover?','How to get school accommodations (Nachteilsausgleich)?','Where is the nearest Autismus-Therapie-Zentrum?','How often are follow-ups needed?','How to apply for Schulbegleitung (school companion)?','What parent support groups exist?','How is Pflegegrad assessed?','Can my child attend Regelschule (mainstream school)?']
+    }
+  },
+  UK: {
+    pathway: {
+      zh: [
+        { title: '初步关注', desc: '家长、Health Visitor或学校SENCO注意到发育差异' },
+        { title: '联系GP', desc: '向全科医生（GP）提出关注，要求转诊' },
+        { title: '转诊CAMHS', desc: 'GP转诊至CAMHS（儿童青少年心理健康服务）或CDC' },
+        { title: '多学科评估', desc: '由儿科医生、心理学家、语言治疗师组成的团队进行评估' },
+        { title: '获得诊断', desc: '团队出具诊断报告和建议方案' },
+        { title: '申请EHCP', desc: '如需学校支持，向Local Authority申请EHCP（教育健康照顾计划）' }
+      ],
+      en: [
+        { title: 'Initial Concerns', desc: 'Parents, Health Visitor, or school SENCO notice developmental differences' },
+        { title: 'Contact GP', desc: 'Raise concerns with GP and request a referral' },
+        { title: 'Referral to CAMHS', desc: 'GP refers to CAMHS (Child & Adolescent Mental Health Services) or CDC' },
+        { title: 'Multidisciplinary Assessment', desc: 'Assessment by team of pediatrician, psychologist, speech therapist' },
+        { title: 'Receive Diagnosis', desc: 'Team provides diagnostic report and recommendations' },
+        { title: 'Apply for EHCP', desc: 'For school support, apply to Local Authority for EHCP (Education Health Care Plan)' }
+      ]
+    },
+    checklist: {
+      zh: ['孩子NHS号码','Red Book（个人健康记录）','GP转诊信','以往医疗/发育报告','学校/幼儿园SENCO报告','行为视频（3-5段）','日常作息记录','家族病史','M-CHAT或其他筛查结果','学校Individual Education Plan（如有）','过敏和用药记录','孩子安抚物品'],
+      en: ['NHS number','Red Book (Personal Health Record)','GP referral letter','Previous medical/developmental reports','School/nursery SENCO report','Behavior videos (3-5 clips)','Daily routine notes','Family medical history','M-CHAT or other screening results','School Individual Education Plan (if any)','Allergy and medication records','Child\'s comfort items']
+    },
+    questions: {
+      zh: ['评估过程需要多长时间？','等待时间大约多久？可以做些什么？','评估包括哪些部分？','是否建议同时寻求私人评估？','如何申请EHCP？','学校可以提供哪些SEN支持？','推荐哪些干预方式？','NHS能提供哪些治疗服务？','DLA（残疾生活津贴）如何申请？','有哪些本地ASD支持组织？','如何与学校SENCO有效沟通？','多久需要复查一次？'],
+      en: ['How long does the assessment process take?','What is the approximate waiting time? What can we do meanwhile?','What does the assessment include?','Should we also seek a private assessment?','How do we apply for an EHCP?','What SEN support can the school provide?','What interventions do you recommend?','What therapy services does the NHS offer?','How to apply for DLA (Disability Living Allowance)?','What local ASD support organizations exist?','How to communicate effectively with school SENCO?','How often should follow-ups be scheduled?']
+    }
+  },
+  US: {
+    pathway: {
+      zh: [
+        { title: '初步关注', desc: '家长、儿科医生或Early Intervention服务注意到差异' },
+        { title: '联系儿科医生', desc: '在well-child visit中提出关注，要求发育筛查' },
+        { title: '获得转诊', desc: '儿科医生转诊至Developmental Pediatrician或儿童心理学家' },
+        { title: '专业评估', desc: '发育儿科医生进行ADOS-2、ADI-R、Vineland等全面评估' },
+        { title: '获得诊断', desc: '出具诊断报告，提供保险所需的诊断编码' },
+        { title: '启动服务', desc: '3岁前联系Early Intervention（Part C），3岁后联系学区（Part B/IEP）' }
+      ],
+      en: [
+        { title: 'Initial Concerns', desc: 'Parents, pediatrician, or Early Intervention services notice differences' },
+        { title: 'Contact Pediatrician', desc: 'Raise concerns at well-child visit, request developmental screening' },
+        { title: 'Obtain Referral', desc: 'Pediatrician refers to Developmental Pediatrician or child psychologist' },
+        { title: 'Professional Assessment', desc: 'Comprehensive evaluation including ADOS-2, ADI-R, Vineland' },
+        { title: 'Receive Diagnosis', desc: 'Diagnostic report issued with insurance-required diagnostic codes' },
+        { title: 'Initiate Services', desc: 'Under 3: contact Early Intervention (Part C). Over 3: contact school district (Part B/IEP)' }
+      ]
+    },
+    checklist: {
+      zh: ['保险卡和预授权文件','儿科医生转诊信','以往医疗和发育记录','出生记录','Early Intervention评估（如有）','幼儿园/学校老师观察报告','行为视频（3-5段）','日常作息时间表','家族ASD/发育病史','M-CHAT筛查结果','过敏和用药记录','保险覆盖范围确认函','孩子安抚物品'],
+      en: ['Insurance card and pre-authorization documents','Pediatrician referral letter','Previous medical and developmental records','Birth records','Early Intervention evaluation (if any)','Daycare/school teacher observation reports','Behavior videos (3-5 clips)','Daily routine schedule','Family history of ASD/developmental conditions','M-CHAT screening results','Allergy and medication records','Insurance coverage confirmation','Child\'s comfort items']
+    },
+    questions: {
+      zh: ['评估包括哪些测试？全程需要多久？','保险是否覆盖此次评估？需要预授权吗？','诊断报告何时可以拿到？','推荐哪种干预方式（ABA/ESDM/其他）？','如何申请Early Intervention或IEP服务？','保险覆盖哪些治疗服务？每周多少小时？','州里有哪些额外资源和项目？','如何申请SSI（补充保障收入）？','学校可以提供哪些accommodations？','多久需要复查/重新评估？','推荐哪些本地治疗机构？','有哪些家长支持小组？'],
+      en: ['What tests are included? How long is the full evaluation?','Does insurance cover this evaluation? Is pre-authorization needed?','When will the diagnostic report be ready?','What intervention do you recommend (ABA/ESDM/other)?','How to apply for Early Intervention or IEP services?','What therapy does insurance cover? How many hours per week?','What additional state resources and programs are available?','How to apply for SSI (Supplemental Security Income)?','What accommodations can the school provide?','How often should re-evaluation be scheduled?','What local therapy providers do you recommend?','What parent support groups are available?']
+    }
+  },
+  FR: {
+    pathway: {
+      zh: [
+        { title: '初步关注', desc: '家长、PMI（母婴保护中心）或学校注意到发育差异' },
+        { title: '联系Medecin traitant', desc: '向家庭医生提出关注，获取转诊至专科' },
+        { title: '转诊CRA', desc: '转诊至CRA（Centre de Ressources Autisme，自闭症资源中心）' },
+        { title: '多学科评估', desc: 'CRA团队进行ADOS-2、ADI-R等标准化评估' },
+        { title: '获得诊断', desc: 'CRA出具诊断报告和干预建议' },
+        { title: '申请MDPH', desc: '向MDPH（残疾人之家）申请支持方案和经济补助' }
+      ],
+      en: [
+        { title: 'Initial Concerns', desc: 'Parents, PMI (child protection center), or school notice developmental differences' },
+        { title: 'Contact Medecin Traitant', desc: 'Raise concerns with family doctor, obtain specialist referral' },
+        { title: 'Referral to CRA', desc: 'Referral to CRA (Centre de Ressources Autisme)' },
+        { title: 'Multidisciplinary Assessment', desc: 'CRA team conducts standardized assessments (ADOS-2, ADI-R)' },
+        { title: 'Receive Diagnosis', desc: 'CRA provides diagnostic report and intervention recommendations' },
+        { title: 'Apply to MDPH', desc: 'Apply to MDPH (Maison Departementale des Personnes Handicapees) for support plan and financial aid' }
+      ]
+    },
+    checklist: {
+      zh: ['Carte Vitale（医保卡）','Carnet de sante（健康手册）','Medecin traitant转诊信','以往医疗报告','学校/幼儿园观察报告','行为视频（3-5段）','日常作息记录','家族病史','PMI发育记录','筛查问卷填写结果','Mutuelle补充保险信息','孩子安抚物品'],
+      en: ['Carte Vitale (health insurance card)','Carnet de sante (health booklet)','Medecin traitant referral letter','Previous medical reports','School/nursery observation reports','Behavior videos (3-5 clips)','Daily routine notes','Family medical history','PMI developmental records','Screening questionnaire results','Mutuelle (supplementary insurance) information','Child\'s comfort items']
+    },
+    questions: {
+      zh: ['CRA评估需要多长时间？等候期多久？','评估包括哪些部分？','推荐哪种干预方式？','如何向MDPH申请AEEH（教育津贴）？','孩子可以获得AVS（学校辅助人员）吗？','保险和Securite sociale覆盖哪些治疗？','有哪些本地干预机构（SESSAD/CAMSP）？','多久需要复查？','如何获得ALD（长期病症）认定？','学校可以提供哪些aménagements？','有哪些家长协会（如Autisme France）？','如何申请Prestation de Compensation du Handicap？'],
+      en: ['How long does CRA assessment take? What is the waiting period?','What does the assessment include?','What intervention approach do you recommend?','How to apply to MDPH for AEEH (education allowance)?','Can my child get an AVS (school aide)?','What does Securite sociale and insurance cover?','What local services (SESSAD/CAMSP) are available?','How often should follow-ups be scheduled?','How to obtain ALD (long-term condition) status?','What school accommodations (amenagements) are available?','What parent associations exist (e.g., Autisme France)?','How to apply for Prestation de Compensation du Handicap?']
+    }
+  }
+};
+
+// Assessment info is shared across countries
+const ASSESSMENT_INFO = {
+  zh: {
+    ados: {
+      title: 'ADOS-2（自闭症诊断观察量表）',
+      desc: 'ADOS-2是自闭症诊断的"金标准"之一，通过半结构化的互动活动来观察孩子的社交沟通和行为特点。',
+      items: ['时长约40-60分钟','评估师会和孩子做游戏、讲故事、聊天','观察孩子的眼神接触、社交回应、想象力游戏等','根据年龄和语言水平选择不同模块','家长通常在旁边观察','这不是考试，没有"通过"或"不通过"']
+    },
+    adir: {
+      title: 'ADI-R（自闭症诊断访谈修订版）',
+      desc: 'ADI-R是针对家长的结构化访谈，详细了解孩子的发育历史和当前行为表现。',
+      items: ['时长约1.5-3小时','由专业评估师对家长进行访谈','涵盖社交互动、沟通、重复行为等领域','会询问孩子4-5岁时的表现（如适用）','准备好描述孩子日常行为的具体例子','诚实回答，不需要美化或夸大']
+    },
+    tips: {
+      title: '评估当天小贴士',
+      items: ['保证孩子充分休息，选择孩子状态最好的时段','带上孩子喜欢的零食和安抚物','穿舒适的衣服','不要提前训练孩子"表现好"——评估需要看到真实状态','评估过程中可以随时提问','如果孩子不配合，不要焦虑，这本身也是观察的一部分']
+    }
+  },
+  en: {
+    ados: {
+      title: 'ADOS-2 (Autism Diagnostic Observation Schedule)',
+      desc: 'ADOS-2 is one of the "gold standard" tools for autism diagnosis. It uses semi-structured interactive activities to observe your child\'s social communication and behaviors.',
+      items: ['Takes approximately 40-60 minutes','Assessor plays games, tells stories, and chats with your child','Observes eye contact, social responses, imaginative play, etc.','Different modules used based on age and language level','Parents typically observe from the side','This is not a test — there is no "pass" or "fail"']
+    },
+    adir: {
+      title: 'ADI-R (Autism Diagnostic Interview - Revised)',
+      desc: 'ADI-R is a structured interview with parents to understand your child\'s developmental history and current behaviors in detail.',
+      items: ['Takes approximately 1.5-3 hours','Conducted as an interview with parents by a trained assessor','Covers social interaction, communication, and repetitive behaviors','May ask about your child\'s behavior at ages 4-5 (if applicable)','Prepare specific examples of your child\'s daily behaviors','Answer honestly — no need to embellish or exaggerate']
+    },
+    tips: {
+      title: 'Tips for Assessment Day',
+      items: ['Ensure your child is well-rested; schedule during their best time of day','Bring your child\'s favorite snacks and comfort items','Dress in comfortable clothing','Do NOT coach your child to "behave well" — assessors need to see natural behavior','Feel free to ask questions during the process','If your child is uncooperative, don\'t worry — that itself is part of the observation']
+    }
+  }
+};
+
+// ===== State =====
+let currentLang = localStorage.getItem('withyou-lang') || 'zh';
+let currentCountry = 'CN';
+let currentSection = 'pathway';
+let checklistState = JSON.parse(localStorage.getItem('withyou-appt-checklist') || '{}');
+let formData = JSON.parse(localStorage.getItem('withyou-appt-form') || '{}');
+
+// ===== Language Toggle =====
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('withyou-lang', lang);
+  document.querySelectorAll('.lang-toggle').forEach(b => b.classList.toggle('active', b.textContent.trim() === (lang === 'zh' ? '中文' : 'EN')));
+  document.querySelectorAll('[data-zh]').forEach(el => {
+    el.textContent = el.getAttribute('data-' + lang);
+  });
+  renderContent();
+}
+
+// ===== Country Tabs =====
+document.getElementById('countryTabs').addEventListener('click', e => {
+  const tab = e.target.closest('.country-tab');
+  if (!tab) return;
+  document.querySelectorAll('.country-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  currentCountry = tab.dataset.country;
+  renderContent();
+});
+
+// ===== Section Tabs =====
+document.getElementById('sectionTabs').addEventListener('click', e => {
+  const tab = e.target.closest('.section-tab');
+  if (!tab) return;
+  document.querySelectorAll('.section-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  currentSection = tab.dataset.section;
+  renderContent();
+});
+
+// ===== Render =====
+function renderContent() {
+  const area = document.getElementById('contentArea');
+  const d = DATA[currentCountry];
+  const lang = currentLang;
+
+  if (currentSection === 'pathway') {
+    const steps = d.pathway[lang];
+    area.innerHTML = `<div class="card"><h3><span class="icon">&#128506;</span> ${lang === 'zh' ? '诊断路径' : 'Diagnostic Pathway'}</h3><div class="pathway-steps">${steps.map((s, i) => `
+      <div class="pathway-step">
+        <div class="step-marker"><div class="step-dot">${i + 1}</div>${i < steps.length - 1 ? '<div class="step-line"></div>' : ''}</div>
+        <div class="step-content"><h4>${s.title}</h4><p>${s.desc}</p></div>
+      </div>`).join('')}</div></div>`;
+  }
+
+  else if (currentSection === 'checklist') {
+    const items = d.checklist[lang];
+    const key = currentCountry;
+    if (!checklistState[key]) checklistState[key] = {};
+    const checked = Object.values(checklistState[key]).filter(Boolean).length;
+    area.innerHTML = `<div class="card"><h3><span class="icon">&#9989;</span> ${lang === 'zh' ? '携带清单' : 'What to Bring'}</h3>
+      <ul class="checklist">${items.map((item, i) => {
+        const isChecked = checklistState[key][i];
+        return `<li class="${isChecked ? 'checked' : ''}" data-idx="${i}"><div class="checkbox ${isChecked ? 'checked' : ''}">${isChecked ? '&#10003;' : ''}</div><span>${item}</span></li>`;
+      }).join('')}</ul>
+      <div class="check-progress"><div class="check-progress-bar" style="width:${items.length ? (checked/items.length*100) : 0}%"></div></div>
+      <div class="check-count">${checked}/${items.length} ${lang === 'zh' ? '已准备' : 'prepared'}</div>
+    </div>`;
+
+    area.querySelector('.checklist').addEventListener('click', e => {
+      const li = e.target.closest('li');
+      if (!li) return;
+      const idx = li.dataset.idx;
+      checklistState[key][idx] = !checklistState[key][idx];
+      localStorage.setItem('withyou-appt-checklist', JSON.stringify(checklistState));
+      renderContent();
+    });
+  }
+
+  else if (currentSection === 'assessment') {
+    const info = ASSESSMENT_INFO[lang];
+    area.innerHTML = `
+      <div class="card">
+        <h3><span class="icon">&#128200;</span> ${lang === 'zh' ? '了解评估过程' : 'Understanding the Assessment'}</h3>
+        <div class="assess-block"><h4>${info.ados.title}</h4><p>${info.ados.desc}</p><ul>${info.ados.items.map(i => `<li>${i}</li>`).join('')}</ul></div>
+        <div class="assess-block"><h4>${info.adir.title}</h4><p>${info.adir.desc}</p><ul>${info.adir.items.map(i => `<li>${i}</li>`).join('')}</ul></div>
+        <div class="assess-block" style="background:var(--yellow-bg)"><h4>${info.tips.title}</h4><ul>${info.tips.items.map(i => `<li>${i}</li>`).join('')}</ul></div>
+      </div>`;
+  }
+
+  else if (currentSection === 'questions') {
+    const qs = d.questions[lang];
+    area.innerHTML = `<div class="card"><h3><span class="icon">&#10067;</span> ${lang === 'zh' ? '要问医生的问题' : 'Questions to Ask'}</h3>
+      <p style="font-size:0.84rem;color:var(--warm-text-light);margin-bottom:12px">${lang === 'zh' ? '就诊时可以参考这些问题，确保获得需要的信息：' : 'Reference these questions during your visit to make sure you get the information you need:'}</p>
+      <ol class="question-list">${qs.map((q, i) => `<li><span class="q-num">${i + 1}</span><span>${q}</span></li>`).join('')}</ol></div>`;
+  }
+
+  else if (currentSection === 'summary') {
+    const fk = currentCountry + '-form';
+    const fd = formData[fk] || {};
+    const labels = lang === 'zh' ? {
+      title: '行为观察小结',
+      subtitle: '填写后可打印为A4带去就诊',
+      childName: '孩子姓名',
+      dob: '出生日期',
+      age: '当前年龄',
+      filledBy: '填写人',
+      filledDate: '填写日期',
+      commTitle: '社交沟通',
+      commQ1: '与人眼神接触情况',
+      commQ2: '对名字的回应',
+      commQ3: '与同龄人互动方式',
+      commQ4: '语言发展（词汇量、句子长度）',
+      behTitle: '行为特点',
+      behQ1: '重复性行为或动作',
+      behQ2: '对特定事物的强烈兴趣',
+      behQ3: '对日常变化的反应',
+      behQ4: '感官敏感（声音、触觉、味觉等）',
+      dailyTitle: '日常生活',
+      dailyQ1: '睡眠情况',
+      dailyQ2: '饮食特点',
+      dailyQ3: '如厕训练进展',
+      dailyQ4: '情绪调节能力',
+      concerns: '最担心的问题',
+      strengths: '孩子的优势和兴趣',
+      print: '打印为A4',
+      save: '保存草稿'
+    } : {
+      title: 'Behavior Summary',
+      subtitle: 'Fill in and print as A4 to bring to your visit',
+      childName: 'Child\'s Name',
+      dob: 'Date of Birth',
+      age: 'Current Age',
+      filledBy: 'Filled by',
+      filledDate: 'Date',
+      commTitle: 'Social Communication',
+      commQ1: 'Eye contact with others',
+      commQ2: 'Response to name',
+      commQ3: 'Interaction with peers',
+      commQ4: 'Language development (vocabulary, sentence length)',
+      behTitle: 'Behavioral Characteristics',
+      behQ1: 'Repetitive behaviors or movements',
+      behQ2: 'Intense interests in specific things',
+      behQ3: 'Reaction to changes in routine',
+      behQ4: 'Sensory sensitivities (sound, touch, taste, etc.)',
+      dailyTitle: 'Daily Living',
+      dailyQ1: 'Sleep patterns',
+      dailyQ2: 'Eating habits',
+      dailyQ3: 'Toilet training progress',
+      dailyQ4: 'Emotional regulation',
+      concerns: 'Primary concerns',
+      strengths: 'Child\'s strengths and interests',
+      print: 'Print A4',
+      save: 'Save Draft'
+    };
+
+    area.innerHTML = `<div class="card">
+      <h3><span class="icon">&#128221;</span> ${labels.title}</h3>
+      <p style="font-size:0.84rem;color:var(--warm-text-light);margin-bottom:16px">${labels.subtitle}</p>
+
+      <div class="form-row">
+        <div class="form-section"><label class="form-label">${labels.childName}</label><input class="form-input" data-field="childName" value="${fd.childName || ''}"></div>
+        <div class="form-section"><label class="form-label">${labels.dob}</label><input class="form-input" type="date" data-field="dob" value="${fd.dob || ''}"></div>
+      </div>
+      <div class="form-row">
+        <div class="form-section"><label class="form-label">${labels.age}</label><input class="form-input" data-field="age" value="${fd.age || ''}"></div>
+        <div class="form-section"><label class="form-label">${labels.filledBy}</label><input class="form-input" data-field="filledBy" value="${fd.filledBy || ''}"></div>
+      </div>
+      <div class="form-section"><label class="form-label">${labels.filledDate}</label><input class="form-input" type="date" data-field="filledDate" value="${fd.filledDate || ''}"></div>
+
+      <h3 style="margin-top:20px"><span class="icon">&#128483;</span> ${labels.commTitle}</h3>
+      <div class="form-section"><label class="form-label">${labels.commQ1}</label><textarea class="form-textarea" data-field="commQ1">${fd.commQ1 || ''}</textarea></div>
+      <div class="form-section"><label class="form-label">${labels.commQ2}</label><textarea class="form-textarea" data-field="commQ2">${fd.commQ2 || ''}</textarea></div>
+      <div class="form-section"><label class="form-label">${labels.commQ3}</label><textarea class="form-textarea" data-field="commQ3">${fd.commQ3 || ''}</textarea></div>
+      <div class="form-section"><label class="form-label">${labels.commQ4}</label><textarea class="form-textarea" data-field="commQ4">${fd.commQ4 || ''}</textarea></div>
+
+      <h3 style="margin-top:20px"><span class="icon">&#128260;</span> ${labels.behTitle}</h3>
+      <div class="form-section"><label class="form-label">${labels.behQ1}</label><textarea class="form-textarea" data-field="behQ1">${fd.behQ1 || ''}</textarea></div>
+      <div class="form-section"><label class="form-label">${labels.behQ2}</label><textarea class="form-textarea" data-field="behQ2">${fd.behQ2 || ''}</textarea></div>
+      <div class="form-section"><label class="form-label">${labels.behQ3}</label><textarea class="form-textarea" data-field="behQ3">${fd.behQ3 || ''}</textarea></div>
+      <div class="form-section"><label class="form-label">${labels.behQ4}</label><textarea class="form-textarea" data-field="behQ4">${fd.behQ4 || ''}</textarea></div>
+
+      <h3 style="margin-top:20px"><span class="icon">&#127968;</span> ${labels.dailyTitle}</h3>
+      <div class="form-section"><label class="form-label">${labels.dailyQ1}</label><textarea class="form-textarea" data-field="dailyQ1">${fd.dailyQ1 || ''}</textarea></div>
+      <div class="form-section"><label class="form-label">${labels.dailyQ2}</label><textarea class="form-textarea" data-field="dailyQ2">${fd.dailyQ2 || ''}</textarea></div>
+      <div class="form-section"><label class="form-label">${labels.dailyQ3}</label><textarea class="form-textarea" data-field="dailyQ3">${fd.dailyQ3 || ''}</textarea></div>
+      <div class="form-section"><label class="form-label">${labels.dailyQ4}</label><textarea class="form-textarea" data-field="dailyQ4">${fd.dailyQ4 || ''}</textarea></div>
+
+      <div class="form-section"><label class="form-label">${labels.concerns}</label><textarea class="form-textarea" data-field="concerns" style="min-height:100px">${fd.concerns || ''}</textarea></div>
+      <div class="form-section"><label class="form-label">${labels.strengths}</label><textarea class="form-textarea" data-field="strengths" style="min-height:100px">${fd.strengths || ''}</textarea></div>
+
+      <div class="form-actions">
+        <button class="btn-print" onclick="window.print()">&#128424; ${labels.print}</button>
+        <button class="btn-save" id="saveBtn">&#128190; ${labels.save}</button>
+      </div>
+    </div>`;
+
+    // Auto-save on input
+    area.querySelectorAll('.form-input, .form-textarea').forEach(input => {
+      input.addEventListener('input', () => {
+        if (!formData[fk]) formData[fk] = {};
+        formData[fk][input.dataset.field] = input.value;
+      });
+    });
+
+    document.getElementById('saveBtn').addEventListener('click', () => {
+      localStorage.setItem('withyou-appt-form', JSON.stringify(formData));
+      const btn = document.getElementById('saveBtn');
+      const orig = btn.innerHTML;
+      btn.innerHTML = lang === 'zh' ? '&#10003; 已保存' : '&#10003; Saved';
+      btn.style.background = 'var(--sage)';
+      setTimeout(() => { btn.innerHTML = orig; btn.style.background = ''; }, 1500);
+    });
+  }
+}
+
+// ===== Init =====
+setLang(currentLang);
+</script>
+</body>
+</html>

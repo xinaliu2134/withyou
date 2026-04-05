@@ -1,0 +1,846 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>睡眠教练 — 同路 WithYou</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --sage: #6B8F7B;
+  --sage-light: #8FB09D;
+  --sage-pale: #E8F0EB;
+  --sage-dark: #4A6B56;
+  --cream: #FAF7F0;
+  --cream-dark: #F0EBDF;
+  --blue: #7BA7BC;
+  --blue-light: #A5C7D6;
+  --blue-pale: #E4EFF4;
+  --warm-text: #3D3D3D;
+  --warm-text-light: #6B6B6B;
+  --coral: #D4917B;
+  --coral-pale: #F5E0D8;
+  --yellow: #C9A84C;
+  --yellow-bg: #FDF6E3;
+  --red: #C47A6E;
+  --red-bg: #F8E8E5;
+  --green-bg: #E8F0EB;
+  --shadow: 0 2px 16px rgba(107,143,123,0.10);
+  --shadow-lg: 0 6px 28px rgba(107,143,123,0.14);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+  background: var(--cream);
+  color: var(--warm-text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.hidden { display: none !important; }
+.container { max-width: 680px; margin: 0 auto; padding: 0 20px; }
+
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.topbar-back { color: var(--sage); text-decoration: none; font-size: 0.88rem; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+.topbar-title { font-size: 0.95rem; font-weight: 600; color: var(--sage); }
+.lang-toggle {
+  background: var(--sage-pale); border: none; border-radius: 20px; padding: 4px 12px;
+  font-size: 0.78rem; font-weight: 500; color: var(--sage); cursor: pointer; transition: background 0.2s;
+}
+.lang-toggle:hover { background: var(--sage-light); color: #fff; }
+
+.tabs {
+  display: flex; gap: 4px; padding: 16px 20px 0; max-width: 680px; margin: 0 auto;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.tab {
+  padding: 10px 14px; border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  font-size: 0.82rem; font-weight: 500; background: var(--cream-dark);
+  color: var(--warm-text-light); border: none; cursor: pointer; white-space: nowrap; transition: all 0.2s;
+}
+.tab.active { background: #fff; color: var(--sage); font-weight: 600; }
+
+.panel {
+  background: #fff; border-radius: 0 0 var(--radius) var(--radius);
+  padding: 24px 20px; margin: 0 auto; max-width: 680px; min-height: 400px; box-shadow: var(--shadow);
+}
+
+.card {
+  background: #fff; border: 1px solid var(--cream-dark); border-radius: var(--radius-sm);
+  padding: 16px; margin-bottom: 12px;
+}
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+.card-title { font-size: 0.92rem; font-weight: 600; color: var(--sage-dark); }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 24px; border-radius: var(--radius-sm); font-size: 0.92rem;
+  font-weight: 600; font-family: inherit; border: none; cursor: pointer; transition: all 0.2s;
+}
+.btn-primary { background: var(--sage); color: #fff; width: 100%; }
+.btn-primary:hover { background: var(--sage-dark); }
+.btn-secondary { background: #fff; color: var(--sage); border: 2px solid var(--sage-pale); }
+.btn-secondary:hover { background: var(--sage-pale); }
+.btn-small { padding: 8px 16px; font-size: 0.82rem; }
+.btn-danger { background: var(--red-bg); color: var(--red); border: none; }
+
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 6px; }
+.form-input, .form-select {
+  width: 100%; padding: 12px 14px; border: 2px solid var(--cream-dark);
+  border-radius: var(--radius-sm); font-size: 0.92rem; font-family: inherit;
+  color: var(--warm-text); background: #fff; outline: none; transition: border-color 0.2s;
+}
+.form-input:focus, .form-select:focus { border-color: var(--sage-light); }
+
+.section-title { font-size: 1.05rem; font-weight: 600; color: var(--sage-dark); margin-bottom: 6px; }
+.section-sub { font-size: 0.82rem; color: var(--warm-text-light); margin-bottom: 16px; }
+.empty-state { text-align: center; padding: 40px 20px; color: var(--warm-text-light); font-size: 0.92rem; }
+.empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4; }
+
+/* ===== Sleep specific ===== */
+.sleep-stat {
+  display: flex; flex-direction: column; align-items: center;
+  padding: 14px; background: var(--sage-pale); border-radius: var(--radius-sm); text-align: center;
+}
+.sleep-stat-value { font-size: 1.4rem; font-weight: 700; color: var(--sage-dark); }
+.sleep-stat-label { font-size: 0.75rem; color: var(--warm-text-light); margin-top: 2px; }
+.stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 20px; }
+
+.sleep-entry {
+  padding: 12px 0; border-bottom: 1px solid var(--cream-dark);
+  display: flex; justify-content: space-between; align-items: center;
+}
+.sleep-entry:last-child { border-bottom: none; }
+
+/* Routine builder */
+.routine-step {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+  background: var(--cream); border-radius: var(--radius-sm); margin-bottom: 8px;
+  cursor: grab; user-select: none; font-size: 0.88rem;
+}
+.routine-step:active { cursor: grabbing; }
+.routine-step.dragging { opacity: 0.5; background: var(--sage-pale); }
+.routine-icon { font-size: 1.3rem; }
+.routine-grip { color: var(--warm-text-light); font-size: 1rem; cursor: grab; }
+.routine-remove { margin-left: auto; cursor: pointer; color: var(--red); font-size: 0.85rem; }
+
+/* Timer */
+.timer-display {
+  position: relative; width: 220px; height: 220px; margin: 20px auto;
+}
+.timer-svg { width: 100%; height: 100%; }
+.timer-text {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);
+  font-size: 2.2rem; font-weight: 700; color: var(--sage-dark);
+}
+.timer-controls { display: flex; gap: 10px; justify-content: center; margin-top: 16px; }
+
+/* Checklist */
+.check-item {
+  display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+  background: var(--cream); border-radius: var(--radius-sm); margin-bottom: 8px;
+  cursor: pointer; font-size: 0.88rem; transition: background 0.2s;
+}
+.check-item.checked { background: var(--sage-pale); }
+.check-box {
+  width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--cream-dark);
+  display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+  transition: all 0.2s; font-size: 0.75rem; color: transparent;
+}
+.check-item.checked .check-box { background: var(--sage); border-color: var(--sage); color: #fff; }
+
+/* Chart */
+.chart-wrap { text-align: center; margin: 20px 0; }
+.chart-wrap svg { max-width: 100%; width: 100%; }
+
+/* Info card */
+.info-card {
+  background: var(--blue-pale); border-radius: var(--radius-sm); padding: 16px;
+  margin-bottom: 12px; font-size: 0.85rem; line-height: 1.6;
+}
+.info-card h3 { color: var(--blue); font-size: 0.92rem; margin-bottom: 8px; }
+.info-warning {
+  background: var(--yellow-bg); border-radius: var(--radius-sm); padding: 12px 16px;
+  font-size: 0.85rem; margin-top: 12px; font-weight: 500; color: #8B7A2B;
+}
+
+/* Strategy tips */
+.tip-card {
+  background: var(--sage-pale); border-radius: var(--radius-sm); padding: 14px 16px;
+  margin-bottom: 10px; font-size: 0.85rem; line-height: 1.55;
+}
+.tip-card strong { color: var(--sage-dark); }
+
+/* Routine timer countdown */
+.routine-timer-bar {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  background: var(--blue-pale); border-radius: var(--radius-sm); margin-bottom: 8px;
+}
+.routine-timer-bar .step-name { flex: 1; font-weight: 500; font-size: 0.88rem; }
+.routine-timer-input {
+  width: 60px; padding: 6px; border: 2px solid var(--cream-dark); border-radius: 6px;
+  font-size: 0.85rem; text-align: center; font-family: inherit;
+}
+.routine-timer-unit { font-size: 0.78rem; color: var(--warm-text-light); }
+
+@media print {
+  .topbar, .tabs, .btn, .timer-controls { display: none !important; }
+  .panel { box-shadow: none; border: 1px solid #ddd; }
+  .routine-step { break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="../index.html" class="topbar-back">&#8592; <span data-i18n="back">返回</span></a>
+    <span class="topbar-title" data-i18n="title">睡眠教练</span>
+  </div>
+  <button class="lang-toggle" onclick="toggleLang()">EN / 中</button>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('diary')" data-i18n="tab_diary">睡眠日记</button>
+  <button class="tab" onclick="showTab('routine')" data-i18n="tab_routine">就寝流程</button>
+  <button class="tab" onclick="showTab('env')" data-i18n="tab_env">环境检查</button>
+  <button class="tab" onclick="showTab('melatonin')" data-i18n="tab_mel">褪黑素指南</button>
+  <button class="tab" onclick="showTab('score')" data-i18n="tab_score">周报</button>
+  <button class="tab" onclick="showTab('tips')" data-i18n="tab_tips">策略</button>
+</div>
+
+<!-- ==================== SLEEP DIARY ==================== -->
+<div class="panel" id="panel-diary">
+  <div class="section-title" data-i18n="diary_title">睡眠日记</div>
+  <p class="section-sub" data-i18n="diary_sub">记录每晚睡眠，追踪趋势</p>
+
+  <div id="diary-form" class="card">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+      <div class="form-group">
+        <label class="form-label" data-i18n="bedtime">上床时间</label>
+        <input class="form-input" type="time" id="inp-bedtime" value="20:30">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="sleep_onset">入睡时间</label>
+        <input class="form-input" type="time" id="inp-onset" value="21:00">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="wakings">夜醒次数</label>
+        <input class="form-input" type="number" id="inp-wakings" min="0" max="20" value="0">
+      </div>
+      <div class="form-group">
+        <label class="form-label" data-i18n="wake_time">醒来时间</label>
+        <input class="form-input" type="time" id="inp-wake" value="07:00">
+      </div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="diary_notes">备注</label>
+      <input class="form-input" id="inp-notes" placeholder="">
+    </div>
+    <button class="btn btn-primary" onclick="saveSleepEntry()" data-i18n="save_entry">保存记录</button>
+  </div>
+
+  <div id="sleep-stats" class="stats-grid hidden"></div>
+  <div id="sleep-list"></div>
+</div>
+
+<!-- ==================== ROUTINE BUILDER ==================== -->
+<div class="panel hidden" id="panel-routine">
+  <div class="section-title" data-i18n="routine_title">就寝流程构建器</div>
+  <p class="section-sub" data-i18n="routine_sub">拖放排列步骤，创建视觉化就寝流程</p>
+
+  <div id="available-steps" class="card">
+    <div class="card-title" data-i18n="available_steps" style="margin-bottom:10px;">可用步骤（点击添加）</div>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;" id="step-palette"></div>
+  </div>
+
+  <div class="card-title" data-i18n="your_routine" style="margin:16px 0 10px;">你的流程</div>
+  <div id="routine-list"></div>
+
+  <div style="display:flex;gap:8px;margin-top:16px;">
+    <button class="btn btn-primary" style="flex:1" onclick="printRoutine()" data-i18n="print_strip">打印流程条</button>
+    <button class="btn btn-secondary" style="flex:0" onclick="startRoutineTimer()" data-i18n="start_timer">计时</button>
+  </div>
+
+  <!-- Routine Timer Overlay -->
+  <div id="routine-timer-overlay" class="hidden" style="margin-top:20px;">
+    <div class="card" style="background:var(--blue-pale);border:2px solid var(--blue);">
+      <div class="card-title" id="rt-current-step" style="font-size:1.1rem;text-align:center;margin-bottom:12px;"></div>
+      <div class="timer-display">
+        <svg class="timer-svg" viewBox="0 0 220 220">
+          <circle cx="110" cy="110" r="100" fill="none" stroke="var(--cream-dark)" stroke-width="8"/>
+          <circle id="rt-circle" cx="110" cy="110" r="100" fill="none" stroke="var(--blue)" stroke-width="8"
+            stroke-linecap="round" stroke-dasharray="628" stroke-dashoffset="0" transform="rotate(-90 110 110)"/>
+        </svg>
+        <div class="timer-text" id="rt-time">5:00</div>
+      </div>
+      <div class="timer-controls">
+        <button class="btn btn-secondary btn-small" onclick="stopRoutineTimer()" data-i18n="stop">停止</button>
+        <button class="btn btn-primary btn-small" onclick="nextRoutineStep()" data-i18n="next_step">下一步</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== ENVIRONMENT ==================== -->
+<div class="panel hidden" id="panel-env">
+  <div class="section-title" data-i18n="env_title">睡眠环境检查表</div>
+  <p class="section-sub" data-i18n="env_sub">优化卧室环境促进更好的睡眠</p>
+  <div id="env-checklist"></div>
+  <button class="btn btn-primary" style="margin-top:16px;" onclick="saveEnv()" data-i18n="save_env">保存检查结果</button>
+</div>
+
+<!-- ==================== MELATONIN ==================== -->
+<div class="panel hidden" id="panel-melatonin">
+  <div class="section-title" data-i18n="mel_title">褪黑素信息指南</div>
+  <p class="section-sub" data-i18n="mel_sub">了解褪黑素：它是什么、怎么用、注意事项</p>
+  <div id="mel-content"></div>
+</div>
+
+<!-- ==================== WEEKLY SCORE ==================== -->
+<div class="panel hidden" id="panel-score">
+  <div class="section-title" data-i18n="score_title">每周睡眠评分</div>
+  <p class="section-sub" data-i18n="score_sub">过去7天的睡眠趋势</p>
+  <div class="chart-wrap">
+    <svg id="sleep-chart" viewBox="0 0 600 300"></svg>
+  </div>
+  <div id="score-summary"></div>
+</div>
+
+<!-- ==================== STRATEGIES ==================== -->
+<div class="panel hidden" id="panel-tips">
+  <div class="section-title" data-i18n="tips_title">睡眠策略</div>
+  <p class="section-sub" data-i18n="tips_sub">循证策略和感觉考量 (Malow et al. 2012; Hollway & Aman 2011)</p>
+  <div id="tips-list"></div>
+</div>
+
+<div style="height:40px;"></div>
+
+<script>
+// ===================================================================
+//  I18N
+// ===================================================================
+let lang = 'zh';
+const I18N = {
+  zh: {
+    back: '返回', title: '睡眠教练',
+    tab_diary: '睡眠日记', tab_routine: '就寝流程', tab_env: '环境检查',
+    tab_mel: '褪黑素指南', tab_score: '周报', tab_tips: '策略',
+    diary_title: '睡眠日记', diary_sub: '记录每晚睡眠，追踪趋势',
+    bedtime: '上床时间', sleep_onset: '入睡时间', wakings: '夜醒次数', wake_time: '醒来时间',
+    diary_notes: '备注', save_entry: '保存记录',
+    total_sleep: '总睡眠', efficiency: '效率', latency: '入睡延迟',
+    no_entries: '还没有记录，开始记录今晚的睡眠吧',
+    delete_confirm: '确定删除这条记录？',
+    routine_title: '就寝流程构建器', routine_sub: '拖放排列步骤，创建视觉化就寝流程',
+    available_steps: '可用步骤（点击添加）', your_routine: '你的流程',
+    print_strip: '打印流程条', start_timer: '计时',
+    stop: '停止', next_step: '下一步',
+    env_title: '睡眠环境检查表', env_sub: '优化卧室环境促进更好的睡眠',
+    save_env: '保存检查结果',
+    mel_title: '褪黑素信息指南', mel_sub: '了解褪黑素：它是什么、怎么用、注意事项',
+    score_title: '每周睡眠评分', score_sub: '过去7天的睡眠趋势',
+    tips_title: '睡眠策略', tips_sub: '循证策略和感觉考量 (Malow et al. 2012; Hollway & Aman 2011)',
+    hrs: '小时', mins: '分钟',
+    saved: '已保存 ✓'
+  },
+  en: {
+    back: 'Back', title: 'Sleep Coach',
+    tab_diary: 'Sleep Diary', tab_routine: 'Routine', tab_env: 'Environment',
+    tab_mel: 'Melatonin', tab_score: 'Weekly', tab_tips: 'Strategies',
+    diary_title: 'Sleep Diary', diary_sub: 'Track nightly sleep and spot trends',
+    bedtime: 'Bedtime', sleep_onset: 'Fell Asleep', wakings: 'Night Wakings', wake_time: 'Wake Time',
+    diary_notes: 'Notes', save_entry: 'Save Entry',
+    total_sleep: 'Total Sleep', efficiency: 'Efficiency', latency: 'Onset Latency',
+    no_entries: 'No entries yet. Start logging tonight\'s sleep!',
+    delete_confirm: 'Delete this entry?',
+    routine_title: 'Bedtime Routine Builder', routine_sub: 'Drag and drop to arrange steps. Create a visual bedtime schedule.',
+    available_steps: 'Available Steps (tap to add)', your_routine: 'Your Routine',
+    print_strip: 'Print Schedule Strip', start_timer: 'Timer',
+    stop: 'Stop', next_step: 'Next Step',
+    env_title: 'Sleep Environment Checklist', env_sub: 'Optimize the bedroom for better sleep',
+    save_env: 'Save Checklist',
+    mel_title: 'Melatonin Information Guide', mel_sub: 'What it is, how to use it, and important considerations',
+    score_title: 'Weekly Sleep Score', score_sub: 'Sleep trends over the past 7 days',
+    tips_title: 'Sleep Strategies', tips_sub: 'Evidence-based tips & sensory considerations (Malow et al. 2012; Hollway & Aman 2011)',
+    hrs: 'hrs', mins: 'min',
+    saved: 'Saved ✓'
+  }
+};
+function t(k) { return I18N[lang][k] || k; }
+function applyLang() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (I18N[lang][k]) el.textContent = I18N[lang][k];
+  });
+}
+function toggleLang() { lang = lang === 'zh' ? 'en' : 'zh'; renderAll(); }
+
+// ===================================================================
+//  DATA
+// ===================================================================
+const STORAGE_KEY = 'withyou_sleep';
+let data = { entries: [], routine: [], env: {}, routineTimers: {} };
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+function load() { const s = localStorage.getItem(STORAGE_KEY); if (s) try { data = JSON.parse(s); } catch(e){} }
+
+// ===================================================================
+//  TABS
+// ===================================================================
+const TABS = ['diary','routine','env','melatonin','score','tips'];
+let activeTab = 'diary';
+function showTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab').forEach((el, i) => el.classList.toggle('active', TABS[i] === tab));
+  TABS.forEach(p => document.getElementById('panel-' + p).classList.toggle('hidden', p !== tab));
+  renderAll();
+}
+
+// ===================================================================
+//  SLEEP DIARY
+// ===================================================================
+function timeToMin(t) { const [h,m] = t.split(':').map(Number); return h * 60 + m; }
+function minToStr(m) { const h = Math.floor(m / 60); const mm = m % 60; return `${h}${t('hrs')} ${mm}${t('mins')}`; }
+
+function saveSleepEntry() {
+  const bedtime = document.getElementById('inp-bedtime').value;
+  const onset = document.getElementById('inp-onset').value;
+  const wakings = parseInt(document.getElementById('inp-wakings').value) || 0;
+  const wake = document.getElementById('inp-wake').value;
+  const notes = document.getElementById('inp-notes').value.trim();
+
+  if (!bedtime || !onset || !wake) return;
+
+  let onsetMin = timeToMin(onset);
+  let wakeMin = timeToMin(wake);
+  let bedMin = timeToMin(bedtime);
+  // handle past midnight
+  if (wakeMin < onsetMin) wakeMin += 1440;
+  if (onsetMin < bedMin) onsetMin += 1440;
+
+  const totalSleep = wakeMin - onsetMin;
+  const timeInBed = wakeMin - bedMin;
+  const latency = onsetMin - bedMin;
+  const efficiency = timeInBed > 0 ? Math.round((totalSleep / timeInBed) * 100) : 0;
+
+  data.entries.unshift({
+    id: Date.now(),
+    date: new Date().toISOString().slice(0, 10),
+    bedtime, onset, wake, wakings, notes,
+    totalSleep, latency, efficiency
+  });
+  save();
+  document.getElementById('inp-notes').value = '';
+  renderDiary();
+}
+
+function deleteEntry(id) {
+  if (!confirm(t('delete_confirm'))) return;
+  data.entries = data.entries.filter(e => e.id !== id);
+  save();
+  renderDiary();
+}
+
+function renderDiary() {
+  const list = document.getElementById('sleep-list');
+  const stats = document.getElementById('sleep-stats');
+
+  if (!data.entries.length) {
+    list.innerHTML = `<div class="empty-state"><div class="empty-icon">🌙</div>${t('no_entries')}</div>`;
+    stats.classList.add('hidden');
+    return;
+  }
+
+  // Latest stats
+  const last = data.entries[0];
+  stats.classList.remove('hidden');
+  stats.innerHTML = `
+    <div class="sleep-stat"><div class="sleep-stat-value">${minToStr(last.totalSleep)}</div><div class="sleep-stat-label">${t('total_sleep')}</div></div>
+    <div class="sleep-stat"><div class="sleep-stat-value">${last.efficiency}%</div><div class="sleep-stat-label">${t('efficiency')}</div></div>
+    <div class="sleep-stat"><div class="sleep-stat-value">${last.latency}${t('mins')}</div><div class="sleep-stat-label">${t('latency')}</div></div>
+  `;
+
+  list.innerHTML = data.entries.slice(0, 14).map(e => `
+    <div class="sleep-entry">
+      <div>
+        <div style="font-size:0.85rem;font-weight:600;">${e.date}</div>
+        <div style="font-size:0.78rem;color:var(--warm-text-light);">${e.bedtime} → ${e.wake} | ${lang === 'zh' ? '夜醒' : 'Wakings'}: ${e.wakings}${e.notes ? ' | ' + e.notes : ''}</div>
+      </div>
+      <div style="text-align:right;">
+        <div style="font-size:0.92rem;font-weight:600;color:var(--sage);">${minToStr(e.totalSleep)}</div>
+        <span style="cursor:pointer;color:var(--red);font-size:0.78rem;" onclick="deleteEntry(${e.id})">×</span>
+      </div>
+    </div>
+  `).join('');
+}
+
+// ===================================================================
+//  ROUTINE BUILDER
+// ===================================================================
+const ROUTINE_STEPS = [
+  { id: 'bath', icon: '🛁', zh: '洗澡', en: 'Bath', min: 15 },
+  { id: 'pajamas', icon: '👕', zh: '穿睡衣', en: 'Pajamas', min: 3 },
+  { id: 'teeth', icon: '🪥', zh: '刷牙', en: 'Brush Teeth', min: 3 },
+  { id: 'toilet', icon: '🚽', zh: '上厕所', en: 'Toilet', min: 5 },
+  { id: 'story', icon: '📖', zh: '讲故事', en: 'Story Time', min: 10 },
+  { id: 'song', icon: '🎵', zh: '听音乐/唱歌', en: 'Music/Song', min: 5 },
+  { id: 'hug', icon: '🤗', zh: '拥抱/亲吻', en: 'Hug/Kiss', min: 2 },
+  { id: 'drink', icon: '🥛', zh: '喝水/牛奶', en: 'Drink', min: 3 },
+  { id: 'deep_breath', icon: '🌬', zh: '深呼吸', en: 'Deep Breaths', min: 3 },
+  { id: 'lights', icon: '💡', zh: '关灯', en: 'Lights Off', min: 1 },
+  { id: 'comfort', icon: '🧸', zh: '安慰物', en: 'Comfort Item', min: 2 },
+  { id: 'massage', icon: '✋', zh: '按摩', en: 'Massage', min: 5 }
+];
+
+function addRoutineStep(id) {
+  if (data.routine.includes(id)) return;
+  data.routine.push(id);
+  save();
+  renderRoutine();
+}
+
+function removeRoutineStep(id) {
+  data.routine = data.routine.filter(s => s !== id);
+  save();
+  renderRoutine();
+}
+
+function renderRoutine() {
+  // Palette
+  const palette = document.getElementById('step-palette');
+  palette.innerHTML = ROUTINE_STEPS.filter(s => !data.routine.includes(s.id)).map(s =>
+    `<span style="padding:8px 14px;border-radius:20px;background:var(--cream);font-size:0.82rem;cursor:pointer;" onclick="addRoutineStep('${s.id}')">${s.icon} ${lang === 'zh' ? s.zh : s.en}</span>`
+  ).join('');
+
+  // List
+  const list = document.getElementById('routine-list');
+  if (!data.routine.length) {
+    list.innerHTML = `<div class="empty-state">${lang === 'zh' ? '点击上方步骤添加到流程' : 'Tap steps above to build your routine'}</div>`;
+    return;
+  }
+  list.innerHTML = data.routine.map((id, i) => {
+    const step = ROUTINE_STEPS.find(s => s.id === id);
+    if (!step) return '';
+    const mins = data.routineTimers[id] || step.min;
+    return `<div class="routine-step" draggable="true" data-idx="${i}"
+      ondragstart="dragStart(event)" ondragover="dragOver(event)" ondrop="dropStep(event)" ondragend="dragEnd(event)">
+      <span class="routine-grip">⠿</span>
+      <span class="routine-icon">${step.icon}</span>
+      <span>${lang === 'zh' ? step.zh : step.en}</span>
+      <input class="routine-timer-input" type="number" min="1" max="60" value="${mins}"
+        onchange="setStepTimer('${id}', this.value)" onclick="event.stopPropagation()">
+      <span class="routine-timer-unit">${t('mins')}</span>
+      <span class="routine-remove" onclick="removeRoutineStep('${id}')">×</span>
+    </div>`;
+  }).join('');
+}
+
+function setStepTimer(id, val) {
+  data.routineTimers[id] = parseInt(val) || 5;
+  save();
+}
+
+// Drag & drop
+let dragIdx = null;
+function dragStart(e) { dragIdx = parseInt(e.target.dataset.idx); e.target.classList.add('dragging'); }
+function dragOver(e) { e.preventDefault(); }
+function dropStep(e) {
+  e.preventDefault();
+  const target = e.target.closest('.routine-step');
+  if (!target) return;
+  const toIdx = parseInt(target.dataset.idx);
+  if (dragIdx === null || dragIdx === toIdx) return;
+  const item = data.routine.splice(dragIdx, 1)[0];
+  data.routine.splice(toIdx, 0, item);
+  save();
+  renderRoutine();
+}
+function dragEnd(e) { e.target.classList.remove('dragging'); dragIdx = null; }
+
+function printRoutine() { window.print(); }
+
+// Routine timer
+let rtInterval = null;
+let rtStepIdx = 0;
+let rtSecsLeft = 0;
+
+function startRoutineTimer() {
+  if (!data.routine.length) return;
+  rtStepIdx = 0;
+  document.getElementById('routine-timer-overlay').classList.remove('hidden');
+  startStepCountdown();
+}
+
+function startStepCountdown() {
+  const id = data.routine[rtStepIdx];
+  const step = ROUTINE_STEPS.find(s => s.id === id);
+  if (!step) { stopRoutineTimer(); return; }
+  const mins = data.routineTimers[id] || step.min;
+  rtSecsLeft = mins * 60;
+  document.getElementById('rt-current-step').textContent = `${step.icon} ${lang === 'zh' ? step.zh : step.en}`;
+  updateTimerDisplay();
+  clearInterval(rtInterval);
+  rtInterval = setInterval(() => {
+    rtSecsLeft--;
+    if (rtSecsLeft <= 0) { nextRoutineStep(); return; }
+    updateTimerDisplay();
+  }, 1000);
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(rtSecsLeft / 60);
+  const s = rtSecsLeft % 60;
+  document.getElementById('rt-time').textContent = `${m}:${String(s).padStart(2, '0')}`;
+  const id = data.routine[rtStepIdx];
+  const step = ROUTINE_STEPS.find(ss => ss.id === id);
+  const total = ((data.routineTimers[id] || (step ? step.min : 5)) * 60);
+  const pct = total > 0 ? (rtSecsLeft / total) : 0;
+  document.getElementById('rt-circle').setAttribute('stroke-dashoffset', (1 - pct) * 628);
+}
+
+function nextRoutineStep() {
+  rtStepIdx++;
+  if (rtStepIdx >= data.routine.length) { stopRoutineTimer(); return; }
+  startStepCountdown();
+}
+
+function stopRoutineTimer() {
+  clearInterval(rtInterval);
+  document.getElementById('routine-timer-overlay').classList.add('hidden');
+}
+
+// ===================================================================
+//  ENVIRONMENT CHECKLIST
+// ===================================================================
+const ENV_ITEMS = [
+  { id: 'dark', icon: '🌑', zh: '房间足够暗（遮光窗帘）', en: 'Room is dark enough (blackout curtains)' },
+  { id: 'sound', icon: '🔇', zh: '安静或使用白噪音机', en: 'Quiet or white noise machine' },
+  { id: 'temp', icon: '🌡', zh: '温度适宜（18-20°C / 65-68°F）', en: 'Temperature comfortable (18-20°C / 65-68°F)' },
+  { id: 'bedding', icon: '🛏', zh: '床品舒适（适合感觉需求）', en: 'Comfortable bedding (sensory-appropriate)' },
+  { id: 'electronics', icon: '📱', zh: '睡前1小时无电子屏幕', en: 'No screens 1 hour before bed' },
+  { id: 'comfort', icon: '🧸', zh: '安慰物可触及', en: 'Comfort item accessible' },
+  { id: 'nightlight', icon: '🔆', zh: '如需要使用暖色夜灯（非蓝光）', en: 'Warm nightlight if needed (not blue light)' },
+  { id: 'consistent', icon: '🕐', zh: '每天同一时间上床', en: 'Same bedtime every night' },
+  { id: 'safe', icon: '🔒', zh: '房间安全（没有危险物品）', en: 'Room is safe (no hazards)' },
+  { id: 'calm', icon: '☮', zh: '睡前30分钟安静活动', en: 'Calm activities 30 min before bed' }
+];
+
+function renderEnv() {
+  const c = document.getElementById('env-checklist');
+  c.innerHTML = ENV_ITEMS.map(item => {
+    const checked = data.env[item.id] ? 'checked' : '';
+    return `<div class="check-item ${checked}" onclick="toggleEnv('${item.id}')">
+      <div class="check-box">${data.env[item.id] ? '✓' : ''}</div>
+      <span>${item.icon} ${lang === 'zh' ? item.zh : item.en}</span>
+    </div>`;
+  }).join('');
+}
+
+function toggleEnv(id) {
+  data.env[id] = !data.env[id];
+  save();
+  renderEnv();
+}
+
+function saveEnv() {
+  save();
+  const btn = document.querySelector('#panel-env .btn-primary');
+  const orig = btn.textContent;
+  btn.textContent = t('saved');
+  setTimeout(() => btn.textContent = orig, 1500);
+}
+
+// ===================================================================
+//  MELATONIN GUIDE
+// ===================================================================
+function renderMelatonin() {
+  const c = document.getElementById('mel-content');
+  const content = lang === 'zh' ? `
+    <div class="info-card">
+      <h3>什么是褪黑素？</h3>
+      <p>褪黑素是大脑松果体自然分泌的激素，在黑暗环境中分泌增加，帮助调节睡眠-觉醒周期（昼夜节律）。许多自闭症谱系人群的褪黑素分泌模式有所不同。</p>
+    </div>
+    <div class="info-card">
+      <h3>常见剂量（按年龄）</h3>
+      <ul style="padding-left:18px;margin-top:8px;">
+        <li><strong>起始剂量：</strong>0.5-1mg（所有年龄）</li>
+        <li><strong>幼儿（1-3岁）：</strong>0.5-1mg</li>
+        <li><strong>学龄前（3-5岁）：</strong>1-2mg</li>
+        <li><strong>学龄期（6-12岁）：</strong>1-3mg</li>
+        <li><strong>青少年：</strong>1-5mg</li>
+      </ul>
+      <p style="margin-top:8px;font-size:0.82rem;color:var(--warm-text-light);">注意：始终从最低剂量开始，根据需要逐渐增加。</p>
+    </div>
+    <div class="info-card">
+      <h3>使用时间</h3>
+      <p>在计划睡觉时间前 <strong>30-60分钟</strong> 服用。保持每天在同一时间服用。</p>
+    </div>
+    <div class="info-card">
+      <h3>注意事项</h3>
+      <ul style="padding-left:18px;margin-top:8px;">
+        <li>选择药品级褪黑素产品</li>
+        <li>避免含有不必要添加剂的产品</li>
+        <li>关注是否有白天嗜睡、头痛等副作用</li>
+        <li>褪黑素不能替代良好的睡眠卫生习惯</li>
+        <li>定期与医生复查使用情况</li>
+      </ul>
+    </div>
+    <div class="info-warning">⚠ 重要提示：使用褪黑素前请务必咨询儿科医生。本指南仅供参考，不构成医疗建议。</div>
+  ` : `
+    <div class="info-card">
+      <h3>What is Melatonin?</h3>
+      <p>Melatonin is a hormone naturally produced by the pineal gland in the brain. Its production increases in darkness, helping regulate the sleep-wake cycle (circadian rhythm). Many autistic individuals have atypical melatonin production patterns.</p>
+    </div>
+    <div class="info-card">
+      <h3>Typical Doses by Age</h3>
+      <ul style="padding-left:18px;margin-top:8px;">
+        <li><strong>Starting dose:</strong> 0.5-1mg (all ages)</li>
+        <li><strong>Toddlers (1-3yr):</strong> 0.5-1mg</li>
+        <li><strong>Preschool (3-5yr):</strong> 1-2mg</li>
+        <li><strong>School-age (6-12yr):</strong> 1-3mg</li>
+        <li><strong>Teens:</strong> 1-5mg</li>
+      </ul>
+      <p style="margin-top:8px;font-size:0.82rem;color:var(--warm-text-light);">Note: Always start with the lowest dose and increase gradually as needed.</p>
+    </div>
+    <div class="info-card">
+      <h3>Timing</h3>
+      <p>Take <strong>30-60 minutes</strong> before planned sleep time. Keep the timing consistent every night.</p>
+    </div>
+    <div class="info-card">
+      <h3>Important Considerations</h3>
+      <ul style="padding-left:18px;margin-top:8px;">
+        <li>Choose pharmaceutical-grade melatonin products</li>
+        <li>Avoid products with unnecessary additives</li>
+        <li>Watch for side effects: daytime drowsiness, headaches</li>
+        <li>Melatonin doesn't replace good sleep hygiene</li>
+        <li>Review usage regularly with your doctor</li>
+      </ul>
+    </div>
+    <div class="info-warning">⚠ Important: Always consult your pediatrician before using melatonin. This guide is for information only and does not constitute medical advice.</div>
+  `;
+  c.innerHTML = content;
+}
+
+// ===================================================================
+//  WEEKLY SCORE CHART
+// ===================================================================
+function renderScore() {
+  const svg = document.getElementById('sleep-chart');
+  const summary = document.getElementById('score-summary');
+  const last7 = data.entries.slice(0, 7).reverse();
+
+  if (last7.length < 2) {
+    svg.innerHTML = '';
+    summary.innerHTML = `<div class="empty-state">${lang === 'zh' ? '需要至少2天的记录来生成趋势图' : 'Need at least 2 days of data for a trend chart'}</div>`;
+    return;
+  }
+
+  const w = 600, h = 300;
+  const pad = { top: 30, right: 30, bottom: 50, left: 60 };
+  const pw = w - pad.left - pad.right;
+  const ph = h - pad.top - pad.bottom;
+
+  const maxSleep = Math.max(...last7.map(e => e.totalSleep), 600);
+  const minSleep = Math.min(...last7.map(e => e.totalSleep), 300);
+  const range = maxSleep - minSleep || 60;
+
+  let html = '';
+  // Grid lines
+  for (let i = 0; i <= 4; i++) {
+    const y = pad.top + (ph * i / 4);
+    const val = maxSleep - (range * i / 4);
+    html += `<line x1="${pad.left}" y1="${y}" x2="${w - pad.right}" y2="${y}" stroke="var(--cream-dark)" stroke-width="1"/>`;
+    html += `<text x="${pad.left - 8}" y="${y + 4}" text-anchor="end" fill="var(--warm-text-light)" font-size="10">${Math.round(val / 60)}h</text>`;
+  }
+
+  // Data line
+  const points = last7.map((e, i) => {
+    const x = pad.left + (pw * i / (last7.length - 1));
+    const y = pad.top + ph - ((e.totalSleep - minSleep) / range * ph);
+    return { x, y, e };
+  });
+
+  // Area fill
+  html += `<polygon points="${points.map(p => `${p.x},${p.y}`).join(' ')} ${points[points.length-1].x},${pad.top + ph} ${points[0].x},${pad.top + ph}" fill="rgba(107,143,123,0.12)"/>`;
+
+  // Line
+  html += `<polyline points="${points.map(p => `${p.x},${p.y}`).join(' ')}" fill="none" stroke="var(--sage)" stroke-width="2.5" stroke-linejoin="round"/>`;
+
+  // Dots and labels
+  points.forEach(p => {
+    html += `<circle cx="${p.x}" cy="${p.y}" r="4" fill="var(--sage)" stroke="#fff" stroke-width="2"/>`;
+    html += `<text x="${p.x}" y="${pad.top + ph + 20}" text-anchor="middle" fill="var(--warm-text-light)" font-size="10">${p.e.date.slice(5)}</text>`;
+  });
+
+  svg.innerHTML = html;
+
+  // Summary
+  const avgSleep = Math.round(last7.reduce((s, e) => s + e.totalSleep, 0) / last7.length);
+  const avgEff = Math.round(last7.reduce((s, e) => s + e.efficiency, 0) / last7.length);
+  summary.innerHTML = `
+    <div class="stats-grid" style="margin-top:16px;">
+      <div class="sleep-stat"><div class="sleep-stat-value">${minToStr(avgSleep)}</div><div class="sleep-stat-label">${lang === 'zh' ? '平均睡眠' : 'Avg Sleep'}</div></div>
+      <div class="sleep-stat"><div class="sleep-stat-value">${avgEff}%</div><div class="sleep-stat-label">${lang === 'zh' ? '平均效率' : 'Avg Efficiency'}</div></div>
+      <div class="sleep-stat"><div class="sleep-stat-value">${last7.length}</div><div class="sleep-stat-label">${lang === 'zh' ? '记录天数' : 'Days Logged'}</div></div>
+    </div>
+  `;
+}
+
+// ===================================================================
+//  SLEEP STRATEGIES
+// ===================================================================
+const TIPS = [
+  { zh: '固定的就寝时间表：每天同一时间上床和起床，包括周末。这有助于调节昼夜节律。', en: 'Consistent schedule: Same bedtime and wake time every day, including weekends. This helps regulate circadian rhythm.', ref: 'Malow et al. 2012' },
+  { zh: '睡前避免屏幕：蓝光抑制褪黑素分泌。至少在睡前1小时关闭所有屏幕。', en: 'Avoid screens before bed: Blue light suppresses melatonin. Turn off all screens at least 1 hour before bedtime.', ref: 'AAP Guidelines' },
+  { zh: '感觉考量：注意床品材质（有些孩子偏好紧身/重压感），房间温度和声音环境。', en: 'Sensory considerations: Pay attention to bedding texture (some prefer tight/weighted feel), room temperature, and sound environment.', ref: 'Hollway & Aman 2011' },
+  { zh: '加重毯：对一些寻求深压觉的孩子有帮助。体重的10%左右为参考重量。', en: 'Weighted blanket: May help children who seek deep pressure input. Aim for about 10% of body weight as a guide.', ref: 'Gringras et al. 2014' },
+  { zh: '日间运动：充足的白天体力活动有助于夜间入睡。但避免睡前2小时剧烈运动。', en: 'Daytime exercise: Adequate physical activity during the day helps with nighttime sleep. Avoid vigorous exercise 2 hours before bed.', ref: 'Brand et al. 2010' },
+  { zh: '社交故事：为睡觉时间创建社交故事，帮助孩子理解和预期就寝流程。', en: 'Social stories: Create a social story about bedtime to help the child understand and anticipate the routine.', ref: 'Gray 2010' },
+  { zh: '渐进式放松：教孩子简单的放松技巧——深呼吸、从脚趾到头的肌肉放松。', en: 'Progressive relaxation: Teach simple relaxation — deep breathing, muscle relaxation from toes to head.', ref: 'Mindell & Owens 2015' },
+  { zh: '减少咖啡因：避免下午后摄入含咖啡因食物（巧克力、可乐、茶）。', en: 'Limit caffeine: Avoid caffeinated foods after noon (chocolate, cola, tea).', ref: 'Malow et al. 2012' },
+  { zh: '视觉支持：使用视觉日程表展示就寝流程每一步，提供可预测性。', en: 'Visual supports: Use a visual schedule showing each step of the bedtime routine for predictability.', ref: 'Koenig & Buckley-Reen 2009' },
+  { zh: '环境一致性：保持睡眠环境不变——相同的被子、枕头、夜灯、声音。变化可能导致焦虑。', en: 'Environmental consistency: Keep the sleep environment the same — same blanket, pillow, nightlight, sounds. Changes may cause anxiety.', ref: 'Hollway & Aman 2011' }
+];
+
+function renderTips() {
+  document.getElementById('tips-list').innerHTML = TIPS.map(tip => `
+    <div class="tip-card">
+      <div>${lang === 'zh' ? tip.zh : tip.en}</div>
+      <div style="font-size:0.75rem;color:var(--warm-text-light);margin-top:6px;">📎 ${tip.ref}</div>
+    </div>
+  `).join('');
+}
+
+// ===================================================================
+//  RENDER ALL
+// ===================================================================
+function renderAll() {
+  applyLang();
+  renderDiary();
+  renderRoutine();
+  renderEnv();
+  renderMelatonin();
+  renderScore();
+  renderTips();
+}
+
+load();
+renderAll();
+</script>
+</body>
+</html>

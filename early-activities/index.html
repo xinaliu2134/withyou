@@ -1,0 +1,1006 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>早期干预活动 — 同路 WithYou</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --sage: #6B8F7B;
+  --sage-light: #8FB09D;
+  --sage-pale: #E8F0EB;
+  --sage-dark: #4A6B56;
+  --cream: #FAF7F0;
+  --cream-dark: #F0EBDF;
+  --blue: #7BA7BC;
+  --blue-light: #A5C7D6;
+  --blue-pale: #E4EFF4;
+  --warm-text: #3D3D3D;
+  --warm-text-light: #6B6B6B;
+  --coral: #D4917B;
+  --coral-pale: #F5E0D8;
+  --yellow: #C9A84C;
+  --yellow-bg: #FDF6E3;
+  --green-bg: #E8F0EB;
+  --shadow: 0 2px 16px rgba(107,143,123,0.10);
+  --shadow-lg: 0 6px 28px rgba(107,143,123,0.14);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+  background: var(--cream);
+  color: var(--warm-text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.hidden { display: none !important; }
+.container { max-width: 720px; margin: 0 auto; padding: 0 20px; }
+
+/* ===== Top Bar ===== */
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.topbar-back {
+  color: var(--sage);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.topbar-title { font-size: 0.95rem; font-weight: 600; color: var(--sage); }
+.topbar-right { display: flex; gap: 8px; }
+.lang-toggle {
+  background: var(--sage-pale);
+  border: none;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--sage);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.lang-toggle:hover { background: var(--sage-light); color: #fff; }
+.lang-toggle.active { background: var(--sage); color: #fff; }
+
+/* ===== Hero ===== */
+.hero {
+  text-align: center;
+  padding: 32px 20px 16px;
+}
+.hero-icon { font-size: 2.8rem; margin-bottom: 10px; }
+.hero h1 { font-size: 1.5rem; font-weight: 700; color: var(--sage-dark); margin-bottom: 4px; }
+.hero p { font-size: 0.92rem; color: var(--warm-text-light); max-width: 520px; margin: 0 auto; }
+
+/* ===== Daily Suggestion ===== */
+.daily-card {
+  background: linear-gradient(135deg, var(--sage) 0%, var(--sage-light) 100%);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 20px;
+  margin: 0 20px 16px;
+  max-width: 680px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.daily-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  opacity: 0.85;
+  margin-bottom: 8px;
+}
+.daily-title { font-size: 1.1rem; font-weight: 600; margin-bottom: 4px; }
+.daily-desc { font-size: 0.84rem; opacity: 0.9; line-height: 1.5; }
+.daily-meta { display: flex; gap: 12px; margin-top: 10px; font-size: 0.78rem; opacity: 0.8; }
+.daily-btn {
+  margin-top: 12px;
+  background: rgba(255,255,255,0.2);
+  border: 1px solid rgba(255,255,255,0.3);
+  color: #fff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.daily-btn:hover { background: rgba(255,255,255,0.3); }
+
+/* ===== Skill Tabs ===== */
+.skill-tabs {
+  display: flex;
+  gap: 6px;
+  padding: 8px 20px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+}
+.skill-tabs::-webkit-scrollbar { display: none; }
+.skill-tab {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-radius: 24px;
+  border: 1.5px solid var(--cream-dark);
+  background: #fff;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--warm-text-light);
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.skill-tab:hover { border-color: var(--sage-light); color: var(--sage); }
+.skill-tab.active { background: var(--sage); color: #fff; border-color: var(--sage); }
+
+/* ===== Progress Bar ===== */
+.progress-strip {
+  display: flex;
+  gap: 8px;
+  padding: 12px 20px;
+  max-width: 720px;
+  margin: 0 auto;
+}
+.progress-item {
+  flex: 1;
+  text-align: center;
+}
+.progress-bar-bg {
+  height: 6px;
+  background: var(--cream-dark);
+  border-radius: 4px;
+  overflow: hidden;
+  margin-bottom: 4px;
+}
+.progress-bar-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+.progress-label { font-size: 0.7rem; color: var(--warm-text-light); }
+
+/* ===== Activity Cards ===== */
+.activity-list { padding: 8px 0 80px; }
+
+.activity-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 0;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: box-shadow 0.2s;
+}
+.activity-card:hover { box-shadow: var(--shadow-lg); }
+
+.activity-header {
+  padding: 16px 20px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.activity-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.4rem;
+  flex-shrink: 0;
+}
+.activity-info { flex: 1; }
+.activity-title { font-size: 0.95rem; font-weight: 600; color: var(--warm-text); }
+.activity-subtitle { font-size: 0.8rem; color: var(--warm-text-light); margin-top: 2px; }
+.activity-meta {
+  display: flex;
+  gap: 10px;
+  margin-top: 6px;
+}
+.meta-tag {
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  background: var(--cream-dark);
+  color: var(--warm-text-light);
+}
+
+.activity-expand { font-size: 1.2rem; color: var(--warm-text-light); transition: transform 0.3s; }
+.activity-card.open .activity-expand { transform: rotate(180deg); }
+
+.activity-body {
+  display: none;
+  padding: 0 20px 16px;
+  border-top: 1px solid var(--cream-dark);
+}
+.activity-card.open .activity-body { display: block; }
+
+.steps-list {
+  list-style: none;
+  margin: 14px 0;
+}
+.steps-list li {
+  display: flex;
+  gap: 10px;
+  padding: 8px 0;
+  font-size: 0.86rem;
+  align-items: flex-start;
+}
+.step-num {
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: var(--sage-pale);
+  color: var(--sage);
+  font-size: 0.72rem;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.tips-box {
+  background: var(--yellow-bg);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-top: 10px;
+}
+.tips-box h4 {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--yellow);
+  margin-bottom: 4px;
+}
+.tips-box p {
+  font-size: 0.82rem;
+  color: var(--warm-text-light);
+  line-height: 1.5;
+}
+
+/* ===== Status Buttons ===== */
+.status-btns {
+  display: flex;
+  gap: 6px;
+  margin-top: 14px;
+  flex-wrap: wrap;
+}
+.status-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  border: 1.5px solid var(--cream-dark);
+  background: #fff;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.status-btn[data-status="tried"] { }
+.status-btn[data-status="working"] { }
+.status-btn[data-status="not-working"] { }
+.status-btn.active[data-status="tried"] { background: var(--blue-pale); border-color: var(--blue); color: var(--blue); }
+.status-btn.active[data-status="working"] { background: var(--green-bg); border-color: var(--sage); color: var(--sage); }
+.status-btn.active[data-status="not-working"] { background: var(--coral-pale); border-color: var(--coral); color: var(--coral); }
+
+/* Notes */
+.note-input {
+  width: 100%;
+  margin-top: 10px;
+  padding: 8px 12px;
+  border: 1.5px solid var(--cream-dark);
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  font-family: inherit;
+  color: var(--warm-text);
+  resize: none;
+  min-height: 50px;
+}
+.note-input:focus { outline: none; border-color: var(--sage-light); }
+
+/* ===== Timer ===== */
+.timer-section {
+  margin-top: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.timer-display {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--sage-dark);
+  font-variant-numeric: tabular-nums;
+  min-width: 60px;
+}
+.timer-btn {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.timer-start { background: var(--sage); color: #fff; }
+.timer-start:hover { background: var(--sage-dark); }
+.timer-reset { background: var(--cream-dark); color: var(--warm-text-light); }
+.timer-reset:hover { background: #e0dbd0; }
+
+/* ===== Disclaimer ===== */
+.disclaimer {
+  background: var(--blue-pale);
+  border-radius: var(--radius);
+  padding: 16px 20px;
+  margin: 0 0 20px;
+  font-size: 0.82rem;
+  color: var(--warm-text-light);
+  line-height: 1.6;
+}
+.disclaimer strong { color: var(--blue); }
+
+/* ===== References ===== */
+.references {
+  font-size: 0.78rem;
+  color: var(--warm-text-light);
+  padding: 0 0 30px;
+  line-height: 1.6;
+}
+.references strong { color: var(--warm-text); }
+
+@media (max-width: 480px) {
+  .hero h1 { font-size: 1.3rem; }
+  .daily-card { margin: 0 16px 16px; }
+  .progress-strip { padding: 12px 16px; }
+}
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="../index.html" class="topbar-back">&#8592; <span data-zh="返回" data-en="Back">返回</span></a>
+    <span class="topbar-title" data-zh="早期干预活动" data-en="Early Activities">早期干预活动</span>
+  </div>
+  <div class="topbar-right">
+    <button class="lang-toggle active" onclick="setLang('zh')">中文</button>
+    <button class="lang-toggle" onclick="setLang('en')">EN</button>
+  </div>
+</div>
+
+<!-- Hero -->
+<div class="hero">
+  <div class="hero-icon">&#127912;</div>
+  <h1 data-zh="早期干预活动" data-en="Early Intervention Activities">早期干预活动</h1>
+  <p data-zh="基于循证研究的居家亲子活动，每天5-10分钟，在游戏中促进孩子发展" data-en="Evidence-based home activities, 5-10 minutes daily, promoting development through play">基于循证研究的居家亲子活动，每天5-10分钟，在游戏中促进孩子发展</p>
+</div>
+
+<!-- Daily Suggestion -->
+<div class="daily-card" id="dailyCard"></div>
+
+<!-- Skill Tabs -->
+<div class="skill-tabs" id="skillTabs">
+  <button class="skill-tab active" data-skill="joint">&#128065; <span data-zh="共同注意" data-en="Joint Attention">共同注意</span></button>
+  <button class="skill-tab" data-skill="imitation">&#129528; <span data-zh="模仿" data-en="Imitation">模仿</span></button>
+  <button class="skill-tab" data-skill="communication">&#128172; <span data-zh="沟通" data-en="Communication">沟通</span></button>
+  <button class="skill-tab" data-skill="play">&#127922; <span data-zh="游戏技能" data-en="Play Skills">游戏技能</span></button>
+</div>
+
+<!-- Progress -->
+<div class="progress-strip" id="progressStrip"></div>
+
+<!-- Activities -->
+<div class="container">
+  <div class="activity-list" id="activityList"></div>
+
+  <div class="disclaimer" id="disclaimer"></div>
+  <div class="references" id="references"></div>
+</div>
+
+<script>
+// ===== Activity Data =====
+const ACTIVITIES = {
+  joint: {
+    color: '#7BA7BC',
+    bg: '#E4EFF4',
+    items: [
+      {
+        id: 'j1', icon: '&#127744;',
+        zh: { title: '泡泡游戏', subtitle: '吸引注意力，建立共享关注', age: '6个月+', duration: '5分钟',
+          steps: ['吹出泡泡，等待孩子注目', '指向泡泡说"看！泡泡！"', '等孩子看向泡泡后再吹', '鼓励孩子用手指向泡泡'],
+          tips: '如果孩子不看泡泡，试着在孩子视线范围内吹。暂停等待是关键——给孩子时间反应。' },
+        en: { title: 'Bubble Play', subtitle: 'Attract attention, build shared focus', age: '6m+', duration: '5 min',
+          steps: ['Blow bubbles and wait for child to look', 'Point to bubbles and say "Look! Bubbles!"', 'Wait until child looks at bubbles before blowing more', 'Encourage child to point at bubbles'],
+          tips: 'If child doesn\'t look, try blowing within their line of sight. Pausing and waiting is key — give your child time to respond.' }
+      },
+      {
+        id: 'j2', icon: '&#128073;',
+        zh: { title: '指认命名', subtitle: '在日常中练习指向和命名', age: '9个月+', duration: '5分钟',
+          steps: ['指向身边的物品，说出名称', '等待孩子跟随你的手指看向物品', '如果孩子看了，热情回应"对！那是一只狗！"', '鼓励孩子也尝试指向'],
+          tips: '散步时是最好的练习时机。从孩子已经感兴趣的东西开始指。' },
+        en: { title: 'Point and Name', subtitle: 'Practice pointing and naming in daily life', age: '9m+', duration: '5 min',
+          steps: ['Point to nearby objects and name them', 'Wait for child to follow your finger to the object', 'If child looks, respond enthusiastically: "Yes! That\'s a dog!"', 'Encourage child to try pointing too'],
+          tips: 'Walks are the best time to practice. Start by pointing to things the child is already interested in.' }
+      },
+      {
+        id: 'j3', icon: '&#128218;',
+        zh: { title: '共读绘本', subtitle: '建立亲子间的共享关注', age: '12个月+', duration: '5-10分钟',
+          steps: ['选择有大图片的简单绘本', '让孩子自己翻页', '指向图片问"这是什么？"', '跟随孩子的兴趣，而不是按顺序读'],
+          tips: '不要强迫孩子坐下来读完。如果孩子对某一页特别感兴趣，就停在那页多聊聊。' },
+        en: { title: 'Shared Book Reading', subtitle: 'Build shared attention through books', age: '12m+', duration: '5-10 min',
+          steps: ['Choose simple books with large pictures', 'Let child turn the pages', 'Point to pictures and ask "What\'s this?"', 'Follow child\'s interest rather than reading in order'],
+          tips: 'Don\'t force the child to sit through the whole book. If they\'re interested in one page, stay there and chat about it.' }
+      },
+      {
+        id: 'j4', icon: '&#128269;',
+        zh: { title: '藏找游戏', subtitle: '在找东西的过程中建立注意力', age: '12个月+', duration: '5分钟',
+          steps: ['把玩具藏在毯子下（让孩子看到你藏）', '兴奋地问"玩具去哪了？"', '等待孩子寻找', '找到后一起欢呼庆祝'],
+          tips: '开始时藏得很明显，随着孩子进步再增加难度。重点是共享发现的快乐。' },
+        en: { title: 'Hide and Find', subtitle: 'Build attention through searching', age: '12m+', duration: '5 min',
+          steps: ['Hide a toy under a blanket (let child see you hide it)', 'Ask excitedly "Where did the toy go?"', 'Wait for child to search', 'Celebrate together when found'],
+          tips: 'Start very obvious, increase difficulty as child progresses. The focus is on sharing the joy of discovery.' }
+      },
+      {
+        id: 'j5', icon: '&#127880;',
+        zh: { title: '吹风车', subtitle: '通过有趣的物品引导视线', age: '9个月+', duration: '5分钟',
+          steps: ['拿起风车在孩子面前慢慢转', '说"看！风车在转！"', '把风车递给孩子尝试吹', '在不同位置展示以引导视线转移'],
+          tips: '可以用气球、发条玩具等替代。关键是用有趣的东西引导注意力转移。' },
+        en: { title: 'Pinwheel Play', subtitle: 'Guide gaze through interesting objects', age: '9m+', duration: '5 min',
+          steps: ['Spin a pinwheel slowly in front of child', 'Say "Look! The pinwheel is spinning!"', 'Offer the pinwheel for child to try blowing', 'Show it at different positions to guide gaze shifting'],
+          tips: 'Can substitute with balloons, wind-up toys, etc. Key is using interesting items to guide attention shifting.' }
+      },
+      {
+        id: 'j6', icon: '&#128585;',
+        zh: { title: '躲猫猫', subtitle: '经典的社交注意力游戏', age: '6个月+', duration: '5分钟',
+          steps: ['用手或布遮住你的脸', '说"宝宝在哪里？"制造期待', '打开遮挡说"Peek-a-boo！"', '等孩子笑或有反应后再重复'],
+          tips: '变换遮挡方式保持新鲜感。注意观察孩子是否开始预期你的出现。' },
+        en: { title: 'Peek-a-Boo', subtitle: 'Classic social attention game', age: '6m+', duration: '5 min',
+          steps: ['Cover your face with hands or cloth', 'Say "Where\'s baby?" to build anticipation', 'Uncover and say "Peek-a-boo!"', 'Wait for child to laugh or respond before repeating'],
+          tips: 'Vary how you cover to keep it fresh. Watch if child starts anticipating your appearance.' }
+      },
+      {
+        id: 'j7', icon: '&#127752;',
+        zh: { title: '光影追踪', subtitle: '用光影引导注意力追踪', age: '12个月+', duration: '5分钟',
+          steps: ['在暗一点的房间用手电筒照墙', '慢慢移动光点', '说"看！光在跑！"', '让孩子拿手电筒自己试'],
+          tips: '速度要慢，确保孩子能跟上。也可以用手做影子。' },
+        en: { title: 'Light Tracking', subtitle: 'Guide attention tracking with light', age: '12m+', duration: '5 min',
+          steps: ['Shine flashlight on wall in dim room', 'Move the light spot slowly', 'Say "Look! The light is running!"', 'Let child try with the flashlight'],
+          tips: 'Move slowly enough for child to follow. You can also make hand shadow puppets.' }
+      },
+      {
+        id: 'j8', icon: '&#127928;',
+        zh: { title: '音乐暂停', subtitle: '通过音乐建立期待和注意力', age: '9个月+', duration: '5分钟',
+          steps: ['唱一首孩子熟悉的歌', '在关键位置突然暂停', '看着孩子的眼睛等待反应', '孩子有任何反应后继续唱'],
+          tips: '重复性强的儿歌效果最好。暂停的那一刻是建立眼神接触的好机会。' },
+        en: { title: 'Musical Pause', subtitle: 'Build anticipation and attention through music', age: '9m+', duration: '5 min',
+          steps: ['Sing a familiar song to child', 'Suddenly pause at a key moment', 'Look at child\'s eyes and wait for response', 'Continue singing after any response from child'],
+          tips: 'Repetitive nursery rhymes work best. The pause moment is a great opportunity for eye contact.' }
+      },
+      {
+        id: 'j9', icon: '&#128062;',
+        zh: { title: '动物找找看', subtitle: '在图片中练习共同注意', age: '18个月+', duration: '5-10分钟',
+          steps: ['准备有很多动物的图片书或海报', '问"小猫在哪里？"', '等孩子指向或看向', '一起确认"对！小猫在这里！"'],
+          tips: '从孩子最喜欢的动物开始。找到后可以学动物叫声增加互动。' },
+        en: { title: 'Animal Spotting', subtitle: 'Practice joint attention in pictures', age: '18m+', duration: '5-10 min',
+          steps: ['Get a picture book or poster with many animals', 'Ask "Where is the cat?"', 'Wait for child to point or look', 'Confirm together "Yes! The cat is here!"'],
+          tips: 'Start with child\'s favorite animals. After finding, make animal sounds to increase interaction.' }
+      },
+      {
+        id: 'j10', icon: '&#127758;',
+        zh: { title: '窗外世界', subtitle: '利用窗外风景练习指向', age: '12个月+', duration: '5分钟',
+          steps: ['抱孩子到窗前', '指向外面经过的车、鸟、人', '等孩子跟随你的指向看', '描述看到的："看，红色的车！"'],
+          tips: '选择有活动的窗户（如面向街道）。这是把共同注意融入日常的好方法。' },
+        en: { title: 'Window World', subtitle: 'Practice pointing using outdoor scenes', age: '12m+', duration: '5 min',
+          steps: ['Hold child near a window', 'Point to passing cars, birds, people outside', 'Wait for child to follow your pointing', 'Describe what you see: "Look, a red car!"'],
+          tips: 'Choose a window with activity (facing a street). Great way to integrate joint attention into daily life.' }
+      }
+    ]
+  },
+  imitation: {
+    color: '#D4917B',
+    bg: '#F5E0D8',
+    items: [
+      {
+        id: 'i1', icon: '&#127925;',
+        zh: { title: '动作歌曲', subtitle: '配合音乐做动作，鼓励模仿', age: '12个月+', duration: '5分钟',
+          steps: ['选一首有动作的歌（如小星星、拍手歌）', '边唱边做动作，面对孩子', '放慢速度，重复动作', '任何接近的模仿都给予热情鼓励'],
+          tips: '从最简单的动作开始（拍手、举手）。每次只教一个新动作。' },
+        en: { title: 'Action Songs', subtitle: 'Sing with actions, encourage copying', age: '12m+', duration: '5 min',
+          steps: ['Choose a song with actions (Twinkle Twinkle, Clap Hands)', 'Sing and do actions while facing child', 'Slow down and repeat actions', 'Enthusiastically praise any approximation of imitation'],
+          tips: 'Start with simplest actions (clapping, raising hands). Teach only one new action at a time.' }
+      },
+      {
+        id: 'i2', icon: '&#129299;',
+        zh: { title: '照我做游戏', subtitle: '简单的动作模仿接力', age: '18个月+', duration: '5分钟',
+          steps: ['做一个简单动作（拍手、跺脚）', '说"你也来！"等待孩子模仿', '孩子做了后换一个新动作', '也模仿孩子的动作（轮流领导）'],
+          tips: '先从孩子已经会做的动作开始，建立成功感。然后慢慢加入新动作。' },
+        en: { title: 'Copy Me Game', subtitle: 'Simple action imitation turns', age: '18m+', duration: '5 min',
+          steps: ['Do a simple action (clap, stomp feet)', 'Say "Your turn!" and wait for child to copy', 'Switch to a new action when child copies', 'Also copy the child\'s actions (take turns leading)'],
+          tips: 'Start with actions the child already knows to build confidence. Then gradually add new ones.' }
+      },
+      {
+        id: 'i3', icon: '&#128266;',
+        zh: { title: '声音模仿', subtitle: '通过声音游戏发展模仿', age: '6个月+', duration: '5分钟',
+          steps: ['先模仿孩子发出的声音', '等孩子注意后，加入新声音', '夸张地发出声音并等待', '孩子发出任何声音都给予回应'],
+          tips: '先跟随孩子的声音，再引导新声音。把这变成一个有趣的"对话"。' },
+        en: { title: 'Sound Imitation', subtitle: 'Develop imitation through sound games', age: '6m+', duration: '5 min',
+          steps: ['First imitate sounds the child makes', 'Once child notices, introduce a new sound', 'Make sounds expressively and wait', 'Respond to any sound the child makes'],
+          tips: 'Follow the child\'s sounds first, then guide to new ones. Turn it into a fun "conversation".' }
+      },
+      {
+        id: 'i4', icon: '&#128567;',
+        zh: { title: '镜子表情', subtitle: '面对镜子练习表情模仿', age: '12个月+', duration: '5分钟',
+          steps: ['和孩子一起坐在镜子前', '做夸张的表情（惊讶、开心、伤心）', '指着镜子里的表情命名', '鼓励孩子做同样的表情'],
+          tips: '表情要足够夸张才容易模仿。可以用化妆品或贴纸增加趣味性。' },
+        en: { title: 'Mirror Faces', subtitle: 'Practice facial imitation with a mirror', age: '12m+', duration: '5 min',
+          steps: ['Sit with child in front of a mirror', 'Make exaggerated faces (surprised, happy, sad)', 'Point to expressions in mirror and name them', 'Encourage child to make the same face'],
+          tips: 'Faces need to be exaggerated enough to copy. Use face paint or stickers for extra fun.' }
+      },
+      {
+        id: 'i5', icon: '&#129513;',
+        zh: { title: '积木模仿', subtitle: '跟着搭积木学习动作模仿', age: '12个月+', duration: '5-10分钟',
+          steps: ['先搭一个简单的积木造型（如塔）', '说"看我！"做一个动作（放一块积木）', '把积木递给孩子"你来！"', '逐步增加复杂度'],
+          tips: '从最简单的"叠高高"开始。如果孩子推倒也没关系，推倒也是一种互动！' },
+        en: { title: 'Block Copying', subtitle: 'Learn action imitation through building', age: '12m+', duration: '5-10 min',
+          steps: ['Build a simple block structure (like a tower)', 'Say "Watch me!" and place one block', 'Hand block to child: "Your turn!"', 'Gradually increase complexity'],
+          tips: 'Start with simple stacking. If child knocks it down, that\'s okay — knocking down is interaction too!' }
+      },
+      {
+        id: 'i6', icon: '&#128131;',
+        zh: { title: '身体打击乐', subtitle: '用身体做节奏模仿', age: '18个月+', duration: '5分钟',
+          steps: ['拍膝盖制造节奏', '换到拍手、拍肚子', '说"跟我一起！"做一个简单节奏', '变换节奏快慢增加乐趣'],
+          tips: '从单一重复动作开始，再加入节奏变化。可以配合熟悉的音乐。' },
+        en: { title: 'Body Percussion', subtitle: 'Rhythm imitation using body', age: '18m+', duration: '5 min',
+          steps: ['Pat knees to create rhythm', 'Switch to clapping, patting tummy', 'Say "Join me!" and do a simple rhythm', 'Vary speed and rhythm for fun'],
+          tips: 'Start with single repeated actions, then add rhythm variation. Can pair with familiar music.' }
+      },
+      {
+        id: 'i7', icon: '&#128038;',
+        zh: { title: '动物模仿', subtitle: '模仿动物的声音和动作', age: '18个月+', duration: '5分钟',
+          steps: ['选一种动物做动作和声音', '如"汪汪"加上四肢着地', '鼓励孩子一起做', '换不同动物轮流模仿'],
+          tips: '选择孩子认识的动物。加入夸张的动作让游戏更有趣。' },
+        en: { title: 'Animal Imitation', subtitle: 'Copy animal sounds and movements', age: '18m+', duration: '5 min',
+          steps: ['Pick an animal, do its actions and sounds', 'E.g., "Woof woof" while on all fours', 'Encourage child to join in', 'Take turns with different animals'],
+          tips: 'Choose animals child knows. Add exaggerated movements to make it more fun.' }
+      },
+      {
+        id: 'i8', icon: '&#127912;',
+        zh: { title: '画画模仿', subtitle: '跟着画简单的线条和形状', age: '24个月+', duration: '5-10分钟',
+          steps: ['画一条直线说"看，一条线！"', '给孩子蜡笔说"你也画一条！"', '无论画成什么样都夸赞', '慢慢进展到圆、十字等'],
+          tips: '用粗蜡笔或大画纸降低难度。重点是模仿的过程，不是结果。' },
+        en: { title: 'Draw Along', subtitle: 'Copy simple lines and shapes', age: '24m+', duration: '5-10 min',
+          steps: ['Draw a line and say "Look, a line!"', 'Give child a crayon: "You draw one too!"', 'Praise whatever they draw', 'Gradually progress to circles, crosses, etc.'],
+          tips: 'Use thick crayons and large paper to lower difficulty. Focus on the process of copying, not the result.' }
+      },
+      {
+        id: 'i9', icon: '&#129518;',
+        zh: { title: '假装游戏模仿', subtitle: '模仿日常生活动作', age: '18个月+', duration: '5-10分钟',
+          steps: ['假装喝杯子里的水', '递给孩子说"你也喝！"', '假装给玩偶喂饭', '鼓励孩子模仿照顾玩偶'],
+          tips: '用孩子日常看到的动作开始（吃饭、梳头、打电话）。' },
+        en: { title: 'Pretend Action Copy', subtitle: 'Imitate daily life actions', age: '18m+', duration: '5-10 min',
+          steps: ['Pretend to drink from a cup', 'Hand cup to child: "You drink too!"', 'Pretend to feed a doll', 'Encourage child to copy caring for the doll'],
+          tips: 'Start with actions child sees daily (eating, brushing hair, making phone calls).' }
+      },
+      {
+        id: 'i10', icon: '&#129336;',
+        zh: { title: '手指操', subtitle: '精细动作的模仿练习', age: '18个月+', duration: '5分钟',
+          steps: ['做简单的手指动作（捏手指、张开手掌）', '配合儿歌如"五只小鸭子"', '放慢动作让孩子跟上', '逐步增加手指动作的复杂度'],
+          tips: '坐在孩子对面，让他能清楚看到你的手。先做大动作再做小动作。' },
+        en: { title: 'Finger Play', subtitle: 'Fine motor imitation practice', age: '18m+', duration: '5 min',
+          steps: ['Do simple finger movements (pinch fingers, open palms)', 'Pair with rhymes like "Five Little Ducks"', 'Slow down so child can follow', 'Gradually increase complexity of finger movements'],
+          tips: 'Sit facing child so they can see your hands clearly. Start with big movements, then smaller ones.' }
+      }
+    ]
+  },
+  communication: {
+    color: '#6B8F7B',
+    bg: '#E8F0EB',
+    items: [
+      {
+        id: 'c1', icon: '&#129300;',
+        zh: { title: '提供选择', subtitle: '用选择引发沟通意愿', age: '12个月+', duration: '随时',
+          steps: ['拿两个东西给孩子看', '问"你要苹果还是饼干？"', '等待孩子用眼神、手指或声音回应', '立即给孩子选择的东西'],
+          tips: '一开始可以一个是孩子喜欢的、一个不喜欢的，降低选择难度。' },
+        en: { title: 'Offer Choices', subtitle: 'Encourage communication through choices', age: '12m+', duration: 'Anytime',
+          steps: ['Hold up two items for child to see', 'Ask "Do you want apple or cookie?"', 'Wait for child to respond with gaze, point, or sound', 'Immediately give child their chosen item'],
+          tips: 'Start with one favorite and one non-preferred item to make choosing easier.' }
+      },
+      {
+        id: 'c2', icon: '&#128172;',
+        zh: { title: '旁白游戏', subtitle: '在游戏中自然地描述正在发生的事', age: '6个月+', duration: '5-10分钟',
+          steps: ['在孩子玩耍时坐在旁边', '描述孩子正在做的事："你在推小车！"', '用简短句子，重复关键词', '为孩子的动作配上语言'],
+          tips: '不需要孩子回应，只是在他们的世界里"配旁白"。语速要慢，用词简单。' },
+        en: { title: 'Narrate Play', subtitle: 'Naturally describe what\'s happening during play', age: '6m+', duration: '5-10 min',
+          steps: ['Sit beside child during play', 'Describe what child is doing: "You\'re pushing the car!"', 'Use short sentences, repeat key words', 'Put words to child\'s actions'],
+          tips: 'No need for child to respond. Just "narrate" their world. Slow pace, simple words.' }
+      },
+      {
+        id: 'c3', icon: '&#128588;',
+        zh: { title: '沟通诱惑', subtitle: '创造孩子"需要"沟通的情境', age: '12个月+', duration: '5分钟',
+          steps: ['把喜欢的玩具放在看得见但够不到的地方', '等待孩子尝试表达需求', '如果孩子指、看或发声，立即回应', '说"你要那个小球！"然后给他'],
+          tips: '不要让孩子太沮丧。如果15秒没反应，给一个提示（如指向物品）。' },
+        en: { title: 'Communication Temptations', subtitle: 'Create situations where child needs to communicate', age: '12m+', duration: '5 min',
+          steps: ['Place a favorite toy within sight but out of reach', 'Wait for child to try expressing their need', 'If child points, looks, or vocalizes, respond immediately', 'Say "You want the ball!" and give it'],
+          tips: 'Don\'t let child get too frustrated. If no response in 15 seconds, offer a prompt (like pointing to item).' }
+      },
+      {
+        id: 'c4', icon: '&#128075;',
+        zh: { title: '手势教学', subtitle: '教孩子用手势沟通', age: '9个月+', duration: '随时',
+          steps: ['在日常情境中使用手势（挥手再见、点头表示要）', '在说话的同时做手势', '如果孩子模仿手势，热情回应', '逐渐扩展到更多手势（要、不要、帮忙）'],
+          tips: '手势是语言的桥梁。即使孩子还不会说话，手势也能帮助他沟通。' },
+        en: { title: 'Gesture Teaching', subtitle: 'Teach child to communicate with gestures', age: '9m+', duration: 'Anytime',
+          steps: ['Use gestures in daily situations (wave bye-bye, nod for yes)', 'Use gestures while speaking', 'Respond enthusiastically if child copies gestures', 'Gradually expand to more gestures (want, no, help)'],
+          tips: 'Gestures are a bridge to language. Even before speech, gestures help children communicate.' }
+      },
+      {
+        id: 'c5', icon: '&#9200;',
+        zh: { title: '等待与期望', subtitle: '给孩子沟通的时间和空间', age: '6个月+', duration: '随时',
+          steps: ['在孩子想要什么时，不要立即满足', '看着孩子的眼睛，表情期待', '数到5-10秒，等待任何沟通尝试', '任何尝试（看、指、声音）都立即回应'],
+          tips: '这是最重要的沟通技巧之一。很多家长倾向于太快满足孩子需求。' },
+        en: { title: 'Wait and Expect', subtitle: 'Give child time and space to communicate', age: '6m+', duration: 'Anytime',
+          steps: ['When child wants something, don\'t fulfill immediately', 'Look at child\'s eyes with an expectant expression', 'Count 5-10 seconds, waiting for any communication attempt', 'Respond immediately to any attempt (look, point, sound)'],
+          tips: 'This is one of the most important communication strategies. Many parents tend to fulfill needs too quickly.' }
+      },
+      {
+        id: 'c6', icon: '&#127908;',
+        zh: { title: '扩展语言', subtitle: '在孩子的表达基础上增加词汇', age: '18个月+', duration: '随时',
+          steps: ['孩子说"车"，你说"红色的大车！"', '孩子说"要"，你说"你要喝牛奶"', '不纠正孩子的发音，而是正确地重复', '每次多加1-2个词'],
+          tips: '顺着孩子说的话扩展，而不是要求孩子重复你的长句。' },
+        en: { title: 'Language Expansion', subtitle: 'Add vocabulary to child\'s expressions', age: '18m+', duration: 'Anytime',
+          steps: ['Child says "car", you say "Big red car!"', 'Child says "want", you say "You want to drink milk"', 'Don\'t correct pronunciation, just repeat correctly', 'Add 1-2 extra words each time'],
+          tips: 'Expand on what child says, rather than asking them to repeat your longer sentences.' }
+      },
+      {
+        id: 'c7', icon: '&#128248;',
+        zh: { title: '图片沟通', subtitle: '用图片辅助表达', age: '18个月+', duration: '5分钟',
+          steps: ['准备日常用品的图片卡', '吃饭时出示食物图片让孩子选', '孩子指向图片时说出名称', '逐渐扩展图片数量和场景'],
+          tips: '可以用手机拍孩子常接触的物品作为图片卡。从2-3张开始。' },
+        en: { title: 'Picture Communication', subtitle: 'Use pictures to help expression', age: '18m+', duration: '5 min',
+          steps: ['Prepare picture cards of daily items', 'At mealtimes, show food pictures for child to choose', 'Name the item when child points to a picture', 'Gradually expand number of pictures and scenarios'],
+          tips: 'Use photos of child\'s actual items as picture cards. Start with 2-3 cards.' }
+      },
+      {
+        id: 'c8', icon: '&#128222;',
+        zh: { title: '假装打电话', subtitle: '通过角色扮演练习对话', age: '24个月+', duration: '5分钟',
+          steps: ['拿起玩具电话说"喂？你好！"', '递给孩子"是找你的电话哦"', '问简单问题等孩子回应', '可以"打给"熟悉的人（爸爸、奶奶）'],
+          tips: '一开始孩子可能只是拿着电话笑，这也是进步。慢慢引导对话。' },
+        en: { title: 'Pretend Phone Call', subtitle: 'Practice dialogue through role play', age: '24m+', duration: '5 min',
+          steps: ['Pick up toy phone and say "Hello? Hi!"', 'Hand phone to child: "It\'s for you!"', 'Ask simple questions and wait for response', 'Can "call" familiar people (daddy, grandma)'],
+          tips: 'At first, child may just hold the phone and laugh — that\'s progress too. Gradually guide dialogue.' }
+      },
+      {
+        id: 'c9', icon: '&#127926;',
+        zh: { title: '填词歌曲', subtitle: '留空让孩子填词', age: '18个月+', duration: '5分钟',
+          steps: ['唱熟悉的歌，在关键词前停下', '"一闪一闪亮晶...（等待）"', '孩子发出任何声音都表扬', '逐渐让孩子填更多的词'],
+          tips: '选择孩子最熟悉且最喜欢的歌。等待时用期待的表情看着孩子。' },
+        en: { title: 'Fill-in Songs', subtitle: 'Pause for child to fill in words', age: '18m+', duration: '5 min',
+          steps: ['Sing familiar song, pause before key word', '"Twinkle twinkle little...(wait)"', 'Praise any vocalization from child', 'Gradually let child fill in more words'],
+          tips: 'Choose child\'s most familiar, favorite songs. Look at child expectantly while waiting.' }
+      },
+      {
+        id: 'c10', icon: '&#127793;',
+        zh: { title: '感官描述', subtitle: '用感官体验丰富词汇', age: '12个月+', duration: '5分钟',
+          steps: ['让孩子触摸不同材质的东西', '描述感觉："滑滑的！""粗粗的！"', '让孩子闻不同的东西并描述', '把感官体验和词汇联系起来'],
+          tips: '利用洗澡、吃饭、户外等日常场景自然地进行。' },
+        en: { title: 'Sensory Descriptions', subtitle: 'Enrich vocabulary through sensory experiences', age: '12m+', duration: '5 min',
+          steps: ['Let child touch different textured objects', 'Describe the feeling: "Smooth!" "Rough!"', 'Let child smell different things and describe', 'Connect sensory experiences with words'],
+          tips: 'Use daily scenarios like bath time, meals, outdoors to do this naturally.' }
+      }
+    ]
+  },
+  play: {
+    color: '#C9A84C',
+    bg: '#FDF6E3',
+    items: [
+      {
+        id: 'p1', icon: '&#128308;',
+        zh: { title: '因果玩具', subtitle: '按按钮→看效果，理解因果关系', age: '6个月+', duration: '5分钟',
+          steps: ['准备按按钮会响/亮/动的玩具', '示范按一次让孩子看到效果', '引导孩子的手去按', '孩子自己按到后夸奖'],
+          tips: '选择反应明显的玩具。每次成功都会增加孩子的动力。' },
+        en: { title: 'Cause-Effect Toys', subtitle: 'Press button, see effect — learn cause & effect', age: '6m+', duration: '5 min',
+          steps: ['Get toys that light up/make sounds when pressed', 'Demo pressing once so child sees the effect', 'Guide child\'s hand to press', 'Praise when child presses independently'],
+          tips: 'Choose toys with obvious reactions. Each success builds child\'s motivation.' }
+      },
+      {
+        id: 'p2', icon: '&#127922;',
+        zh: { title: '轮流游戏', subtitle: '建立基本的轮流概念', age: '12个月+', duration: '5-10分钟',
+          steps: ['选一个简单的轮流活动（滚球、叠积木）', '说"我的轮到了"做一个动作', '说"你的轮到了！"等孩子参与', '保持节奏稳定，每轮都一样的流程'],
+          tips: '开始时每轮等待时间短一些。用"我的""你的"帮孩子理解轮流。' },
+        en: { title: 'Turn-Taking', subtitle: 'Build basic turn-taking concept', age: '12m+', duration: '5-10 min',
+          steps: ['Choose a simple turn activity (rolling ball, stacking blocks)', 'Say "My turn" and do one action', 'Say "Your turn!" and wait for child to participate', 'Keep consistent rhythm, same process each turn'],
+          tips: 'Keep waiting time short at first. Use "my turn" / "your turn" to help child understand.' }
+      },
+      {
+        id: 'p3', icon: '&#129513;',
+        zh: { title: '假装游戏入门', subtitle: '从简单的生活场景开始', age: '18个月+', duration: '5-10分钟',
+          steps: ['拿起玩具杯假装喝水', '给玩偶也"喝"一口', '递给孩子"宝宝也要喝水吗？"', '扩展：假装做饭、喂饭、睡觉'],
+          tips: '假装游戏是重要的里程碑。从孩子日常最熟悉的场景开始。' },
+        en: { title: 'Pretend Play Basics', subtitle: 'Start from simple life scenarios', age: '18m+', duration: '5-10 min',
+          steps: ['Pick up a toy cup and pretend to drink', 'Give the doll a "sip" too', 'Offer to child: "Does baby want water too?"', 'Expand: pretend cooking, feeding, sleeping'],
+          tips: 'Pretend play is an important milestone. Start with daily scenarios most familiar to child.' }
+      },
+      {
+        id: 'p4', icon: '&#127783;',
+        zh: { title: '感官游戏', subtitle: '探索不同感官体验', age: '6个月+', duration: '5-10分钟',
+          steps: ['准备不同材质（沙、水、面团、米）', '让孩子自由探索触感', '描述感觉"软软的""凉凉的"', '引导不同玩法（倒、捏、压）'],
+          tips: '如果孩子对某些材质敏感，不要强迫。先让他们远远看着。' },
+        en: { title: 'Sensory Play', subtitle: 'Explore different sensory experiences', age: '6m+', duration: '5-10 min',
+          steps: ['Prepare different textures (sand, water, dough, rice)', 'Let child freely explore the textures', 'Describe feelings: "soft," "cool"', 'Guide different play methods (pour, squeeze, press)'],
+          tips: 'If child is sensitive to certain textures, don\'t force. Let them watch from a distance first.' }
+      },
+      {
+        id: 'p5', icon: '&#128663;',
+        zh: { title: '小车赛道', subtitle: '用小车练习功能性游戏', age: '12个月+', duration: '5分钟',
+          steps: ['用纸板做一个简单坡道', '示范把小车从坡道上滑下', '说"嗖——！到你了！"', '鼓励孩子自己放车并推'],
+          tips: '功能性游戏（用玩具做它该做的事）是假装游戏的基础。' },
+        en: { title: 'Car Ramp', subtitle: 'Practice functional play with cars', age: '12m+', duration: '5 min',
+          steps: ['Make a simple ramp from cardboard', 'Demo sliding car down the ramp', 'Say "Vroom! Your turn!"', 'Encourage child to place and push car themselves'],
+          tips: 'Functional play (using toys for their intended purpose) is the foundation for pretend play.' }
+      },
+      {
+        id: 'p6', icon: '&#127912;',
+        zh: { title: '水彩探索', subtitle: '通过绘画发展游戏技能', age: '18个月+', duration: '10分钟',
+          steps: ['准备大纸和无毒水彩', '示范用手指蘸颜料在纸上画', '让孩子自由探索', '描述孩子画的内容："哇，蓝色的！"'],
+          tips: '准备好围裙和地面保护。重点是过程体验而不是结果。' },
+        en: { title: 'Paint Exploration', subtitle: 'Develop play skills through painting', age: '18m+', duration: '10 min',
+          steps: ['Prepare large paper and non-toxic paints', 'Demo finger painting on paper', 'Let child explore freely', 'Describe what child creates: "Wow, blue!"'],
+          tips: 'Have aprons and floor protection ready. Focus is on process experience, not results.' }
+      },
+      {
+        id: 'p7', icon: '&#129693;',
+        zh: { title: '推倒搭建', subtitle: '在搭和倒之间练习互动', age: '9个月+', duration: '5分钟',
+          steps: ['搭一个简单的积木塔', '说"准备好了吗？推！"', '让孩子推倒积木', '一起庆祝然后重新搭'],
+          tips: '很多孩子比起搭积木更喜欢推倒。利用这个兴趣来建立互动循环。' },
+        en: { title: 'Build & Knock Down', subtitle: 'Practice interaction through building and toppling', age: '9m+', duration: '5 min',
+          steps: ['Build a simple block tower', 'Say "Ready? Push!"', 'Let child knock the blocks down', 'Celebrate together, then rebuild'],
+          tips: 'Many children prefer knocking down over building. Use this interest to create interaction loops.' }
+      },
+      {
+        id: 'p8', icon: '&#129517;',
+        zh: { title: '拼图游戏', subtitle: '练习问题解决能力', age: '18个月+', duration: '5-10分钟',
+          steps: ['从2-3块的简单拼图开始', '先拿出一块让孩子放回', '给少量提示（指向正确位置）', '逐渐减少提示增加块数'],
+          tips: '选择有把手的木质拼图。完成后一起庆祝！' },
+        en: { title: 'Puzzle Play', subtitle: 'Practice problem-solving skills', age: '18m+', duration: '5-10 min',
+          steps: ['Start with simple 2-3 piece puzzles', 'Remove one piece for child to replace', 'Give minimal hints (point to correct spot)', 'Gradually reduce hints and increase pieces'],
+          tips: 'Choose wooden puzzles with handles. Celebrate together when completed!' }
+      },
+      {
+        id: 'p9', icon: '&#127905;',
+        zh: { title: '球类互动', subtitle: '通过滚球建立社交游戏', age: '9个月+', duration: '5分钟',
+          steps: ['面对面坐在地上', '把球滚向孩子', '等孩子滚回来（可以帮助）', '建立稳定的来回节奏'],
+          tips: '用大一点的软球更容易接住。这是最简单的轮流社交游戏之一。' },
+        en: { title: 'Ball Play', subtitle: 'Build social play through rolling', age: '9m+', duration: '5 min',
+          steps: ['Sit facing each other on the floor', 'Roll ball toward child', 'Wait for child to roll back (help if needed)', 'Establish a steady back-and-forth rhythm'],
+          tips: 'Larger soft balls are easier to catch. This is one of the simplest turn-taking social games.' }
+      },
+      {
+        id: 'p10', icon: '&#128053;',
+        zh: { title: '动物农场', subtitle: '用动物玩偶发展想象力游戏', age: '24个月+', duration: '5-10分钟',
+          steps: ['摆出几个动物玩偶', '给动物配音说话："我是小猪，我饿了！"', '让另一个动物"喂"它', '鼓励孩子加入扮演'],
+          tips: '选择孩子喜欢的动物。先做简单的喂食、睡觉场景再扩展故事。' },
+        en: { title: 'Animal Farm', subtitle: 'Develop imaginative play with animal figures', age: '24m+', duration: '5-10 min',
+          steps: ['Set out several animal figures', 'Voice an animal: "I\'m piggy, I\'m hungry!"', 'Have another animal "feed" it', 'Encourage child to join in the role play'],
+          tips: 'Choose animals child likes. Start with simple feeding/sleeping scenes before expanding stories.' }
+      }
+    ]
+  }
+};
+
+// ===== State =====
+let currentLang = localStorage.getItem('withyou-lang') || 'zh';
+let currentSkill = 'joint';
+let activityState = JSON.parse(localStorage.getItem('withyou-activities') || '{}');
+let timers = {};
+
+// ===== Language =====
+function setLang(lang) {
+  currentLang = lang;
+  localStorage.setItem('withyou-lang', lang);
+  document.querySelectorAll('.lang-toggle').forEach(b => b.classList.toggle('active', b.textContent.trim() === (lang === 'zh' ? '中文' : 'EN')));
+  document.querySelectorAll('[data-zh]').forEach(el => el.textContent = el.getAttribute('data-' + lang));
+  renderDaily();
+  renderProgress();
+  renderActivities();
+  renderFooter();
+}
+
+// ===== Skill Tabs =====
+document.getElementById('skillTabs').addEventListener('click', e => {
+  const tab = e.target.closest('.skill-tab');
+  if (!tab) return;
+  document.querySelectorAll('.skill-tab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+  currentSkill = tab.dataset.skill;
+  renderActivities();
+});
+
+// ===== Daily Suggestion =====
+function renderDaily() {
+  const allItems = Object.values(ACTIVITIES).flatMap(s => s.items);
+  const dayIndex = Math.floor(Date.now() / 86400000) % allItems.length;
+  const item = allItems[dayIndex];
+  const lang = currentLang;
+  const d = item[lang];
+  const card = document.getElementById('dailyCard');
+  card.innerHTML = `
+    <div class="daily-label">${lang === 'zh' ? '今日推荐活动' : "TODAY'S SUGGESTED ACTIVITY"}</div>
+    <div class="daily-title">${d.title}</div>
+    <div class="daily-desc">${d.subtitle}</div>
+    <div class="daily-meta"><span>${d.age}</span><span>${d.duration}</span></div>
+    <button class="daily-btn" onclick="openDailyActivity('${item.id}')">${lang === 'zh' ? '查看详情' : 'View Details'} &#8594;</button>
+  `;
+}
+
+function openDailyActivity(id) {
+  for (const [skill, data] of Object.entries(ACTIVITIES)) {
+    if (data.items.find(i => i.id === id)) {
+      currentSkill = skill;
+      document.querySelectorAll('.skill-tab').forEach(t => t.classList.toggle('active', t.dataset.skill === skill));
+      renderActivities();
+      setTimeout(() => {
+        const el = document.querySelector(`[data-id="${id}"]`);
+        if (el) { el.classList.add('open'); el.scrollIntoView({ behavior: 'smooth', block: 'center' }); }
+      }, 100);
+      return;
+    }
+  }
+}
+
+// ===== Progress =====
+function renderProgress() {
+  const strip = document.getElementById('progressStrip');
+  const lang = currentLang;
+  const colors = { joint: '#7BA7BC', imitation: '#D4917B', communication: '#6B8F7B', play: '#C9A84C' };
+  const names = {
+    joint: { zh: '共同注意', en: 'Joint Attn' },
+    imitation: { zh: '模仿', en: 'Imitation' },
+    communication: { zh: '沟通', en: 'Comm.' },
+    play: { zh: '游戏', en: 'Play' }
+  };
+
+  strip.innerHTML = Object.entries(ACTIVITIES).map(([key, data]) => {
+    const total = data.items.length;
+    const tried = data.items.filter(i => activityState[i.id]?.status).length;
+    const pct = total ? Math.round(tried / total * 100) : 0;
+    return `<div class="progress-item">
+      <div class="progress-bar-bg"><div class="progress-bar-fill" style="width:${pct}%;background:${colors[key]}"></div></div>
+      <div class="progress-label">${names[key][lang]} ${pct}%</div>
+    </div>`;
+  }).join('');
+}
+
+// ===== Activities =====
+function renderActivities() {
+  const data = ACTIVITIES[currentSkill];
+  const lang = currentLang;
+  const list = document.getElementById('activityList');
+
+  list.innerHTML = data.items.map(item => {
+    const d = item[lang];
+    const state = activityState[item.id] || {};
+    return `<div class="activity-card" data-id="${item.id}">
+      <div class="activity-header" onclick="toggleCard(this)">
+        <div class="activity-icon" style="background:${data.bg}">${item.icon}</div>
+        <div class="activity-info">
+          <div class="activity-title">${d.title}</div>
+          <div class="activity-subtitle">${d.subtitle}</div>
+          <div class="activity-meta">
+            <span class="meta-tag">${d.age}</span>
+            <span class="meta-tag">${d.duration}</span>
+            ${state.status ? `<span class="meta-tag" style="background:${state.status === 'working' ? 'var(--green-bg)' : state.status === 'not-working' ? 'var(--coral-pale)' : 'var(--blue-pale)'}">${
+              state.status === 'tried' ? (lang === 'zh' ? '已试' : 'Tried') :
+              state.status === 'working' ? (lang === 'zh' ? '有效' : 'Working') :
+              (lang === 'zh' ? '待调整' : 'Adjust')
+            }</span>` : ''}
+          </div>
+        </div>
+        <div class="activity-expand">&#9660;</div>
+      </div>
+      <div class="activity-body">
+        <ol class="steps-list">${d.steps.map((s, i) => `<li><span class="step-num">${i + 1}</span><span>${s}</span></li>`).join('')}</ol>
+        <div class="tips-box"><h4>${lang === 'zh' ? '小贴士' : 'Tips'}</h4><p>${d.tips}</p></div>
+        <div class="status-btns">
+          <button class="status-btn ${state.status === 'tried' ? 'active' : ''}" data-status="tried" onclick="setStatus('${item.id}','tried')">${lang === 'zh' ? '已尝试' : 'Tried'}</button>
+          <button class="status-btn ${state.status === 'working' ? 'active' : ''}" data-status="working" onclick="setStatus('${item.id}','working')">${lang === 'zh' ? '有效' : 'Working'}</button>
+          <button class="status-btn ${state.status === 'not-working' ? 'active' : ''}" data-status="not-working" onclick="setStatus('${item.id}','not-working')">${lang === 'zh' ? '需调整' : 'Not Working'}</button>
+        </div>
+        <div class="timer-section">
+          <div class="timer-display" id="timer-${item.id}">0:00</div>
+          <button class="timer-btn timer-start" onclick="toggleTimer('${item.id}')" id="timer-btn-${item.id}">${lang === 'zh' ? '开始计时' : 'Start'}</button>
+          <button class="timer-btn timer-reset" onclick="resetTimer('${item.id}')">${lang === 'zh' ? '重置' : 'Reset'}</button>
+        </div>
+        <textarea class="note-input" placeholder="${lang === 'zh' ? '添加笔记...' : 'Add notes...'}" data-id="${item.id}" onblur="saveNote(this)">${state.note || ''}</textarea>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function toggleCard(header) {
+  header.closest('.activity-card').classList.toggle('open');
+}
+
+function setStatus(id, status) {
+  if (!activityState[id]) activityState[id] = {};
+  activityState[id].status = activityState[id].status === status ? null : status;
+  localStorage.setItem('withyou-activities', JSON.stringify(activityState));
+  renderActivities();
+  renderProgress();
+}
+
+function saveNote(el) {
+  const id = el.dataset.id;
+  if (!activityState[id]) activityState[id] = {};
+  activityState[id].note = el.value;
+  localStorage.setItem('withyou-activities', JSON.stringify(activityState));
+}
+
+// ===== Timer =====
+function toggleTimer(id) {
+  const display = document.getElementById('timer-' + id);
+  const btn = document.getElementById('timer-btn-' + id);
+  if (timers[id]) {
+    clearInterval(timers[id].interval);
+    delete timers[id];
+    btn.textContent = currentLang === 'zh' ? '开始计时' : 'Start';
+  } else {
+    let seconds = 0;
+    timers[id] = {
+      interval: setInterval(() => {
+        seconds++;
+        const m = Math.floor(seconds / 60);
+        const s = seconds % 60;
+        display.textContent = m + ':' + (s < 10 ? '0' : '') + s;
+      }, 1000)
+    };
+    btn.textContent = currentLang === 'zh' ? '暂停' : 'Pause';
+  }
+}
+
+function resetTimer(id) {
+  if (timers[id]) { clearInterval(timers[id].interval); delete timers[id]; }
+  const display = document.getElementById('timer-' + id);
+  const btn = document.getElementById('timer-btn-' + id);
+  if (display) display.textContent = '0:00';
+  if (btn) btn.textContent = currentLang === 'zh' ? '开始计时' : 'Start';
+}
+
+// ===== Footer =====
+function renderFooter() {
+  const lang = currentLang;
+  document.getElementById('disclaimer').innerHTML = lang === 'zh'
+    ? '<strong>&#9888; 重要提示：</strong>这些活动旨在补充而非替代专业干预。它们基于循证研究的自然发展行为干预（NDBI）原则。如果您对孩子的发育有任何担忧，请咨询专业人士。每个孩子都是独特的，活动效果因人而异。'
+    : '<strong>&#9888; Important:</strong> These activities are meant to supplement, not replace, professional intervention. They are based on evidence-based Naturalistic Developmental Behavioral Intervention (NDBI) principles. If you have concerns about your child\'s development, please consult a professional. Every child is unique; results may vary.';
+
+  document.getElementById('references').innerHTML = lang === 'zh'
+    ? '<strong>参考文献：</strong><br>Schreibman, L., et al. (2015). Naturalistic Developmental Behavioral Interventions: Empirically Validated Treatments for Autism Spectrum Disorder. <em>Journal of Autism and Developmental Disorders, 45</em>(8), 2411-2428.<br>Dawson, G., et al. (2010). Randomized, Controlled Trial of an Intervention for Toddlers With Autism: The Early Start Denver Model. <em>Pediatrics, 125</em>(1), e17-e23.'
+    : '<strong>References:</strong><br>Schreibman, L., et al. (2015). Naturalistic Developmental Behavioral Interventions: Empirically Validated Treatments for Autism Spectrum Disorder. <em>Journal of Autism and Developmental Disorders, 45</em>(8), 2411-2428.<br>Dawson, G., et al. (2010). Randomized, Controlled Trial of an Intervention for Toddlers With Autism: The Early Start Denver Model. <em>Pediatrics, 125</em>(1), e17-e23.';
+}
+
+// ===== Init =====
+setLang(currentLang);
+</script>
+</body>
+</html>
