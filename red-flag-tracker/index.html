@@ -1,0 +1,2172 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>发展观察记录 — 同路 WithYou</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --sage: #6B8F7B;
+  --sage-light: #8FB09D;
+  --sage-pale: #E8F0EB;
+  --sage-dark: #4A6B56;
+  --cream: #FAF7F0;
+  --cream-dark: #F0EBDF;
+  --blue: #7BA7BC;
+  --blue-light: #A5C7D6;
+  --blue-pale: #E4EFF4;
+  --warm-text: #3D3D3D;
+  --warm-text-light: #6B6B6B;
+  --coral: #D4917B;
+  --coral-pale: #F5E0D8;
+  --green: #6B8F7B;
+  --green-bg: #E8F0EB;
+  --yellow: #C9A84C;
+  --yellow-bg: #FDF6E3;
+  --red: #C47A6E;
+  --red-bg: #F8E8E5;
+  --shadow: 0 2px 16px rgba(107,143,123,0.10);
+  --shadow-lg: 0 6px 28px rgba(107,143,123,0.14);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+  background: var(--cream);
+  color: var(--warm-text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+/* ===== Utility ===== */
+.hidden { display: none !important; }
+.container { max-width: 680px; margin: 0 auto; padding: 0 20px; }
+
+/* ===== Top Bar ===== */
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.topbar-back {
+  color: var(--sage);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.topbar-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: var(--sage);
+}
+
+.topbar-right {
+  display: flex;
+  gap: 8px;
+}
+
+.lang-toggle {
+  background: var(--sage-pale);
+  border: none;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--sage);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.lang-toggle:hover { background: var(--sage-light); color: #fff; }
+
+/* ===== Screens ===== */
+.screen { padding: 24px 0 80px; }
+
+/* ===== Onboarding ===== */
+.onboard-header {
+  text-align: center;
+  margin-bottom: 32px;
+}
+
+.onboard-header h1 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  color: var(--sage);
+  margin-bottom: 8px;
+}
+
+.onboard-header p {
+  font-size: 0.92rem;
+  color: var(--warm-text-light);
+}
+
+.form-group {
+  margin-bottom: 24px;
+}
+
+.form-label {
+  display: block;
+  font-size: 0.88rem;
+  font-weight: 500;
+  color: var(--warm-text);
+  margin-bottom: 8px;
+}
+
+.form-label-hint {
+  font-weight: 400;
+  color: var(--warm-text-light);
+  font-size: 0.82rem;
+}
+
+.form-input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 2px solid var(--cream-dark);
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-family: inherit;
+  color: var(--warm-text);
+  background: #fff;
+  transition: border-color 0.2s;
+  outline: none;
+}
+
+.form-input:focus { border-color: var(--sage-light); }
+
+.form-input::placeholder { color: #bbb; }
+
+.reason-options {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.reason-option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 16px;
+  background: #fff;
+  border: 2px solid var(--cream-dark);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: all 0.2s;
+  font-size: 0.92rem;
+}
+
+.reason-option:hover { border-color: var(--sage-light); }
+.reason-option.selected { border-color: var(--sage); background: var(--sage-pale); }
+
+.reason-option input { display: none; }
+
+.reason-dot {
+  width: 20px; height: 20px;
+  border-radius: 50%;
+  border: 2px solid var(--cream-dark);
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.2s;
+}
+
+.reason-option.selected .reason-dot {
+  border-color: var(--sage);
+  background: var(--sage);
+}
+
+.reason-option.selected .reason-dot::after {
+  content: '';
+  position: absolute;
+  top: 4px; left: 4px;
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: #fff;
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 14px 28px;
+  border-radius: var(--radius-sm);
+  font-size: 1rem;
+  font-weight: 600;
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.btn-primary {
+  background: var(--sage);
+  color: #fff;
+  width: 100%;
+}
+
+.btn-primary:hover { background: var(--sage-dark); }
+.btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.btn-secondary {
+  background: #fff;
+  color: var(--sage);
+  border: 2px solid var(--sage-pale);
+}
+
+.btn-secondary:hover { background: var(--sage-pale); }
+
+.btn-small {
+  padding: 8px 18px;
+  font-size: 0.85rem;
+}
+
+.btn-danger {
+  background: var(--red-bg);
+  color: var(--red);
+  border: 2px solid transparent;
+}
+
+.btn-danger:hover { border-color: var(--red); }
+
+.step-dots {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 28px;
+}
+
+.step-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--cream-dark);
+  transition: all 0.3s;
+}
+
+.step-dot.active { background: var(--sage); width: 24px; border-radius: 4px; }
+
+/* ===== Dashboard ===== */
+.dash-welcome {
+  text-align: center;
+  padding: 24px 0 16px;
+}
+
+.dash-welcome h2 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--sage);
+}
+
+.dash-welcome p {
+  font-size: 0.9rem;
+  color: var(--warm-text-light);
+  margin-top: 4px;
+}
+
+.child-age-badge {
+  display: inline-block;
+  padding: 4px 14px;
+  background: var(--blue-pale);
+  color: var(--blue);
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  margin-top: 8px;
+}
+
+.dash-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin: 24px 0;
+}
+
+.dash-action {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 20px 16px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid transparent;
+}
+
+.dash-action:hover { border-color: var(--sage-pale); transform: translateY(-2px); }
+
+.dash-action-icon { font-size: 1.8rem; margin-bottom: 8px; display: block; }
+
+.dash-action-label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--warm-text);
+}
+
+.dash-action-sub {
+  font-size: 0.75rem;
+  color: var(--warm-text-light);
+  margin-top: 2px;
+}
+
+/* ===== Radar Chart ===== */
+.chart-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+  margin-bottom: 20px;
+}
+
+.chart-title {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.radar-container {
+  display: flex;
+  justify-content: center;
+  padding: 8px 0;
+}
+
+/* ===== Check-in ===== */
+.checkin-header {
+  text-align: center;
+  padding: 16px 0 24px;
+}
+
+.checkin-header h2 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--sage);
+}
+
+.checkin-header p {
+  font-size: 0.88rem;
+  color: var(--warm-text-light);
+  margin-top: 4px;
+}
+
+.domain-tabs {
+  display: flex;
+  gap: 6px;
+  overflow-x: auto;
+  padding: 0 0 16px;
+  -webkit-overflow-scrolling: touch;
+}
+
+.domain-tab {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  background: #fff;
+  border: 2px solid var(--cream-dark);
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+
+.domain-tab.active {
+  background: var(--sage);
+  color: #fff;
+  border-color: var(--sage);
+}
+
+.domain-progress {
+  font-size: 0.72rem;
+  opacity: 0.7;
+  margin-left: 4px;
+}
+
+.observation-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 14px;
+  box-shadow: var(--shadow);
+}
+
+.observation-text {
+  font-size: 0.95rem;
+  margin-bottom: 14px;
+  line-height: 1.6;
+}
+
+.observation-responses {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+
+.obs-response {
+  flex: 1;
+  min-width: 0;
+  padding: 10px 8px;
+  border-radius: var(--radius-sm);
+  border: 2px solid var(--cream-dark);
+  background: #fff;
+  font-size: 0.78rem;
+  font-weight: 500;
+  text-align: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  font-family: inherit;
+}
+
+.obs-response:hover { border-color: #ccc; }
+.obs-response.selected-green { border-color: var(--green); background: var(--green-bg); color: var(--green); }
+.obs-response.selected-yellow { border-color: var(--yellow); background: var(--yellow-bg); color: var(--yellow); }
+.obs-response.selected-red { border-color: var(--red); background: var(--red-bg); color: var(--red); }
+.obs-response.selected-gray { border-color: #aaa; background: #f5f5f5; color: #888; }
+
+.obs-note-toggle {
+  background: none;
+  border: none;
+  font-size: 0.8rem;
+  color: var(--blue);
+  cursor: pointer;
+  font-family: inherit;
+  padding: 4px 0;
+}
+
+.obs-note-toggle:hover { text-decoration: underline; }
+
+.obs-note-area {
+  width: 100%;
+  padding: 10px 12px;
+  border: 2px solid var(--cream-dark);
+  border-radius: var(--radius-sm);
+  font-size: 0.88rem;
+  font-family: inherit;
+  resize: vertical;
+  min-height: 60px;
+  margin-top: 8px;
+  outline: none;
+  color: var(--warm-text);
+}
+
+.obs-note-area:focus { border-color: var(--blue-light); }
+
+.checkin-nav {
+  display: flex;
+  gap: 12px;
+  padding: 24px 0;
+}
+
+.checkin-nav .btn { flex: 1; }
+
+/* ===== Results ===== */
+.results-section {
+  margin-bottom: 24px;
+}
+
+.results-section h3 {
+  font-size: 1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.strengths-list, .concerns-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.strengths-list li, .concerns-list li {
+  padding: 12px 16px;
+  border-radius: var(--radius-sm);
+  font-size: 0.9rem;
+  line-height: 1.5;
+}
+
+.strengths-list li { background: var(--green-bg); color: var(--sage-dark); }
+.concerns-list li.yellow-item { background: var(--yellow-bg); color: #8A7A30; }
+.concerns-list li.red-item { background: var(--red-bg); color: #8B5A50; }
+
+/* ===== Timeline ===== */
+.timeline {
+  position: relative;
+  padding-left: 24px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 8px; top: 0; bottom: 0;
+  width: 2px;
+  background: var(--cream-dark);
+}
+
+.timeline-entry {
+  position: relative;
+  margin-bottom: 20px;
+  padding: 16px 20px;
+  background: #fff;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.timeline-entry:hover { box-shadow: var(--shadow-lg); }
+
+.timeline-entry::before {
+  content: '';
+  position: absolute;
+  left: -20px; top: 20px;
+  width: 12px; height: 12px;
+  border-radius: 50%;
+  background: var(--sage);
+  border: 3px solid var(--cream);
+}
+
+.timeline-date {
+  font-size: 0.78rem;
+  color: var(--warm-text-light);
+  margin-bottom: 6px;
+}
+
+.timeline-scores {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.timeline-score {
+  font-size: 0.82rem;
+  font-weight: 500;
+  padding: 2px 10px;
+  border-radius: 12px;
+}
+
+.score-good { background: var(--green-bg); color: var(--sage); }
+.score-ok { background: var(--yellow-bg); color: var(--yellow); }
+.score-concern { background: var(--red-bg); color: var(--red); }
+
+/* ===== Settings ===== */
+.settings-section {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+
+.settings-section h3 {
+  font-size: 0.95rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.settings-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--cream-dark);
+}
+
+.settings-row:last-child { border-bottom: none; }
+
+/* ===== Trend Chart ===== */
+.trend-chart-container {
+  padding: 8px 0;
+  overflow-x: auto;
+}
+
+/* ===== Disclaimer ===== */
+.disclaimer {
+  background: var(--cream-dark);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  font-size: 0.8rem;
+  color: var(--warm-text-light);
+  line-height: 1.7;
+  margin-top: 24px;
+}
+
+.disclaimer strong { color: var(--warm-text); }
+
+/* ===== Print ===== */
+.print-only { display: none; }
+
+@media print {
+  .topbar, .dash-actions, .checkin-nav, .btn, .print-hide { display: none !important; }
+  .print-only { display: block !important; }
+  body { background: #fff; }
+  .screen { padding: 0; }
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 480px) {
+  .dash-actions { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .observation-responses { flex-direction: column; }
+  .obs-response { flex: none; }
+}
+
+/* ===== Animations ===== */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.screen { animation: fadeIn 0.35s ease; }
+
+/* ===== Export Modal ===== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.4);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 20px;
+}
+
+.modal {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  max-width: 440px;
+  width: 100%;
+  box-shadow: var(--shadow-lg);
+}
+
+.modal h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.modal p {
+  font-size: 0.9rem;
+  color: var(--warm-text-light);
+  margin-bottom: 20px;
+  line-height: 1.6;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.modal-actions .btn { flex: 1; }
+</style>
+</head>
+<body>
+
+<!-- ===== TOP BAR ===== -->
+<nav class="topbar">
+  <div class="topbar-left">
+    <a href="../index.html" class="topbar-back">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M10 3L5 8l5 5" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span data-i18n="back">返回</span>
+    </a>
+    <span class="topbar-title" data-i18n="appTitle">发展观察记录</span>
+  </div>
+  <div class="topbar-right">
+    <button class="lang-toggle" onclick="toggleLang()">EN / 中</button>
+  </div>
+</nav>
+
+<!-- ===== SCREEN: ONBOARDING ===== -->
+<div id="screen-onboard" class="screen container">
+  <div class="step-dots">
+    <div class="step-dot active" id="dot-1"></div>
+    <div class="step-dot" id="dot-2"></div>
+    <div class="step-dot" id="dot-3"></div>
+  </div>
+
+  <!-- Step 1: Name -->
+  <div id="onboard-step-1">
+    <div class="onboard-header">
+      <h1 data-i18n="ob_title1">让我们认识一下你的孩子</h1>
+      <p data-i18n="ob_sub1">这些信息帮助我们为你提供个性化的观察项目</p>
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="ob_nameLabel">孩子的名字或昵称</label>
+      <input type="text" id="child-name" class="form-input" data-i18n-placeholder="ob_namePlaceholder" placeholder="例如：小明">
+    </div>
+    <button class="btn btn-primary" onclick="onboardNext(1)" id="btn-step1" disabled data-i18n="ob_next">下一步</button>
+  </div>
+
+  <!-- Step 2: Birthdate -->
+  <div id="onboard-step-2" class="hidden">
+    <div class="onboard-header">
+      <h1 id="ob-title-2" data-i18n="ob_title2">的生日是哪天？</h1>
+      <p data-i18n="ob_sub2">这帮助我们展示适合年龄的观察项目</p>
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="ob_bdayLabel">出生日期</label>
+      <input type="date" id="child-bday" class="form-input">
+    </div>
+    <div id="age-display" class="hidden" style="text-align:center;margin-bottom:16px;">
+      <span class="child-age-badge" id="age-text"></span>
+    </div>
+    <button class="btn btn-primary" onclick="onboardNext(2)" id="btn-step2" disabled data-i18n="ob_next">下一步</button>
+  </div>
+
+  <!-- Step 3: Reason -->
+  <div id="onboard-step-3" class="hidden">
+    <div class="onboard-header">
+      <h1 data-i18n="ob_title3">是什么让你来到这里？</h1>
+      <p data-i18n="ob_sub3">可选 — 这帮助我们理解你的需求</p>
+    </div>
+    <div class="reason-options">
+      <label class="reason-option" onclick="selectReason(this)">
+        <input type="radio" name="reason" value="waiting">
+        <span class="reason-dot"></span>
+        <span data-i18n="reason_1">我正在等待诊断预约</span>
+      </label>
+      <label class="reason-option" onclick="selectReason(this)">
+        <input type="radio" name="reason" value="doctor">
+        <span class="reason-dot"></span>
+        <span data-i18n="reason_2">儿科医生建议我关注</span>
+      </label>
+      <label class="reason-option" onclick="selectReason(this)">
+        <input type="radio" name="reason" value="concerns">
+        <span class="reason-dot"></span>
+        <span data-i18n="reason_3">我对孩子的发展有一些担忧</span>
+      </label>
+      <label class="reason-option" onclick="selectReason(this)">
+        <input type="radio" name="reason" value="family">
+        <span class="reason-dot"></span>
+        <span data-i18n="reason_4">家人或朋友建议使用这个工具</span>
+      </label>
+    </div>
+    <div style="margin-top:24px;">
+      <button class="btn btn-primary" onclick="finishOnboard()" data-i18n="ob_start">开始观察</button>
+    </div>
+    <button style="margin-top:10px;width:100%;" class="btn btn-secondary btn-small" onclick="finishOnboard()" data-i18n="ob_skip">跳过，直接开始</button>
+  </div>
+</div>
+
+<!-- ===== SCREEN: DASHBOARD ===== -->
+<div id="screen-dashboard" class="screen container hidden">
+  <div class="dash-welcome">
+    <h2 id="dash-greeting"></h2>
+    <p id="dash-sub" data-i18n="dash_sub">记录和了解你的孩子的发展</p>
+    <span class="child-age-badge" id="dash-age"></span>
+  </div>
+
+  <div class="dash-actions">
+    <div class="dash-action" onclick="startCheckin()">
+      <span class="dash-action-icon">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="4" y="4" width="24" height="24" rx="5" stroke="#6B8F7B" stroke-width="2"/><path d="M10 16l4 4 8-8" stroke="#6B8F7B" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <div class="dash-action-label" data-i18n="dash_checkin">月度观察</div>
+      <div class="dash-action-sub" data-i18n="dash_checkin_sub">Monthly Check-in</div>
+    </div>
+    <div class="dash-action" onclick="showTimeline()">
+      <span class="dash-action-icon">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><path d="M6 26V6M6 20h6v6H6zM14 14h6v12h-6zM22 8h6v18h-6z" stroke="#7BA7BC" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </span>
+      <div class="dash-action-label" data-i18n="dash_timeline">历史记录</div>
+      <div class="dash-action-sub" data-i18n="dash_timeline_sub">Timeline</div>
+    </div>
+    <div class="dash-action" onclick="showExport()">
+      <span class="dash-action-icon">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><rect x="6" y="4" width="20" height="24" rx="3" stroke="#6B8F7B" stroke-width="2"/><path d="M11 12h10M11 16h8M11 20h6" stroke="#6B8F7B" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </span>
+      <div class="dash-action-label" data-i18n="dash_export">医生报告</div>
+      <div class="dash-action-sub" data-i18n="dash_export_sub">Export Report</div>
+    </div>
+    <div class="dash-action" onclick="showSettings()">
+      <span class="dash-action-icon">
+        <svg width="32" height="32" viewBox="0 0 32 32" fill="none"><circle cx="16" cy="16" r="5" stroke="#7BA7BC" stroke-width="2"/><path d="M16 4v4M16 24v4M4 16h4M24 16h4M7.5 7.5l2.8 2.8M21.7 21.7l2.8 2.8M7.5 24.5l2.8-2.8M21.7 10.3l2.8-2.8" stroke="#7BA7BC" stroke-width="2" stroke-linecap="round"/></svg>
+      </span>
+      <div class="dash-action-label" data-i18n="dash_settings">设置</div>
+      <div class="dash-action-sub" data-i18n="dash_settings_sub">Settings</div>
+    </div>
+  </div>
+
+  <!-- Radar Chart Card -->
+  <div class="chart-card" id="radar-card">
+    <div class="chart-title" data-i18n="chart_overview">最近一次观察总览</div>
+    <div class="radar-container">
+      <svg id="radar-chart" width="280" height="280" viewBox="0 0 280 280"></svg>
+    </div>
+    <div id="radar-legend" style="display:flex;gap:16px;justify-content:center;flex-wrap:wrap;margin-top:8px;font-size:0.78rem;"></div>
+  </div>
+
+  <!-- Trend Chart Card -->
+  <div class="chart-card" id="trend-card" style="display:none;">
+    <div class="chart-title" data-i18n="chart_trend">趋势变化</div>
+    <div class="trend-chart-container">
+      <svg id="trend-chart" width="100%" height="200" viewBox="0 0 600 200"></svg>
+    </div>
+  </div>
+
+  <!-- Strengths & Areas -->
+  <div id="results-area"></div>
+
+  <div class="disclaimer">
+    <strong data-i18n="disc_title">声明：</strong>
+    <span data-i18n="disc_body">本记录工具为家长提供的观察辅助工具，不用于筛查或诊断任何状况。请将您的观察记录分享给孩子的医疗保健提供者。</span>
+    <br><br>
+    <span style="font-size:0.75rem;">
+      References: CDC Learn the Signs. Act Early. (2022); DSM-5-TR ASD diagnostic criteria; Zwaigenbaum et al. (2015) — Early detection of autism.
+    </span>
+  </div>
+</div>
+
+<!-- ===== SCREEN: CHECK-IN ===== -->
+<div id="screen-checkin" class="screen container hidden">
+  <div class="checkin-header">
+    <h2 id="checkin-title"></h2>
+    <p id="checkin-sub"></p>
+  </div>
+  <div class="domain-tabs" id="domain-tabs"></div>
+  <div id="observation-list"></div>
+  <div class="checkin-nav">
+    <button class="btn btn-secondary" onclick="prevDomain()" id="btn-prev-domain" data-i18n="prev">上一项</button>
+    <button class="btn btn-primary" onclick="nextDomain()" id="btn-next-domain" data-i18n="next">下一项</button>
+  </div>
+</div>
+
+<!-- ===== SCREEN: TIMELINE ===== -->
+<div id="screen-timeline" class="screen container hidden">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <h2 style="font-size:1.2rem;font-weight:600;color:var(--sage);" data-i18n="timeline_title">观察历史</h2>
+    <button class="btn btn-secondary btn-small" onclick="showDashboard()" data-i18n="back">返回</button>
+  </div>
+  <div id="timeline-content"></div>
+</div>
+
+<!-- ===== SCREEN: SETTINGS ===== -->
+<div id="screen-settings" class="screen container hidden">
+  <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;">
+    <h2 style="font-size:1.2rem;font-weight:600;color:var(--sage);" data-i18n="settings_title">设置</h2>
+    <button class="btn btn-secondary btn-small" onclick="showDashboard()" data-i18n="back">返回</button>
+  </div>
+
+  <div class="settings-section">
+    <h3 data-i18n="settings_child">孩子信息</h3>
+    <div class="form-group">
+      <label class="form-label" data-i18n="ob_nameLabel">名字</label>
+      <input type="text" id="settings-name" class="form-input" onchange="updateChildInfo()">
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="ob_bdayLabel">出生日期</label>
+      <input type="date" id="settings-bday" class="form-input" onchange="updateChildInfo()">
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <h3 data-i18n="settings_data">数据管理</h3>
+    <div style="display:flex;flex-direction:column;gap:10px;">
+      <button class="btn btn-secondary btn-small" onclick="exportJSON()" data-i18n="settings_export">导出数据 (JSON)</button>
+      <label class="btn btn-secondary btn-small" style="cursor:pointer;text-align:center;">
+        <span data-i18n="settings_import">导入数据 (JSON)</span>
+        <input type="file" accept=".json" style="display:none;" onchange="importJSON(event)">
+      </label>
+      <button class="btn btn-danger btn-small" onclick="confirmReset()" data-i18n="settings_reset">清除所有数据</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== MODAL ===== -->
+<div id="modal" class="modal-overlay hidden" onclick="closeModal(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h3 id="modal-title"></h3>
+    <p id="modal-body"></p>
+    <div class="modal-actions" id="modal-actions"></div>
+  </div>
+</div>
+
+<script>
+// ===================================================================
+//  DATA: Observation items by age group and domain
+// ===================================================================
+const ITEMS = {
+  "6-12": {
+    social: [
+      { id:"s0601", zh:"会用眼神看你吗？", en:"Does {name} make eye contact with you?" },
+      { id:"s0602", zh:"听到你叫名字时会有反应吗？", en:"Does {name} respond when you call their name?" },
+      { id:"s0603", zh:"会对你微笑吗？", en:"Does {name} smile at you?" },
+      { id:"s0604", zh:"喜欢跟你玩躲猫猫吗？", en:"Does {name} enjoy playing peek-a-boo?" },
+      { id:"s0605", zh:"会伸手让你抱吗？", en:"Does {name} reach out to be picked up?" },
+      { id:"s0606", zh:"会模仿简单的表情吗（如张嘴、吐舌头）？", en:"Does {name} imitate simple facial expressions (open mouth, stick out tongue)?" },
+      { id:"s0607", zh:"看到熟悉的人会表现出高兴吗？", en:"Does {name} show happiness when seeing familiar people?" },
+      { id:"s0608", zh:"对陌生人会有警觉吗？", en:"Does {name} show wariness around strangers?" },
+      { id:"s0609", zh:"会跟你来回"对话"（咿呀发声）吗？", en:"Does {name} take turns 'talking' with you (babbling back and forth)?" },
+      { id:"s0610", zh:"会看你指向的方向吗？", en:"Does {name} look where you point?" },
+      { id:"s0611", zh:"会展示有社交性的笑容（不只是反射性微笑）吗？", en:"Does {name} show social smiles (not just reflexive)?" },
+      { id:"s0612", zh:"被逗笑时会大笑出声吗？", en:"Does {name} laugh out loud when amused?" },
+      { id:"s0613", zh:"对你的情绪有反应吗（你难过时会看着你）？", en:"Does {name} respond to your emotions (watches you when you seem sad)?" },
+      { id:"s0614", zh:"与你互动时会发出愉快的声音吗？", en:"Does {name} make happy sounds during interactions with you?" },
+      { id:"s0615", zh:"会主动引起你的注意吗？", en:"Does {name} try to get your attention?" },
+    ],
+    language: [
+      { id:"l0601", zh:"会咿呀发声吗（如 bababa、mamama）？", en:"Does {name} babble (e.g., bababa, mamama)?" },
+      { id:"l0602", zh:"会用不同的声音表达不同的情绪吗？", en:"Does {name} use different sounds for different emotions?" },
+      { id:"l0603", zh:"会模仿你发出的声音吗？", en:"Does {name} imitate sounds you make?" },
+      { id:"l0604", zh:"听到'不'或自己的名字时会停下来吗？", en:"Does {name} pause when hearing 'no' or their own name?" },
+      { id:"l0605", zh:"会用手势表达需求吗（如指向、伸手）？", en:"Does {name} use gestures to communicate (pointing, reaching)?" },
+      { id:"l0606", zh:"能理解简单的指令吗（如'过来'）？", en:"Does {name} understand simple commands like 'come here'?" },
+      { id:"l0607", zh:"会发出辅音和元音的组合吗？", en:"Does {name} produce consonant-vowel combinations?" },
+      { id:"l0608", zh:"对音乐或歌唱有反应吗？", en:"Does {name} respond to music or singing?" },
+      { id:"l0609", zh:"会用不同的音量或音调吗？", en:"Does {name} vary volume or pitch when vocalizing?" },
+      { id:"l0610", zh:"会对你说的话'回应'（即使是无意义的声音）？", en:"Does {name} 'respond' to your speech (even with nonsense sounds)?" },
+      { id:"l0611", zh:"听到新的声音时会好奇地注意吗？", en:"Does {name} show curiosity when hearing new sounds?" },
+      { id:"l0612", zh:"曾经有过的发声或咿呀学语现在消失了吗？", en:"Has {name} lost any babbling or sounds they used to make?", critical:true },
+      { id:"l0613", zh:"会对你讲的故事或说话保持注意力吗？", en:"Does {name} pay attention when you talk or tell a story?" },
+      { id:"l0614", zh:"认识常见物品的名称吗（如'奶瓶'、'球'）？", en:"Does {name} recognize names of common objects (bottle, ball)?" },
+      { id:"l0615", zh:"会用声音来引起你的注意吗？", en:"Does {name} use sounds to get your attention?" },
+    ],
+    behavior: [
+      { id:"b0601", zh:"会反复做同一个动作很长时间吗（如摇晃、拍打）？", en:"Does {name} repeat the same motion for extended periods (rocking, banging)?" },
+      { id:"b0602", zh:"会盯着旋转的物体看很久吗？", en:"Does {name} stare at spinning objects for a long time?" },
+      { id:"b0603", zh:"对不同质感的物体有特别强烈的偏好或抗拒吗？", en:"Does {name} show strong preference or aversion to certain textures?" },
+      { id:"b0604", zh:"把玩玩具时会用多种方式探索吗？", en:"Does {name} explore toys in different ways?" },
+      { id:"b0605", zh:"会对日常环境的变化表现出过度不安吗？", en:"Does {name} become overly upset with changes in daily routine?" },
+      { id:"b0606", zh:"有不寻常的手部或手指运动吗？", en:"Does {name} show unusual hand or finger movements?" },
+      { id:"b0607", zh:"对特定声音反应过度（如捂耳朵、大哭）吗？", en:"Does {name} overreact to certain sounds (covering ears, crying)?" },
+      { id:"b0608", zh:"对疼痛似乎反应不大吗？", en:"Does {name} seem to underreact to pain?" },
+      { id:"b0609", zh:"会用不寻常的方式看东西吗（如侧眼看、凑很近看）？", en:"Does {name} look at things in unusual ways (side glance, very close)?" },
+      { id:"b0610", zh:"能从一个活动顺利过渡到另一个活动吗？", en:"Can {name} transition smoothly from one activity to another?" },
+      { id:"b0611", zh:"会闻或舔不该闻/舔的东西吗？", en:"Does {name} smell or lick inappropriate objects?" },
+      { id:"b0612", zh:"对灯光有特别的兴趣或反应吗？", en:"Does {name} show unusual interest in or reaction to lights?" },
+      { id:"b0613", zh:"活动水平是否与同龄人明显不同（过度活跃或过度安静）？", en:"Is {name}'s activity level notably different from peers (very active or very quiet)?" },
+      { id:"b0614", zh:"喜欢把物品排成一排吗？", en:"Does {name} like to line objects up in rows?" },
+      { id:"b0615", zh:"对某一个特定的玩具或物品有异常强烈的依恋吗？", en:"Does {name} show unusually intense attachment to a specific toy or object?" },
+    ],
+    daily: [
+      { id:"d0601", zh:"睡眠模式规律吗？", en:"Does {name} have regular sleep patterns?" },
+      { id:"d0602", zh:"能接受多种食物质感吗？", en:"Does {name} accept a variety of food textures?" },
+      { id:"d0603", zh:"被拥抱或抚摸时感到舒服吗？", en:"Does {name} seem comfortable being held or cuddled?" },
+      { id:"d0604", zh:"对日常声音的反应正常吗（如吸尘器、门铃）？", en:"Does {name} react normally to everyday sounds (vacuum, doorbell)?" },
+      { id:"d0605", zh:"喂食过程顺利吗？", en:"Does feeding go smoothly?" },
+      { id:"d0606", zh:"洗澡时感到舒适吗？", en:"Is {name} comfortable during bath time?" },
+      { id:"d0607", zh:"能自己安抚或被安抚入睡吗？", en:"Can {name} self-soothe or be soothed to sleep?" },
+      { id:"d0608", zh:"穿衣服时是否特别抗拒？", en:"Does {name} resist getting dressed?" },
+      { id:"d0609", zh:"对外出环境（商店、公园）适应良好吗？", en:"Does {name} adapt well to outings (stores, parks)?" },
+      { id:"d0610", zh:"大小便有规律的模式吗？", en:"Does {name} have regular elimination patterns?" },
+      { id:"d0611", zh:"对温度变化的感知正常吗？", en:"Does {name} react normally to temperature changes?" },
+      { id:"d0612", zh:"能在汽车安全座椅中保持平静吗？", en:"Can {name} stay calm in a car seat?" },
+      { id:"d0613", zh:"会自己拿着食物吃吗？", en:"Does {name} self-feed with finger foods?" },
+      { id:"d0614", zh:"对新环境的适应能力如何？", en:"How does {name} adapt to new environments?" },
+      { id:"d0615", zh:"和其他看护人在一起时表现如何？", en:"How does {name} behave with other caregivers?" },
+    ]
+  },
+  "12-18": {
+    social: [
+      { id:"s1201", zh:"叫名字时会看你吗？", en:"Does {name} look at you when you call their name?" },
+      { id:"s1202", zh:"会跟着你手指的方向看吗？", en:"Does {name} follow where you point?" },
+      { id:"s1203", zh:"会把东西举起来给你看吗？", en:"Does {name} show you things by holding them up?" },
+      { id:"s1204", zh:"你对ta微笑时会笑回来吗？", en:"Does {name} smile back when you smile at them?" },
+      { id:"s1205", zh:"会挥手说再见吗？", en:"Does {name} wave bye-bye?" },
+      { id:"s1206", zh:"会模仿你做的事吗（如拍手、打电话的动作）？", en:"Does {name} imitate your actions (clapping, pretend phone)?" },
+      { id:"s1207", zh:"会把玩具拿给你一起看或玩吗？", en:"Does {name} bring toys to show you or share play?" },
+      { id:"s1208", zh:"和你一起时有眼神交流吗？", en:"Does {name} make eye contact during interactions?" },
+      { id:"s1209", zh:"会主动发起和你的互动吗？", en:"Does {name} initiate interactions with you?" },
+      { id:"s1210", zh:"你在和别人互动时会关注吗？", en:"Does {name} pay attention when you interact with others?" },
+      { id:"s1211", zh:"会用手势来表达需要（如指、拉手）？", en:"Does {name} use gestures to express needs (pointing, pulling hand)?" },
+      { id:"s1212", zh:"对其他小朋友感兴趣吗？", en:"Does {name} show interest in other children?" },
+      { id:"s1213", zh:"会在你离开房间时表现出不安吗？", en:"Does {name} show distress when you leave the room?" },
+      { id:"s1214", zh:"受伤或害怕时会来找你寻求安慰吗？", en:"Does {name} come to you for comfort when hurt or scared?" },
+      { id:"s1215", zh:"你表现出激动兴奋的时候会注意到并反应吗？", en:"Does {name} notice and react when you show excitement?" },
+      { id:"s1216", zh:"会和你玩简单的互动游戏（如拍手游戏）吗？", en:"Does {name} play simple interactive games (pat-a-cake)?" },
+      { id:"s1217", zh:"会用不同的面部表情来表达情绪吗？", en:"Does {name} use varied facial expressions to show emotions?" },
+      { id:"s1218", zh:"对他人的情绪有反应吗（如看到有人哭会看过去）？", en:"Does {name} respond to others' emotions (looks when someone cries)?" },
+    ],
+    language: [
+      { id:"l1201", zh:"会说至少1-2个有意义的词吗（如妈妈、再见）？", en:"Does {name} say at least 1-2 meaningful words (mama, bye)?" },
+      { id:"l1202", zh:"能理解简单的话吗（如'你的鞋在哪里？'）？", en:"Does {name} understand simple phrases ('Where are your shoes?')?" },
+      { id:"l1203", zh:"能执行简单的指令吗（如'把球给我'）？", en:"Does {name} follow simple instructions ('give me the ball')?" },
+      { id:"l1204", zh:"会摇头表示'不要'吗？", en:"Does {name} shake head for 'no'?" },
+      { id:"l1205", zh:"会点头表示'要'吗？", en:"Does {name} nod for 'yes'?" },
+      { id:"l1206", zh:"会用声音来呼唤你的注意吗？", en:"Does {name} use sounds to call your attention?" },
+      { id:"l1207", zh:"是否在尝试说新的词语？", en:"Is {name} trying to say new words?" },
+      { id:"l1208", zh:"能认出日常物品的名字吗（如碗、书）？", en:"Can {name} recognize names of everyday objects (bowl, book)?" },
+      { id:"l1209", zh:"会模仿你说的词语（即使发音不准确）吗？", en:"Does {name} imitate words you say (even if unclear)?" },
+      { id:"l1210", zh:"听到熟悉的歌曲或故事时有反应吗？", en:"Does {name} respond to familiar songs or stories?" },
+      { id:"l1211", zh:"能理解'不可以'的含义吗？", en:"Does {name} understand the meaning of 'no' or 'stop'?" },
+      { id:"l1212", zh:"会用手指指物来提出要求吗？", en:"Does {name} point at things to make requests?" },
+      { id:"l1213", zh:"说的词语数量还在增加吗？", en:"Is {name}'s vocabulary still growing?" },
+      { id:"l1214", zh:"之前会说的词现在不说了吗？", en:"Has {name} stopped using words they used to say?", critical:true },
+      { id:"l1215", zh:"会用目光和手势配合来沟通吗？", en:"Does {name} combine eye contact with gestures to communicate?" },
+      { id:"l1216", zh:"说话的语调自然吗？", en:"Does {name} use natural intonation when vocalizing?" },
+    ],
+    behavior: [
+      { id:"b1201", zh:"喜欢把玩具排成一排吗？", en:"Does {name} like to line up toys in rows?" },
+      { id:"b1202", zh:"会在眼前做不寻常的手指或手部运动吗？", en:"Does {name} make unusual finger or hand movements near their eyes?" },
+      { id:"b1203", zh:"日常安排改变时会非常不安吗？", en:"Does {name} become very upset with changes in routine?" },
+      { id:"b1204", zh:"会特别关注物体的某个部分（如车轮）而非整体吗？", en:"Does {name} focus intensely on parts of objects (e.g., wheels) rather than the whole?" },
+      { id:"b1205", zh:"有明显的感觉寻求行为吗（如转圈、看旋转的东西）？", en:"Does {name} show sensory seeking behaviors (spinning, watching spinning things)?" },
+      { id:"b1206", zh:"有明显的感觉回避行为吗（如捂耳朵、不喜欢被碰）？", en:"Does {name} show sensory avoidance (covering ears, disliking touch)?" },
+      { id:"b1207", zh:"会用多种方式探索玩具还是只重复一种方式？", en:"Does {name} explore toys in varied ways or repeat only one action?" },
+      { id:"b1208", zh:"对变化的适应能力如何？", en:"How well does {name} adapt to changes?" },
+      { id:"b1209", zh:"会反复开关门或开关灯吗？", en:"Does {name} repeatedly open/close doors or flip switches?" },
+      { id:"b1210", zh:"身体出现刻板的重复运动吗（如摇晃身体）？", en:"Does {name} show repetitive body movements (rocking)?" },
+      { id:"b1211", zh:"对某种声音异常恐惧吗？", en:"Is {name} unusually fearful of certain sounds?" },
+      { id:"b1212", zh:"会不停地旋转物体吗？", en:"Does {name} spin objects constantly?" },
+      { id:"b1213", zh:"只吃特定类型或颜色的食物吗？", en:"Does {name} only eat specific types or colors of food?" },
+      { id:"b1214", zh:"对光线或视觉图案有特别的反应吗？", en:"Does {name} have unusual responses to light or visual patterns?" },
+      { id:"b1215", zh:"玩耍的方式是否重复且缺乏想象力？", en:"Is {name}'s play repetitive and lacking imagination?" },
+      { id:"b1216", zh:"会踮脚走路吗？", en:"Does {name} walk on tiptoes?" },
+    ],
+    daily: [
+      { id:"d1201", zh:"入睡和保持睡眠容易吗？", en:"Does {name} fall asleep and stay asleep easily?" },
+      { id:"d1202", zh:"进食时能接受多种食物吗？", en:"Does {name} accept a variety of foods?" },
+      { id:"d1203", zh:"对拥抱和身体接触感到舒适吗？", en:"Is {name} comfortable with hugs and physical contact?" },
+      { id:"d1204", zh:"对日常声音（吸尘器、搅拌机）反应正常吗？", en:"Does {name} react normally to everyday sounds (vacuum, blender)?" },
+      { id:"d1205", zh:"穿衣/换尿布时配合吗？", en:"Is {name} cooperative during dressing/diaper changes?" },
+      { id:"d1206", zh:"能自己用杯子喝水吗？", en:"Can {name} drink from a cup independently?" },
+      { id:"d1207", zh:"会自己用勺子吃饭（即使弄得到处都是）吗？", en:"Does {name} try to use a spoon (even messily)?" },
+      { id:"d1208", zh:"对新的地方或情境适应得好吗？", en:"Does {name} adapt well to new places or situations?" },
+      { id:"d1209", zh:"会帮忙做简单的事吗（如把玩具放回去）？", en:"Does {name} help with simple tasks (put toys back)?" },
+      { id:"d1210", zh:"情绪波动的频率和强度是否在正常范围内？", en:"Are {name}'s mood swings within a normal range of frequency and intensity?" },
+      { id:"d1211", zh:"坐车时表现如何？", en:"How does {name} behave during car rides?" },
+      { id:"d1212", zh:"去医院或陌生地方时的反应如何？", en:"How does {name} react to doctor visits or unfamiliar places?" },
+      { id:"d1213", zh:"白天的精力水平正常吗？", en:"Does {name} have normal energy levels during the day?" },
+      { id:"d1214", zh:"能在短时间内集中注意力吗（如看书1-2分钟）？", en:"Can {name} focus briefly (e.g., look at a book for 1-2 minutes)?" },
+      { id:"d1215", zh:"对温度（太热/太冷）有正常反应吗？", en:"Does {name} respond normally to temperature (too hot/too cold)?" },
+    ]
+  },
+  "18-24": {
+    social: [
+      { id:"s1801", zh:"会用手指指东西给你看（不只是为了要东西）吗？", en:"Does {name} point to show you things (not just to get something)?" },
+      { id:"s1802", zh:"会假装游戏吗（如喂娃娃、用玩具电话讲话）？", en:"Does {name} play pretend (feed a doll, talk on toy phone)?" },
+      { id:"s1803", zh:"会看你的表情来判断情况安不安全吗？", en:"Does {name} look at your face to check your reaction?" },
+      { id:"s1804", zh:"会试图让你看ta在做的事情吗？", en:"Does {name} try to get you to watch what they're doing?" },
+      { id:"s1805", zh:"能和你来回轮流做一件事吗（如滚球）？", en:"Can {name} take turns with you (e.g., rolling a ball back and forth)?" },
+      { id:"s1806", zh:"看到你开心时会跟着开心吗？", en:"Does {name} become happy when you show joy?" },
+      { id:"s1807", zh:"会把有趣的发现带给你看或分享吗？", en:"Does {name} bring interesting discoveries to show or share with you?" },
+      { id:"s1808", zh:"在公园等公共场所时会关注其他小朋友吗？", en:"Does {name} pay attention to other children in public places?" },
+      { id:"s1809", zh:"你难过时会注意到并有反应吗？", en:"Does {name} notice and react when you are sad?" },
+      { id:"s1810", zh:"会主动和你分享食物或玩具吗？", en:"Does {name} offer to share food or toys with you?" },
+      { id:"s1811", zh:"能理解简单的社交规则（如打招呼、说谢谢）吗？", en:"Does {name} understand simple social rules (greeting, thank you)?" },
+      { id:"s1812", zh:"会和你一起看书时指出图片中的东西吗？", en:"Does {name} point to pictures in a book when reading together?" },
+      { id:"s1813", zh:"对你的表情和语气变化有反应吗？", en:"Does {name} respond to changes in your facial expression and tone?" },
+      { id:"s1814", zh:"会寻求你的关注和赞许吗？", en:"Does {name} seek your attention and approval?" },
+      { id:"s1815", zh:"有分离焦虑但能被安抚吗？", en:"Does {name} show separation anxiety but can be soothed?" },
+      { id:"s1816", zh:"会通过肢体语言和表情和你交流吗？", en:"Does {name} communicate with body language and expressions?" },
+      { id:"s1817", zh:"能和大人进行简单的互动游戏吗？", en:"Can {name} engage in simple interactive games with adults?" },
+      { id:"s1818", zh:"会观察并模仿其他孩子的行为吗？", en:"Does {name} observe and imitate other children's behavior?" },
+    ],
+    language: [
+      { id:"l1801", zh:"至少会说20个词了吗？", en:"Does {name} say at least 20 words?" },
+      { id:"l1802", zh:"会把两个词连在一起说吗（如'要水'、'妈妈抱'）？", en:"Does {name} combine two words ('want water', 'mama hold')?" },
+      { id:"l1803", zh:"能理解简单的问题吗（如'你想喝水吗？'）？", en:"Can {name} understand simple questions ('Do you want water?')?" },
+      { id:"l1804", zh:"会指着身体部位说名称吗？", en:"Can {name} point to and name body parts?" },
+      { id:"l1805", zh:"能执行两步指令吗（如'拿球给爸爸'）？", en:"Can {name} follow two-step instructions ('Get the ball and give it to daddy')?" },
+      { id:"l1806", zh:"词汇量是否在稳步增长？", en:"Is {name}'s vocabulary steadily growing?" },
+      { id:"l1807", zh:"会用'我'、'你'、'我的'等代词吗？", en:"Does {name} use pronouns like 'I', 'you', 'mine'?" },
+      { id:"l1808", zh:"说的话你大概能听懂多少？（至少一半）", en:"Can you understand about half of what {name} says?" },
+      { id:"l1809", zh:"会用语言来提要求吗（不只是哭闹）？", en:"Does {name} use words to make requests (not just crying)?" },
+      { id:"l1810", zh:"会给物品命名吗（如看到猫说'猫'）？", en:"Does {name} name objects (says 'cat' when seeing a cat)?" },
+      { id:"l1811", zh:"会回答简单的问题吗？", en:"Does {name} answer simple questions?" },
+      { id:"l1812", zh:"会用语言来描述正在发生的事吗？", en:"Does {name} use words to describe what's happening?" },
+      { id:"l1813", zh:"之前能说的词或短语现在不说了吗？", en:"Has {name} lost words or phrases they used to say?", critical:true },
+      { id:"l1814", zh:"是否经常重复你说的话（鹦鹉学舌式）而不是自己表达？", en:"Does {name} often echo your words (echolalia) instead of responding?", critical:true },
+      { id:"l1815", zh:"说话时有自然的语调和节奏吗？", en:"Does {name} speak with natural intonation and rhythm?" },
+      { id:"l1816", zh:"会唱或哼简单的歌曲片段吗？", en:"Does {name} sing or hum parts of simple songs?" },
+      { id:"l1817", zh:"对'是'和'不是'有正确反应吗？", en:"Does {name} respond correctly to 'yes' and 'no' questions?" },
+      { id:"l1818", zh:"会用不同的词来表达不同的需要（饿、渴、困）吗？", en:"Does {name} use different words for different needs (hungry, thirsty, sleepy)?" },
+    ],
+    behavior: [
+      { id:"b1801", zh:"会持续重复同一种玩法很长时间吗？", en:"Does {name} repeat the same play action for an extended time?" },
+      { id:"b1802", zh:"看到旋转的东西时异常着迷吗？", en:"Is {name} unusually fascinated by spinning things?" },
+      { id:"b1803", zh:"对细小的变化非常敏感吗（如家具移动、走不同的路）？", en:"Is {name} very sensitive to small changes (furniture moved, different route)?" },
+      { id:"b1804", zh:"会反复做特定的手部动作（如拍手、甩手）吗？", en:"Does {name} repeatedly do specific hand movements (flapping, shaking)?" },
+      { id:"b1805", zh:"对特定的物品或话题异常感兴趣吗？", en:"Does {name} show unusually intense interest in specific objects or topics?" },
+      { id:"b1806", zh:"有感觉寻求的行为吗（如喜欢被紧紧抱、喜欢撞东西）？", en:"Does {name} show sensory seeking behavior (deep pressure, crashing into things)?" },
+      { id:"b1807", zh:"有感觉回避的行为吗（如不喜欢沙子、抗拒洗头）？", en:"Does {name} show sensory avoidance (dislikes sand, resists hair washing)?" },
+      { id:"b1808", zh:"坚持要用固定的方式做某些事吗？", en:"Does {name} insist on doing certain things in a fixed way?" },
+      { id:"b1809", zh:"会重复别人说的句子或影视里的对白吗？", en:"Does {name} repeat phrases from others or TV/movies?" },
+      { id:"b1810", zh:"情绪崩溃的频率和强度是否超出正常范围？", en:"Are meltdowns more frequent or intense than typical?" },
+      { id:"b1811", zh:"对疼痛反应异常（过度或不足）吗？", en:"Does {name} react unusually to pain (too much or too little)?" },
+      { id:"b1812", zh:"能从一个活动灵活过渡到另一个吗？", en:"Can {name} transition flexibly from one activity to another?" },
+      { id:"b1813", zh:"走路时是否踮脚？", en:"Does {name} walk on tiptoes?" },
+      { id:"b1814", zh:"会把物品按颜色、大小或形状分类吗？", en:"Does {name} sort objects by color, size, or shape?" },
+      { id:"b1815", zh:"对某些食物的颜色或质感非常挑剔吗？", en:"Is {name} very picky about food colors or textures?" },
+      { id:"b1816", zh:"自我刺激行为明显吗（如磨牙、摇头）？", en:"Are self-stimulating behaviors noticeable (teeth grinding, head shaking)?" },
+    ],
+    daily: [
+      { id:"d1801", zh:"睡眠质量好吗（能入睡、睡整夜）？", en:"Does {name} sleep well (falls asleep, sleeps through the night)?" },
+      { id:"d1802", zh:"饮食种类丰富吗？", en:"Does {name} eat a varied diet?" },
+      { id:"d1803", zh:"对被抱抱和触碰感到舒适吗？", en:"Is {name} comfortable with hugs and touch?" },
+      { id:"d1804", zh:"在嘈杂的环境（商场、聚会）中表现如何？", en:"How does {name} behave in noisy environments (mall, gatherings)?" },
+      { id:"d1805", zh:"能开始尝试自己穿脱简单的衣物吗？", en:"Is {name} starting to try dressing/undressing?" },
+      { id:"d1806", zh:"对如厕训练有兴趣或准备好了吗？", en:"Does {name} show interest in or readiness for toilet training?" },
+      { id:"d1807", zh:"能自己用勺子和叉子吃东西吗？", en:"Can {name} use a spoon and fork independently?" },
+      { id:"d1808", zh:"白天的情绪总体稳定吗？", en:"Is {name}'s overall mood stable during the day?" },
+      { id:"d1809", zh:"能适应日常作息的小变化吗？", en:"Can {name} adapt to small changes in daily routine?" },
+      { id:"d1810", zh:"在陌生环境中的安全意识如何？", en:"How is {name}'s safety awareness in unfamiliar environments?" },
+      { id:"d1811", zh:"能在短时间内集中注意力做一件事吗（3-5分钟）？", en:"Can {name} focus on one activity briefly (3-5 minutes)?" },
+      { id:"d1812", zh:"对理发、剪指甲等身体护理配合吗？", en:"Is {name} cooperative with grooming (haircuts, nail trimming)?" },
+      { id:"d1813", zh:"白天的精力分配正常吗？", en:"Does {name} have normal energy distribution during the day?" },
+      { id:"d1814", zh:"能耐心等待短暂的时间吗？", en:"Can {name} wait patiently for a short time?" },
+      { id:"d1815", zh:"对日常生活的安排有了解（知道吃完饭后做什么）吗？", en:"Does {name} understand daily routines (knows what comes after meals)?" },
+    ]
+  },
+  "24-36": {
+    social: [
+      { id:"s2401", zh:"会和其他小朋友一起玩（不只是在旁边各玩各的）吗？", en:"Does {name} play WITH other children (not just near them)?" },
+      { id:"s2402", zh:"在游戏中能轮流吗？", en:"Does {name} take turns in games?" },
+      { id:"s2403", zh:"看到别人不开心时会表示关心吗？", en:"Does {name} show empathy when someone is upset?" },
+      { id:"s2404", zh:"能告诉你今天发生了什么吗？", en:"Can {name} tell you about their day?" },
+      { id:"s2405", zh:"会创造性地进行假装游戏吗（如扮演角色）？", en:"Does {name} engage in creative pretend play (role playing)?" },
+      { id:"s2406", zh:"能理解简单的社交规则（如分享、排队）吗？", en:"Does {name} understand simple social rules (sharing, taking turns)?" },
+      { id:"s2407", zh:"会主动邀请其他孩子一起玩吗？", en:"Does {name} initiate play with other children?" },
+      { id:"s2408", zh:"能用语言表达自己的感受吗（如'我生气了'）？", en:"Can {name} express feelings verbally ('I'm angry')?" },
+      { id:"s2409", zh:"能和你进行简单的对话（来回至少2-3轮）吗？", en:"Can {name} have a simple conversation (2-3 turns back and forth)?" },
+      { id:"s2410", zh:"在小组活动中能参与和配合吗？", en:"Can {name} participate and cooperate in group activities?" },
+      { id:"s2411", zh:"会用语言来解决和其他孩子的冲突吗？", en:"Does {name} use words to resolve conflicts with other children?" },
+      { id:"s2412", zh:"能注意到他人的面部表情并做出适当反应吗？", en:"Does {name} notice facial expressions and respond appropriately?" },
+      { id:"s2413", zh:"会为了让别人笑而故意做傻事吗？", en:"Does {name} do silly things on purpose to make others laugh?" },
+      { id:"s2414", zh:"能区分熟人和陌生人并做出不同反应吗？", en:"Does {name} distinguish between familiar people and strangers?" },
+      { id:"s2415", zh:"对同龄人的游戏邀请会做出回应吗？", en:"Does {name} respond to play invitations from peers?" },
+      { id:"s2416", zh:"会在讲故事或看书时做出评论或提问吗？", en:"Does {name} comment or ask questions during stories?" },
+      { id:"s2417", zh:"能理解'我的'和'你的'的区别吗？", en:"Does {name} understand the difference between 'mine' and 'yours'?" },
+      { id:"s2418", zh:"有一个或多个喜欢的小伙伴吗？", en:"Does {name} have one or more preferred playmates?" },
+    ],
+    language: [
+      { id:"l2401", zh:"能说3个词以上的句子吗？", en:"Can {name} speak in sentences of 3+ words?" },
+      { id:"l2402", zh:"你能听懂ta说的大部分内容吗？", en:"Can you understand most of what {name} says?" },
+      { id:"l2403", zh:"能回答'谁''什么''哪里'的问题吗？", en:"Can {name} answer 'who', 'what', 'where' questions?" },
+      { id:"l2404", zh:"能说出自己的名字和年龄吗？", en:"Can {name} say their name and age?" },
+      { id:"l2405", zh:"会用'我'来指代自己吗？", en:"Does {name} use 'I' to refer to themselves?" },
+      { id:"l2406", zh:"能描述图片中正在发生什么吗？", en:"Can {name} describe what's happening in a picture?" },
+      { id:"l2407", zh:"说话时使用复数和过去时吗？", en:"Does {name} use plurals and past tense when speaking?" },
+      { id:"l2408", zh:"能讲述简单的故事或事件吗？", en:"Can {name} tell a simple story or recount events?" },
+      { id:"l2409", zh:"会问'为什么'的问题吗？", en:"Does {name} ask 'why' questions?" },
+      { id:"l2410", zh:"能理解方位词（如'上面''里面'）吗？", en:"Does {name} understand spatial words (on, in, under)?" },
+      { id:"l2411", zh:"能进行至少3-4个来回的对话吗？", en:"Can {name} sustain a conversation for at least 3-4 turns?" },
+      { id:"l2412", zh:"词汇量是否还在增加？", en:"Is {name}'s vocabulary still increasing?" },
+      { id:"l2413", zh:"之前能说的话现在不说了吗？", en:"Has {name} lost language abilities they previously had?", critical:true },
+      { id:"l2414", zh:"是否大量重复别人的话而不是自主表达？", en:"Does {name} frequently echo others' words instead of expressing their own thoughts?", critical:true },
+      { id:"l2415", zh:"说话的音量和语调适当吗？", en:"Are {name}'s speech volume and intonation appropriate?" },
+      { id:"l2416", zh:"能用语言来描述自己的需求和感受吗？", en:"Can {name} use language to describe needs and feelings?" },
+      { id:"l2417", zh:"能理解简单的笑话或幽默吗？", en:"Does {name} understand simple jokes or humor?" },
+      { id:"l2418", zh:"会使用连接词（'然后'、'因为'）吗？", en:"Does {name} use connecting words ('then', 'because')?" },
+    ],
+    behavior: [
+      { id:"b2401", zh:"还在重复排列物品吗？", en:"Does {name} still repeatedly line up objects?" },
+      { id:"b2402", zh:"手部/手指的刻板动作是否持续或增加？", en:"Have stereotypical hand/finger movements persisted or increased?" },
+      { id:"b2403", zh:"对改变日程或路线非常抗拒吗？", en:"Is {name} very resistant to changes in schedule or routine?" },
+      { id:"b2404", zh:"对物体的某个部分有异常的专注吗？", en:"Does {name} show unusual focus on specific parts of objects?" },
+      { id:"b2405", zh:"有强烈的感觉偏好或厌恶吗？", en:"Does {name} have strong sensory preferences or aversions?" },
+      { id:"b2406", zh:"想象性游戏是否丰富多变？", en:"Is {name}'s pretend play varied and creative?" },
+      { id:"b2407", zh:"能灵活地接受活动的改变吗？", en:"Can {name} flexibly accept changes in activities?" },
+      { id:"b2408", zh:"是否对特定话题或物品有异常强烈和持久的兴趣？", en:"Does {name} have an unusually intense and lasting interest in specific topics?" },
+      { id:"b2409", zh:"情绪调节能力如何（崩溃后能恢复吗）？", en:"How is {name}'s emotional regulation (can they recover from meltdowns)?" },
+      { id:"b2410", zh:"会表现出反复的身体动作吗（如跳、转圈）？", en:"Does {name} show repetitive body movements (jumping, spinning)?" },
+      { id:"b2411", zh:"对衣服的材质或标签非常敏感吗？", en:"Is {name} very sensitive to clothing textures or tags?" },
+      { id:"b2412", zh:"在不应该害怕的地方表现出恐惧吗？", en:"Does {name} show fear in situations that shouldn't be scary?" },
+      { id:"b2413", zh:"是否拒绝尝试新的食物、活动或体验？", en:"Does {name} refuse to try new foods, activities, or experiences?" },
+      { id:"b2414", zh:"是否需要事情总是以完全相同的方式发生？", en:"Does {name} need things to happen in exactly the same way?" },
+      { id:"b2415", zh:"是否自言自语或重复电视/视频中的台词？", en:"Does {name} talk to themselves or repeat lines from TV/videos?" },
+      { id:"b2416", zh:"游戏中是否缺乏变化和创造力？", en:"Is {name}'s play lacking in variety and creativity?" },
+      { id:"b2417", zh:"对某些日常情境反应异常强烈（如理发、洗头）吗？", en:"Does {name} react unusually strongly to certain daily situations (haircuts, hair washing)?" },
+      { id:"b2418", zh:"踮脚走路的情况是否持续？", en:"Does {name} continue to walk on tiptoes?" },
+    ],
+    daily: [
+      { id:"d2401", zh:"睡眠质量和时长正常吗？", en:"Are {name}'s sleep quality and duration normal?" },
+      { id:"d2402", zh:"饮食种类是否在扩大？", en:"Is {name}'s diet variety expanding?" },
+      { id:"d2403", zh:"如厕训练进展如何？", en:"How is {name}'s toilet training progressing?" },
+      { id:"d2404", zh:"能自己穿脱部分衣物吗？", en:"Can {name} put on/take off some clothing independently?" },
+      { id:"d2405", zh:"个人卫生的配合度如何（刷牙、洗手）？", en:"How cooperative is {name} with hygiene (brushing teeth, hand washing)?" },
+      { id:"d2406", zh:"能独立地做一些简单的事吗？", en:"Can {name} do some simple things independently?" },
+      { id:"d2407", zh:"外出时的行为管理方便吗？", en:"Is behavior manageable during outings?" },
+      { id:"d2408", zh:"能安全地在游乐场所玩耍吗？", en:"Can {name} play safely at playgrounds?" },
+      { id:"d2409", zh:"对家里的规则有一定了解吗？", en:"Does {name} understand some household rules?" },
+      { id:"d2410", zh:"能独自玩耍一段时间吗（5-10分钟）？", en:"Can {name} play independently for a while (5-10 minutes)?" },
+      { id:"d2411", zh:"和兄弟姐妹或其他家庭成员的关系如何？", en:"How is {name}'s relationship with siblings or other family members?" },
+      { id:"d2412", zh:"对危险有基本的认识吗（如不碰热的东西）？", en:"Does {name} have basic awareness of danger (not touching hot things)?" },
+      { id:"d2413", zh:"大运动能力发展正常吗（跑、跳、爬）？", en:"Are {name}'s gross motor skills developing normally (running, jumping, climbing)?" },
+      { id:"d2414", zh:"精细运动能力发展正常吗（画画、搭积木）？", en:"Are {name}'s fine motor skills developing normally (drawing, building blocks)?" },
+      { id:"d2415", zh:"总体上是个快乐的孩子吗？", en:"Is {name} generally a happy child?" },
+    ]
+  },
+  "36-60": {
+    social: [
+      { id:"s3601", zh:"能和同龄人一起合作完成一个活动吗？", en:"Can {name} cooperate with peers on an activity?" },
+      { id:"s3602", zh:"在游戏中能遵守规则吗？", en:"Can {name} follow rules in games?" },
+      { id:"s3603", zh:"会表达对朋友的喜爱和偏好吗？", en:"Does {name} express preference for certain friends?" },
+      { id:"s3604", zh:"能理解他人的感受并做出回应吗？", en:"Can {name} understand others' feelings and respond?" },
+      { id:"s3605", zh:"会进行复杂的假装游戏（有角色和情节）吗？", en:"Does {name} engage in complex pretend play (roles and storylines)?" },
+      { id:"s3606", zh:"能使用礼貌用语（请、谢谢、对不起）吗？", en:"Can {name} use polite words (please, thank you, sorry)?" },
+      { id:"s3607", zh:"能适应不同的社交情境（家里vs学校）吗？", en:"Can {name} adapt to different social situations (home vs school)?" },
+      { id:"s3608", zh:"会主动和其他孩子分享和合作吗？", en:"Does {name} voluntarily share and cooperate with other children?" },
+      { id:"s3609", zh:"能理解和使用简单的幽默吗？", en:"Can {name} understand and use simple humor?" },
+      { id:"s3610", zh:"在小组中能注意和回应他人的发言吗？", en:"Can {name} attend to and respond to others' contributions in a group?" },
+      { id:"s3611", zh:"与不熟悉的大人互动时是否得体？", en:"Does {name} interact appropriately with unfamiliar adults?" },
+      { id:"s3612", zh:"能识别并说出基本的情绪吗（开心、难过、生气）？", en:"Can {name} identify and name basic emotions (happy, sad, angry)?" },
+      { id:"s3613", zh:"能解读他人的非言语信号吗（身体语言、表情）？", en:"Can {name} read non-verbal cues (body language, expressions)?" },
+      { id:"s3614", zh:"在社交互动中的反应速度和节奏正常吗？", en:"Are {name}'s social response timing and pace normal?" },
+      { id:"s3615", zh:"能根据对象调整说话方式吗（对小朋友vs对老师）？", en:"Can {name} adjust their communication style for different people?" },
+      { id:"s3616", zh:"能参与集体对话而不只是独白吗？", en:"Can {name} participate in group conversation (not just monologue)?" },
+      { id:"s3617", zh:"面对冲突时能寻求帮助吗？", en:"Can {name} seek help when facing conflict?" },
+      { id:"s3618", zh:"能理解别人可能和自己有不同的想法吗？", en:"Can {name} understand that others may think differently than they do?" },
+      { id:"s3619", zh:"在幼儿园/学校的社交适应如何？", en:"How is {name}'s social adjustment at daycare/school?" },
+      { id:"s3620", zh:"会主动告诉你发生在学校的社交事件吗？", en:"Does {name} spontaneously tell you about social events at school?" },
+    ],
+    language: [
+      { id:"l3601", zh:"能说完整的句子（5个词以上）吗？", en:"Can {name} speak in complete sentences (5+ words)?" },
+      { id:"l3602", zh:"陌生人能听懂ta说的大部分话吗？", en:"Can strangers understand most of what {name} says?" },
+      { id:"l3603", zh:"能讲述一个有头有尾的故事吗？", en:"Can {name} tell a story with a beginning, middle, and end?" },
+      { id:"l3604", zh:"能理解和使用'如果...那么...'的句式吗？", en:"Can {name} understand and use 'if...then...' sentences?" },
+      { id:"l3605", zh:"能回答'为什么'和'怎么样'的问题吗？", en:"Can {name} answer 'why' and 'how' questions?" },
+      { id:"l3606", zh:"会主动问各种各样的问题吗？", en:"Does {name} spontaneously ask varied questions?" },
+      { id:"l3607", zh:"能理解简单的时间概念（昨天、今天、明天）吗？", en:"Can {name} understand simple time concepts (yesterday, today, tomorrow)?" },
+      { id:"l3608", zh:"对话时能围绕一个话题展开吗？", en:"Can {name} stay on topic during conversation?" },
+      { id:"l3609", zh:"能理解简单的比喻或想象吗？", en:"Can {name} understand simple metaphors or imagination?" },
+      { id:"l3610", zh:"语法使用是否基本正确？", en:"Is {name}'s grammar usage generally correct?" },
+      { id:"l3611", zh:"能用语言来表达想要、感受和意见吗？", en:"Can {name} use words to express wants, feelings, and opinions?" },
+      { id:"l3612", zh:"说话的语调和节奏自然吗？", en:"Are {name}'s speech rhythm and intonation natural?" },
+      { id:"l3613", zh:"是否有持续的回声式说话（鹦鹉学舌）？", en:"Does {name} still show persistent echolalia (echoing)?", critical:true },
+      { id:"l3614", zh:"词汇量是否与同龄人相当？", en:"Is {name}'s vocabulary comparable to peers?" },
+      { id:"l3615", zh:"之前有的语言能力是否出现退步？", en:"Has {name} shown regression in previously acquired language skills?", critical:true },
+      { id:"l3616", zh:"能理解并执行多步骤的指令吗？", en:"Can {name} understand and follow multi-step instructions?" },
+      { id:"l3617", zh:"说话时是否能恰当地使用代词（他/她/它）？", en:"Does {name} use pronouns correctly (he/she/it)?" },
+      { id:"l3618", zh:"能描述过去发生的事或计划未来的事吗？", en:"Can {name} describe past events or plan future ones?" },
+      { id:"l3619", zh:"能理解和遵守对话中的轮流规则吗？", en:"Can {name} understand and follow turn-taking rules in conversation?" },
+      { id:"l3620", zh:"发音清楚吗？", en:"Is {name}'s pronunciation clear?" },
+    ],
+    behavior: [
+      { id:"b3601", zh:"是否仍有明显的刻板重复行为？", en:"Does {name} still show obvious stereotypical repetitive behaviors?" },
+      { id:"b3602", zh:"对改变是否能比之前更好地适应？", en:"Can {name} adapt to changes better than before?" },
+      { id:"b3603", zh:"兴趣是否有所扩展（不再只关注一个主题）？", en:"Have {name}'s interests expanded (not just one topic)?" },
+      { id:"b3604", zh:"感觉处理方面是否有改善？", en:"Has sensory processing improved?" },
+      { id:"b3605", zh:"情绪调节能力是否在进步？", en:"Is {name}'s emotional regulation improving?" },
+      { id:"b3606", zh:"能接受日常计划的合理变更吗？", en:"Can {name} accept reasonable changes to daily plans?" },
+      { id:"b3607", zh:"游戏是否变得更有想象力和灵活性？", en:"Has {name}'s play become more imaginative and flexible?" },
+      { id:"b3608", zh:"是否仍然需要严格的仪式或程序？", en:"Does {name} still require strict rituals or routines?" },
+      { id:"b3609", zh:"在输掉游戏或事情不如意时的反应如何？", en:"How does {name} react when losing a game or things don't go their way?" },
+      { id:"b3610", zh:"对新的活动或体验是否更加开放？", en:"Is {name} more open to new activities or experiences?" },
+      { id:"b3611", zh:"对衣服、食物质感的敏感性如何？", en:"How is {name}'s sensitivity to clothing and food textures?" },
+      { id:"b3612", zh:"是否有伤害自己的行为（如撞头、咬手）？", en:"Does {name} show self-injurious behavior (head-banging, biting)?", critical:true },
+      { id:"b3613", zh:"注意力持续时间与同龄人相比如何？", en:"How does {name}'s attention span compare to peers?" },
+      { id:"b3614", zh:"对特定话题的讨论是否过于冗长或单一？", en:"Does {name} talk at excessive length about specific topics?" },
+      { id:"b3615", zh:"是否能适应不同的环境（家、学校、外出）？", en:"Can {name} adapt to different environments (home, school, outings)?" },
+      { id:"b3616", zh:"对声音、光线或人群的敏感度如何？", en:"How sensitive is {name} to sounds, lights, or crowds?" },
+      { id:"b3617", zh:"是否有不寻常的恐惧或焦虑？", en:"Does {name} have unusual fears or anxieties?" },
+      { id:"b3618", zh:"自我刺激行为是否影响日常功能？", en:"Do self-stimulating behaviors interfere with daily functioning?" },
+      { id:"b3619", zh:"是否能根据情境调整自己的行为？", en:"Can {name} adjust their behavior based on the situation?" },
+      { id:"b3620", zh:"总体来说行为是否在进步？", en:"Overall, is {name}'s behavior improving?" },
+    ],
+    daily: [
+      { id:"d3601", zh:"能独立完成大部分日常活动吗（穿衣、刷牙）？", en:"Can {name} independently complete most daily activities (dressing, brushing teeth)?" },
+      { id:"d3602", zh:"如厕已经基本掌握了吗？", en:"Has {name} mostly mastered toilet training?" },
+      { id:"d3603", zh:"饮食习惯是否健康多样？", en:"Are {name}'s eating habits healthy and varied?" },
+      { id:"d3604", zh:"睡眠作息规律吗？", en:"Is {name}'s sleep schedule regular?" },
+      { id:"d3605", zh:"在学校/幼儿园的适应情况如何？", en:"How is {name} adapting to school/daycare?" },
+      { id:"d3606", zh:"能遵守基本的安全规则吗？", en:"Can {name} follow basic safety rules?" },
+      { id:"d3607", zh:"运动协调能力发展正常吗？", en:"Are {name}'s motor coordination skills developing normally?" },
+      { id:"d3608", zh:"精细运动技能如何（画画、剪纸、搭建）？", en:"How are {name}'s fine motor skills (drawing, cutting, building)?" },
+      { id:"d3609", zh:"能理解和遵循简单的规则和指令吗？", en:"Can {name} understand and follow simple rules and instructions?" },
+      { id:"d3610", zh:"在日常生活中是否表现出自主性？", en:"Does {name} show independence in daily life?" },
+      { id:"d3611", zh:"能与家人一起参加外出活动吗？", en:"Can {name} participate in family outings?" },
+      { id:"d3612", zh:"对个人物品有保管意识吗？", en:"Does {name} keep track of personal belongings?" },
+      { id:"d3613", zh:"在压力或疲惫时的表现如何？", en:"How does {name} behave when stressed or tired?" },
+      { id:"d3614", zh:"与照顾者（老师、保姆）的关系如何？", en:"How is {name}'s relationship with caregivers (teachers, babysitters)?" },
+      { id:"d3615", zh:"总体上快乐和满足吗？", en:"Is {name} generally happy and content?" },
+    ]
+  }
+};
+
+// ===================================================================
+//  I18N
+// ===================================================================
+const I18N = {
+  zh: {
+    back: "返回",
+    appTitle: "发展观察记录",
+    ob_title1: "让我们认识一下你的孩子",
+    ob_sub1: "这些信息帮助我们为你提供个性化的观察项目",
+    ob_nameLabel: "孩子的名字或昵称",
+    ob_namePlaceholder: "例如：小明",
+    ob_title2: "的生日是哪天？",
+    ob_sub2: "这帮助我们展示适合年龄的观察项目",
+    ob_bdayLabel: "出生日期",
+    ob_title3: "是什么让你来到这里？",
+    ob_sub3: "可选 — 这帮助我们理解你的需求",
+    reason_1: "我正在等待诊断预约",
+    reason_2: "儿科医生建议我关注",
+    reason_3: "我对孩子的发展有一些担忧",
+    reason_4: "家人或朋友建议使用这个工具",
+    ob_next: "下一步",
+    ob_start: "开始观察",
+    ob_skip: "跳过，直接开始",
+    dash_sub: "记录和了解你的孩子的发展",
+    dash_checkin: "月度观察",
+    dash_checkin_sub: "Monthly Check-in",
+    dash_timeline: "历史记录",
+    dash_timeline_sub: "Timeline",
+    dash_export: "医生报告",
+    dash_export_sub: "Export Report",
+    dash_settings: "设置",
+    dash_settings_sub: "Settings",
+    chart_overview: "最近一次观察总览",
+    chart_trend: "趋势变化",
+    prev: "上一项",
+    next: "下一项",
+    save_checkin: "保存本次观察",
+    resp_yes: "是的，经常",
+    resp_sometimes: "有时/不确定",
+    resp_no: "还没有/很少",
+    resp_skip: "未观察到",
+    add_note: "+ 添加笔记",
+    domain_social: "社交沟通",
+    domain_language: "语言",
+    domain_behavior: "重复行为与局限兴趣",
+    domain_daily: "日常生活",
+    strengths_title: "做得好的方面",
+    concerns_title: "可以和医生讨论的方面",
+    monitor_title: "持续关注的方面",
+    timeline_title: "观察历史",
+    settings_title: "设置",
+    settings_child: "孩子信息",
+    settings_data: "数据管理",
+    settings_export: "导出数据 (JSON)",
+    settings_import: "导入数据 (JSON)",
+    settings_reset: "清除所有数据",
+    disc_title: "声明：",
+    disc_body: "本记录工具为家长提供的观察辅助工具，不用于筛查或诊断任何状况。请将您的观察记录分享给孩子的医疗保健提供者。",
+    months_old: "个月",
+    years_old: "岁",
+    greeting: "的发展观察",
+    age_group_label: "当前年龄组",
+    checkin_title_tpl: "的月度观察",
+    checkin_sub_tpl: "基于当前年龄的观察项目",
+    no_history: "还没有观察记录。点击'月度观察'开始第一次记录。",
+    confirm_reset_title: "确认清除数据",
+    confirm_reset_body: "这将删除所有观察记录和设置。此操作不可撤销。",
+    confirm_yes: "确认清除",
+    cancel: "取消",
+    export_title: "导出医生报告",
+    export_body: "将生成一份专业的报告页面，您可以打印或保存为PDF带给医生。",
+    export_btn: "生成报告",
+    critical_flag: "关键发展指标",
+    no_recent: "暂无近期观察数据",
+  },
+  en: {
+    back: "Back",
+    appTitle: "Red Flag Tracker",
+    ob_title1: "Let's get to know your child",
+    ob_sub1: "This helps us personalize the observation items for you",
+    ob_nameLabel: "Child's name or nickname",
+    ob_namePlaceholder: "e.g., Emma",
+    ob_title2: "'s birthday?",
+    ob_sub2: "This helps us show age-appropriate observation items",
+    ob_bdayLabel: "Date of birth",
+    ob_title3: "What brings you here?",
+    ob_sub3: "Optional — helps us understand your needs",
+    reason_1: "I'm waiting for a diagnosis appointment",
+    reason_2: "My pediatrician suggested monitoring",
+    reason_3: "I have concerns about my child's development",
+    reason_4: "A family member or friend suggested this",
+    ob_next: "Next",
+    ob_start: "Start Observing",
+    ob_skip: "Skip, go directly",
+    dash_sub: "Track and understand your child's development",
+    dash_checkin: "Monthly Check-in",
+    dash_checkin_sub: "月度观察",
+    dash_timeline: "Timeline",
+    dash_timeline_sub: "历史记录",
+    dash_export: "Doctor Report",
+    dash_export_sub: "医生报告",
+    dash_settings: "Settings",
+    dash_settings_sub: "设置",
+    chart_overview: "Latest Observation Overview",
+    chart_trend: "Trends Over Time",
+    prev: "Previous",
+    next: "Next",
+    save_checkin: "Save This Check-in",
+    resp_yes: "Yes, regularly",
+    resp_sometimes: "Sometimes / Unsure",
+    resp_no: "Not yet / Rarely",
+    resp_skip: "Haven't observed",
+    add_note: "+ Add note",
+    domain_social: "Social Communication",
+    domain_language: "Language",
+    domain_behavior: "Repetitive Behaviors & Restricted Interests",
+    domain_daily: "Daily Living",
+    strengths_title: "Strengths — what {name} can do!",
+    concerns_title: "Areas to discuss with your doctor",
+    monitor_title: "Areas to keep watching",
+    timeline_title: "Observation History",
+    settings_title: "Settings",
+    settings_child: "Child Information",
+    settings_data: "Data Management",
+    settings_export: "Export Data (JSON)",
+    settings_import: "Import Data (JSON)",
+    settings_reset: "Clear All Data",
+    disc_title: "Disclaimer: ",
+    disc_body: "This tracker is an observation tool for parents. It does not screen for or diagnose any condition. Share your observations with your child's healthcare provider.",
+    months_old: " months old",
+    years_old: " years old",
+    greeting: "'s Development Tracker",
+    age_group_label: "Current age group",
+    checkin_title_tpl: "'s Monthly Check-in",
+    checkin_sub_tpl: "Age-appropriate observation items",
+    no_history: "No observations yet. Tap 'Monthly Check-in' to start your first one.",
+    confirm_reset_title: "Confirm Data Reset",
+    confirm_reset_body: "This will delete all observation records and settings. This cannot be undone.",
+    confirm_yes: "Confirm Reset",
+    cancel: "Cancel",
+    export_title: "Export Doctor Report",
+    export_body: "This will generate a professional report you can print or save as PDF for your doctor.",
+    export_btn: "Generate Report",
+    critical_flag: "Critical developmental indicator",
+    no_recent: "No recent observation data",
+  }
+};
+
+// ===================================================================
+//  STATE
+// ===================================================================
+let lang = 'zh';
+let state = {
+  child: { name: '', birthdate: '', reason: '' },
+  checkins: [],   // [{date, ageGroup, responses: {itemId: {value, note}}}]
+  onboarded: false
+};
+
+let currentCheckin = {};
+let currentDomainIdx = 0;
+const DOMAINS = ['social','language','behavior','daily'];
+const DOMAIN_KEYS = {
+  social: 'domain_social',
+  language: 'domain_language',
+  behavior: 'domain_behavior',
+  daily: 'domain_daily'
+};
+
+// ===================================================================
+//  PERSISTENCE
+// ===================================================================
+function save() {
+  localStorage.setItem('withyou_rft', JSON.stringify(state));
+}
+
+function load() {
+  const raw = localStorage.getItem('withyou_rft');
+  if (raw) {
+    try { state = JSON.parse(raw); } catch(e) { /* ignore */ }
+  }
+}
+
+// ===================================================================
+//  I18N HELPERS
+// ===================================================================
+function t(key) {
+  return (I18N[lang] && I18N[lang][key]) || key;
+}
+
+function applyLang() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    if (I18N[lang][key]) el.textContent = I18N[lang][key];
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+    const key = el.getAttribute('data-i18n-placeholder');
+    if (I18N[lang][key]) el.placeholder = I18N[lang][key];
+  });
+}
+
+function toggleLang() {
+  lang = lang === 'zh' ? 'en' : 'zh';
+  applyLang();
+  // Re-render active screen
+  if (!state.onboarded) return;
+  if (!document.getElementById('screen-dashboard').classList.contains('hidden')) {
+    renderDashboard();
+  }
+  if (!document.getElementById('screen-checkin').classList.contains('hidden')) {
+    renderCheckinDomain();
+  }
+  if (!document.getElementById('screen-timeline').classList.contains('hidden')) {
+    renderTimeline();
+  }
+}
+
+// ===================================================================
+//  AGE CALCULATION
+// ===================================================================
+function getAgeMonths() {
+  if (!state.child.birthdate) return 0;
+  const bd = new Date(state.child.birthdate);
+  const now = new Date();
+  return (now.getFullYear() - bd.getFullYear()) * 12 + (now.getMonth() - bd.getMonth());
+}
+
+function getAgeGroup() {
+  const m = getAgeMonths();
+  if (m < 12) return '6-12';
+  if (m < 18) return '12-18';
+  if (m < 24) return '18-24';
+  if (m < 36) return '24-36';
+  return '36-60';
+}
+
+function getAgeLabel() {
+  const m = getAgeMonths();
+  if (m < 24) return m + t('months_old');
+  const y = Math.floor(m / 12);
+  const rm = m % 12;
+  return y + t('years_old') + (rm > 0 ? ' ' + rm + t('months_old') : '');
+}
+
+function getAgeGroupLabel(ag) {
+  const map = { '6-12':'6-12 mo', '12-18':'12-18 mo', '18-24':'18-24 mo', '24-36':'24-36 mo', '36-60':'3-5 yr' };
+  return map[ag] || ag;
+}
+
+// ===================================================================
+//  ONBOARDING
+// ===================================================================
+function initOnboarding() {
+  document.getElementById('child-name').addEventListener('input', function() {
+    document.getElementById('btn-step1').disabled = !this.value.trim();
+  });
+  document.getElementById('child-bday').addEventListener('change', function() {
+    const v = this.value;
+    if (v) {
+      state.child.birthdate = v;
+      const ageLabel = getAgeLabel();
+      document.getElementById('age-text').textContent = ageLabel;
+      document.getElementById('age-display').classList.remove('hidden');
+      document.getElementById('btn-step2').disabled = false;
+    }
+  });
+}
+
+function onboardNext(step) {
+  if (step === 1) {
+    state.child.name = document.getElementById('child-name').value.trim();
+    document.getElementById('onboard-step-1').classList.add('hidden');
+    document.getElementById('onboard-step-2').classList.remove('hidden');
+    document.getElementById('ob-title-2').textContent = state.child.name + t('ob_title2');
+    document.getElementById('dot-1').classList.remove('active');
+    document.getElementById('dot-2').classList.add('active');
+  } else if (step === 2) {
+    document.getElementById('onboard-step-2').classList.add('hidden');
+    document.getElementById('onboard-step-3').classList.remove('hidden');
+    document.getElementById('dot-2').classList.remove('active');
+    document.getElementById('dot-3').classList.add('active');
+  }
+}
+
+function selectReason(el) {
+  document.querySelectorAll('.reason-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  state.child.reason = el.querySelector('input').value;
+}
+
+function finishOnboard() {
+  state.onboarded = true;
+  save();
+  showScreen('dashboard');
+}
+
+// ===================================================================
+//  SCREEN NAVIGATION
+// ===================================================================
+function showScreen(name) {
+  ['screen-onboard','screen-dashboard','screen-checkin','screen-timeline','screen-settings'].forEach(id => {
+    document.getElementById(id).classList.add('hidden');
+  });
+  document.getElementById('screen-' + name).classList.remove('hidden');
+  window.scrollTo(0, 0);
+
+  if (name === 'dashboard') renderDashboard();
+}
+
+function showDashboard() { showScreen('dashboard'); }
+function showTimeline() {
+  showScreen('timeline');
+  renderTimeline();
+}
+function showSettings() {
+  showScreen('settings');
+  document.getElementById('settings-name').value = state.child.name;
+  document.getElementById('settings-bday').value = state.child.birthdate;
+}
+
+// ===================================================================
+//  DASHBOARD
+// ===================================================================
+function renderDashboard() {
+  const name = state.child.name;
+  document.getElementById('dash-greeting').textContent = name + t('greeting');
+  document.getElementById('dash-age').textContent = getAgeLabel() + ' | ' + getAgeGroupLabel(getAgeGroup());
+
+  // Radar chart
+  const latest = getLatestCheckin();
+  if (latest) {
+    document.getElementById('radar-card').style.display = '';
+    drawRadar(latest);
+    renderResults(latest);
+    renderTrendChart();
+  } else {
+    document.getElementById('radar-card').style.display = 'none';
+    document.getElementById('trend-card').style.display = 'none';
+    document.getElementById('results-area').innerHTML =
+      '<div style="text-align:center;padding:40px 0;color:var(--warm-text-light);font-size:0.92rem;">' + t('no_recent') + '</div>';
+  }
+}
+
+function getLatestCheckin() {
+  if (!state.checkins.length) return null;
+  return state.checkins[state.checkins.length - 1];
+}
+
+// ===================================================================
+//  RADAR CHART (SVG)
+// ===================================================================
+function drawRadar(checkin) {
+  const svg = document.getElementById('radar-chart');
+  const cx = 140, cy = 140, maxR = 110;
+  const labels = DOMAINS.map(d => t(DOMAIN_KEYS[d]));
+  const scores = DOMAINS.map(d => domainScore(checkin, d));
+  const colors = ['#6B8F7B','#7BA7BC','#D4917B','#C9A84C'];
+
+  let html = '';
+  // Grid
+  for (let r = 1; r <= 4; r++) {
+    const rad = (maxR / 4) * r;
+    const pts = [];
+    for (let i = 0; i < 4; i++) {
+      const angle = (Math.PI * 2 / 4) * i - Math.PI / 2;
+      pts.push(`${cx + rad * Math.cos(angle)},${cy + rad * Math.sin(angle)}`);
+    }
+    html += `<polygon points="${pts.join(' ')}" fill="none" stroke="#e0e0e0" stroke-width="1"/>`;
+  }
+  // Axes
+  for (let i = 0; i < 4; i++) {
+    const angle = (Math.PI * 2 / 4) * i - Math.PI / 2;
+    const ex = cx + maxR * Math.cos(angle);
+    const ey = cy + maxR * Math.sin(angle);
+    html += `<line x1="${cx}" y1="${cy}" x2="${ex}" y2="${ey}" stroke="#e0e0e0" stroke-width="1"/>`;
+    // Label
+    const lx = cx + (maxR + 18) * Math.cos(angle);
+    const ly = cy + (maxR + 18) * Math.sin(angle);
+    const anchor = i === 0 ? 'middle' : i === 2 ? 'middle' : i === 1 ? 'start' : 'end';
+    html += `<text x="${lx}" y="${ly}" text-anchor="${anchor}" font-size="11" fill="#6B6B6B" font-family="Inter, sans-serif" dominant-baseline="middle">${labels[i]}</text>`;
+  }
+  // Data polygon
+  const dataPts = [];
+  for (let i = 0; i < 4; i++) {
+    const angle = (Math.PI * 2 / 4) * i - Math.PI / 2;
+    const r = (scores[i] / 100) * maxR;
+    dataPts.push(`${cx + r * Math.cos(angle)},${cy + r * Math.sin(angle)}`);
+  }
+  html += `<polygon points="${dataPts.join(' ')}" fill="rgba(107,143,123,0.18)" stroke="#6B8F7B" stroke-width="2.5"/>`;
+  // Dots
+  for (let i = 0; i < 4; i++) {
+    const angle = (Math.PI * 2 / 4) * i - Math.PI / 2;
+    const r = (scores[i] / 100) * maxR;
+    html += `<circle cx="${cx + r * Math.cos(angle)}" cy="${cy + r * Math.sin(angle)}" r="5" fill="${colors[i]}" stroke="#fff" stroke-width="2"/>`;
+  }
+  svg.innerHTML = html;
+
+  // Legend
+  const legend = document.getElementById('radar-legend');
+  legend.innerHTML = DOMAINS.map((d, i) =>
+    `<span style="display:flex;align-items:center;gap:4px;">
+      <span style="width:10px;height:10px;border-radius:50%;background:${colors[i]};display:inline-block;"></span>
+      ${labels[i]}: ${Math.round(scores[i])}%
+    </span>`
+  ).join('');
+}
+
+function domainScore(checkin, domain) {
+  const items = getItemsForDomain(checkin.ageGroup, domain);
+  if (!items.length) return 0;
+  let total = 0, count = 0;
+  items.forEach(item => {
+    const resp = checkin.responses[item.id];
+    if (resp && resp.value !== 'skip') {
+      count++;
+      if (resp.value === 'yes') total += 100;
+      else if (resp.value === 'sometimes') total += 50;
+      // 'no' = 0
+    }
+  });
+  return count === 0 ? 0 : total / count;
+}
+
+function getItemsForDomain(ageGroup, domain) {
+  const ag = ITEMS[ageGroup];
+  return ag ? (ag[domain] || []) : [];
+}
+
+// ===================================================================
+//  RESULTS
+// ===================================================================
+function renderResults(checkin) {
+  const name = state.child.name;
+  const area = document.getElementById('results-area');
+  const strengths = [];
+  const monitors = [];
+  const concerns = [];
+
+  DOMAINS.forEach(domain => {
+    const items = getItemsForDomain(checkin.ageGroup, domain);
+    items.forEach(item => {
+      const resp = checkin.responses[item.id];
+      if (!resp || resp.value === 'skip') return;
+      const text = lang === 'zh' ? item.zh : item.en.replace(/\{name\}/g, name);
+      if (resp.value === 'yes') {
+        strengths.push(text);
+      } else if (resp.value === 'sometimes') {
+        monitors.push({ text, critical: !!item.critical });
+      } else if (resp.value === 'no') {
+        concerns.push({ text, critical: !!item.critical });
+      }
+    });
+  });
+
+  let html = '';
+  if (strengths.length) {
+    html += `<div class="results-section">
+      <h3><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#6B8F7B" stroke-width="2"/><path d="M6 10l3 3 5-5" stroke="#6B8F7B" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      ${t('strengths_title').replace('{name}', name)}</h3>
+      <ul class="strengths-list">${strengths.slice(0, 8).map(s => `<li>${s}</li>`).join('')}</ul>
+    </div>`;
+  }
+  if (monitors.length) {
+    html += `<div class="results-section">
+      <h3><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#C9A84C" stroke-width="2"/><path d="M10 6v5M10 13.5v.5" stroke="#C9A84C" stroke-width="2" stroke-linecap="round"/></svg>
+      ${t('monitor_title')}</h3>
+      <ul class="concerns-list">${monitors.map(c =>
+        `<li class="yellow-item">${c.text}${c.critical ? ' <span style="color:var(--red);font-size:0.75rem;font-weight:600;">(' + t('critical_flag') + ')</span>' : ''}</li>`
+      ).join('')}</ul>
+    </div>`;
+  }
+  if (concerns.length) {
+    html += `<div class="results-section">
+      <h3><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="9" stroke="#C47A6E" stroke-width="2"/><path d="M10 6v5M10 13.5v.5" stroke="#C47A6E" stroke-width="2" stroke-linecap="round"/></svg>
+      ${t('concerns_title')}</h3>
+      <ul class="concerns-list">${concerns.map(c =>
+        `<li class="red-item">${c.text}${c.critical ? ' <span style="color:var(--red);font-size:0.75rem;font-weight:600;">(' + t('critical_flag') + ')</span>' : ''}</li>`
+      ).join('')}</ul>
+    </div>`;
+  }
+  area.innerHTML = html;
+}
+
+// ===================================================================
+//  TREND CHART
+// ===================================================================
+function renderTrendChart() {
+  if (state.checkins.length < 2) {
+    document.getElementById('trend-card').style.display = 'none';
+    return;
+  }
+  document.getElementById('trend-card').style.display = '';
+  const svg = document.getElementById('trend-chart');
+  const W = 600, H = 200, pad = 40;
+  const colors = ['#6B8F7B','#7BA7BC','#D4917B','#C9A84C'];
+  const n = state.checkins.length;
+  const stepX = (W - pad * 2) / Math.max(n - 1, 1);
+
+  let html = '';
+  // Y axis lines
+  for (let y = 0; y <= 100; y += 25) {
+    const py = pad + (1 - y / 100) * (H - pad * 2);
+    html += `<line x1="${pad}" y1="${py}" x2="${W-pad}" y2="${py}" stroke="#eee" stroke-width="1"/>`;
+    html += `<text x="${pad-8}" y="${py+4}" text-anchor="end" font-size="10" fill="#aaa">${y}</text>`;
+  }
+  // Lines per domain
+  DOMAINS.forEach((domain, di) => {
+    const points = state.checkins.map((c, ci) => {
+      const x = pad + ci * stepX;
+      const score = domainScore(c, domain);
+      const y = pad + (1 - score / 100) * (H - pad * 2);
+      return `${x},${y}`;
+    });
+    html += `<polyline points="${points.join(' ')}" fill="none" stroke="${colors[di]}" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>`;
+    state.checkins.forEach((c, ci) => {
+      const x = pad + ci * stepX;
+      const score = domainScore(c, domain);
+      const y = pad + (1 - score / 100) * (H - pad * 2);
+      html += `<circle cx="${x}" cy="${y}" r="4" fill="${colors[di]}" stroke="#fff" stroke-width="2"/>`;
+    });
+  });
+  // X labels
+  state.checkins.forEach((c, ci) => {
+    const x = pad + ci * stepX;
+    const d = new Date(c.date);
+    const label = (d.getMonth()+1) + '/' + d.getDate();
+    html += `<text x="${x}" y="${H-8}" text-anchor="middle" font-size="10" fill="#aaa">${label}</text>`;
+  });
+  svg.innerHTML = html;
+}
+
+// ===================================================================
+//  CHECK-IN
+// ===================================================================
+function startCheckin() {
+  currentCheckin = {
+    date: new Date().toISOString(),
+    ageGroup: getAgeGroup(),
+    responses: {}
+  };
+  currentDomainIdx = 0;
+  showScreen('checkin');
+  renderCheckinHeader();
+  renderDomainTabs();
+  renderCheckinDomain();
+}
+
+function renderCheckinHeader() {
+  document.getElementById('checkin-title').textContent = state.child.name + t('checkin_title_tpl');
+  document.getElementById('checkin-sub').textContent = t('checkin_sub_tpl') + ' (' + getAgeGroupLabel(currentCheckin.ageGroup) + ')';
+}
+
+function renderDomainTabs() {
+  const tabs = document.getElementById('domain-tabs');
+  tabs.innerHTML = DOMAINS.map((d, i) => {
+    const items = getItemsForDomain(currentCheckin.ageGroup, d);
+    const answered = items.filter(it => currentCheckin.responses[it.id]).length;
+    return `<div class="domain-tab ${i === currentDomainIdx ? 'active' : ''}" onclick="switchDomain(${i})">
+      ${t(DOMAIN_KEYS[d])}
+      <span class="domain-progress">${answered}/${items.length}</span>
+    </div>`;
+  }).join('');
+}
+
+function switchDomain(idx) {
+  currentDomainIdx = idx;
+  renderDomainTabs();
+  renderCheckinDomain();
+}
+
+function renderCheckinDomain() {
+  const domain = DOMAINS[currentDomainIdx];
+  const items = getItemsForDomain(currentCheckin.ageGroup, domain);
+  const name = state.child.name;
+  const list = document.getElementById('observation-list');
+
+  list.innerHTML = items.map(item => {
+    const text = lang === 'zh' ? item.zh : item.en.replace(/\{name\}/g, name);
+    const resp = currentCheckin.responses[item.id] || {};
+    const critical = item.critical ? `<div style="font-size:0.75rem;color:var(--red);font-weight:500;margin-bottom:6px;">${t('critical_flag')}</div>` : '';
+    const noteVisible = resp.note ? '' : 'hidden';
+    return `<div class="observation-card">
+      ${critical}
+      <div class="observation-text">${text}</div>
+      <div class="observation-responses">
+        <button class="obs-response ${resp.value==='yes'?'selected-green':''}" onclick="setResponse('${item.id}','yes',this)">${t('resp_yes')}</button>
+        <button class="obs-response ${resp.value==='sometimes'?'selected-yellow':''}" onclick="setResponse('${item.id}','sometimes',this)">${t('resp_sometimes')}</button>
+        <button class="obs-response ${resp.value==='no'?'selected-red':''}" onclick="setResponse('${item.id}','no',this)">${t('resp_no')}</button>
+        <button class="obs-response ${resp.value==='skip'?'selected-gray':''}" onclick="setResponse('${item.id}','skip',this)">${t('resp_skip')}</button>
+      </div>
+      <button class="obs-note-toggle" onclick="toggleNote('${item.id}',this)">${t('add_note')}</button>
+      <textarea class="obs-note-area ${noteVisible}" id="note-${item.id}" placeholder="${lang==='zh'?'记录你的观察...':'Record your observations...'}" onchange="setNote('${item.id}',this.value)">${resp.note||''}</textarea>
+    </div>`;
+  }).join('');
+
+  // Update nav buttons
+  document.getElementById('btn-prev-domain').style.visibility = currentDomainIdx === 0 ? 'hidden' : 'visible';
+  const isLast = currentDomainIdx === DOMAINS.length - 1;
+  document.getElementById('btn-next-domain').textContent = isLast ? t('save_checkin') : t('next');
+
+  window.scrollTo(0, 0);
+}
+
+function setResponse(itemId, value, el) {
+  if (!currentCheckin.responses[itemId]) currentCheckin.responses[itemId] = {};
+  currentCheckin.responses[itemId].value = value;
+  // Update UI
+  const card = el.closest('.observation-card');
+  card.querySelectorAll('.obs-response').forEach(b => {
+    b.className = 'obs-response';
+  });
+  const classMap = { yes:'selected-green', sometimes:'selected-yellow', no:'selected-red', skip:'selected-gray' };
+  el.classList.add(classMap[value]);
+  renderDomainTabs();
+}
+
+function setNote(itemId, value) {
+  if (!currentCheckin.responses[itemId]) currentCheckin.responses[itemId] = {};
+  currentCheckin.responses[itemId].note = value;
+}
+
+function toggleNote(itemId, btn) {
+  const ta = document.getElementById('note-' + itemId);
+  ta.classList.toggle('hidden');
+  if (!ta.classList.contains('hidden')) ta.focus();
+}
+
+function prevDomain() {
+  if (currentDomainIdx > 0) {
+    currentDomainIdx--;
+    renderDomainTabs();
+    renderCheckinDomain();
+  }
+}
+
+function nextDomain() {
+  if (currentDomainIdx < DOMAINS.length - 1) {
+    currentDomainIdx++;
+    renderDomainTabs();
+    renderCheckinDomain();
+  } else {
+    // Save check-in
+    state.checkins.push(currentCheckin);
+    save();
+    showScreen('dashboard');
+  }
+}
+
+// ===================================================================
+//  TIMELINE
+// ===================================================================
+function renderTimeline() {
+  const container = document.getElementById('timeline-content');
+  if (!state.checkins.length) {
+    container.innerHTML = `<div style="text-align:center;padding:40px 0;color:var(--warm-text-light);">${t('no_history')}</div>`;
+    return;
+  }
+  const colors = ['#6B8F7B','#7BA7BC','#D4917B','#C9A84C'];
+  container.innerHTML = '<div class="timeline">' + state.checkins.slice().reverse().map((c, ri) => {
+    const d = new Date(c.date);
+    const dateStr = d.toLocaleDateString(lang === 'zh' ? 'zh-CN' : 'en-US', { year:'numeric', month:'long', day:'numeric' });
+    const scores = DOMAINS.map(domain => domainScore(c, domain));
+    return `<div class="timeline-entry" onclick="viewCheckin(${state.checkins.length - 1 - ri})">
+      <div class="timeline-date">${dateStr} (${getAgeGroupLabel(c.ageGroup)})</div>
+      <div class="timeline-scores">
+        ${DOMAINS.map((d, i) => {
+          const s = Math.round(scores[i]);
+          const cls = s >= 70 ? 'score-good' : s >= 40 ? 'score-ok' : 'score-concern';
+          return `<span class="timeline-score ${cls}">${t(DOMAIN_KEYS[d])}: ${s}%</span>`;
+        }).join('')}
+      </div>
+    </div>`;
+  }).join('') + '</div>';
+}
+
+function viewCheckin(idx) {
+  currentCheckin = JSON.parse(JSON.stringify(state.checkins[idx]));
+  currentDomainIdx = 0;
+  showScreen('checkin');
+  renderCheckinHeader();
+  renderDomainTabs();
+  renderCheckinDomain();
+}
+
+// ===================================================================
+//  EXPORT
+// ===================================================================
+function showExport() {
+  if (!state.checkins.length) {
+    alert(lang === 'zh' ? '暂无可导出的数据' : 'No data to export');
+    return;
+  }
+  openModal(t('export_title'), t('export_body'), [
+    { label: t('export_btn'), cls: 'btn-primary', action: generateReport },
+    { label: t('cancel'), cls: 'btn-secondary', action: closeModalForce }
+  ]);
+}
+
+function generateReport() {
+  closeModalForce();
+  const name = state.child.name;
+  const latest = getLatestCheckin();
+  if (!latest) return;
+
+  const w = window.open('', '_blank');
+  const domainLabels = DOMAINS.map(d => t(DOMAIN_KEYS[d]));
+  const scores = DOMAINS.map(d => Math.round(domainScore(latest, d)));
+
+  let concerns = '', monitors = '', strengths = '';
+  DOMAINS.forEach((domain, di) => {
+    const items = getItemsForDomain(latest.ageGroup, domain);
+    items.forEach(item => {
+      const resp = latest.responses[item.id];
+      if (!resp || resp.value === 'skip') return;
+      const text = lang === 'zh' ? item.zh : item.en.replace(/\{name\}/g, name);
+      const note = resp.note ? ` — Note: ${resp.note}` : '';
+      const crit = item.critical ? ' [CRITICAL INDICATOR]' : '';
+      if (resp.value === 'no') concerns += `<tr><td>${domainLabels[di]}</td><td>${text}${crit}</td><td>${note}</td></tr>`;
+      else if (resp.value === 'sometimes') monitors += `<tr><td>${domainLabels[di]}</td><td>${text}${crit}</td><td>${note}</td></tr>`;
+      else if (resp.value === 'yes') strengths += `<tr><td>${domainLabels[di]}</td><td>${text}</td><td>${note}</td></tr>`;
+    });
+  });
+
+  // Trend summary
+  let trendHTML = '';
+  if (state.checkins.length > 1) {
+    trendHTML = '<h3>Trend Summary</h3><table><tr><th>Date</th>' + domainLabels.map(l => `<th>${l}</th>`).join('') + '</tr>';
+    state.checkins.forEach(c => {
+      const d = new Date(c.date).toLocaleDateString();
+      trendHTML += '<tr><td>' + d + '</td>' + DOMAINS.map(domain => `<td>${Math.round(domainScore(c, domain))}%</td>`).join('') + '</tr>';
+    });
+    trendHTML += '</table>';
+  }
+
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Developmental Observation Report — ${name}</title>
+<style>
+body{font-family:Arial,sans-serif;max-width:800px;margin:40px auto;padding:0 20px;color:#333;line-height:1.6}
+h1{color:#4A6B56;border-bottom:2px solid #6B8F7B;padding-bottom:8px}
+h2{color:#4A6B56;margin-top:28px}
+h3{color:#555;margin-top:20px}
+table{width:100%;border-collapse:collapse;margin:12px 0}
+th,td{border:1px solid #ddd;padding:8px 10px;text-align:left;font-size:0.9rem}
+th{background:#f5f5f5;font-weight:600}
+.meta{background:#f9f7f0;padding:16px;border-radius:8px;margin:16px 0}
+.meta p{margin:4px 0}
+.summary-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.summary-box{padding:14px;border-radius:8px;text-align:center}
+.disclaimer{margin-top:32px;padding:14px;background:#f5f5f5;border-radius:8px;font-size:0.82rem;color:#888}
+@media print{body{margin:20px}}
+</style></head><body>
+<h1>Developmental Observation Report</h1>
+<div class="meta">
+<p><strong>Child:</strong> ${name}</p>
+<p><strong>Date of Birth:</strong> ${state.child.birthdate}</p>
+<p><strong>Current Age:</strong> ${getAgeLabel()}</p>
+<p><strong>Age Group:</strong> ${getAgeGroupLabel(latest.ageGroup)}</p>
+<p><strong>Observation Date:</strong> ${new Date(latest.date).toLocaleDateString()}</p>
+<p><strong>Total Check-ins:</strong> ${state.checkins.length}</p>
+</div>
+
+<h2>Domain Scores</h2>
+<div class="summary-grid">
+${DOMAINS.map((d, i) => `<div class="summary-box" style="background:${scores[i]>=70?'#E8F0EB':scores[i]>=40?'#FDF6E3':'#F8E8E5'}">
+<div style="font-size:1.4rem;font-weight:700;">${scores[i]}%</div>
+<div style="font-size:0.85rem;">${domainLabels[i]}</div>
+</div>`).join('')}
+</div>
+
+${concerns ? `<h2>Areas of Concern</h2><table><tr><th>Domain</th><th>Observation</th><th>Notes</th></tr>${concerns}</table>` : ''}
+${monitors ? `<h2>Areas to Monitor</h2><table><tr><th>Domain</th><th>Observation</th><th>Notes</th></tr>${monitors}</table>` : ''}
+${strengths ? `<h2>Strengths</h2><table><tr><th>Domain</th><th>Observation</th><th>Notes</th></tr>${strengths}</table>` : ''}
+${trendHTML}
+
+<div class="disclaimer">
+<strong>Disclaimer:</strong> This report was generated by "同路 WithYou" Red Flag Tracker, a parent observation tool. It does not screen for or diagnose any condition. This information is intended to support discussion with a qualified healthcare professional.<br><br>
+<strong>References:</strong> CDC Learn the Signs. Act Early. (2022); DSM-5-TR ASD Diagnostic Criteria; Zwaigenbaum et al. (2015) — Early identification of autism spectrum disorder.
+</div>
+<script>window.print();<\/script>
+</body></html>`);
+  w.document.close();
+}
+
+// ===================================================================
+//  SETTINGS & DATA
+// ===================================================================
+function updateChildInfo() {
+  state.child.name = document.getElementById('settings-name').value.trim();
+  state.child.birthdate = document.getElementById('settings-bday').value;
+  save();
+}
+
+function exportJSON() {
+  const blob = new Blob([JSON.stringify(state, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'withyou-redflag-' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+
+function importJSON(event) {
+  const file = event.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      if (data.child && data.checkins !== undefined) {
+        state = data;
+        save();
+        location.reload();
+      } else {
+        alert(lang === 'zh' ? '文件格式不正确' : 'Invalid file format');
+      }
+    } catch(err) {
+      alert(lang === 'zh' ? '无法读取文件' : 'Could not read file');
+    }
+  };
+  reader.readAsText(file);
+}
+
+function confirmReset() {
+  openModal(t('confirm_reset_title'), t('confirm_reset_body'), [
+    { label: t('confirm_yes'), cls: 'btn-danger', action: doReset },
+    { label: t('cancel'), cls: 'btn-secondary', action: closeModalForce }
+  ]);
+}
+
+function doReset() {
+  localStorage.removeItem('withyou_rft');
+  location.reload();
+}
+
+// ===================================================================
+//  MODAL
+// ===================================================================
+function openModal(title, body, actions) {
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').textContent = body;
+  document.getElementById('modal-actions').innerHTML = actions.map(a =>
+    `<button class="btn ${a.cls}" onclick="(${a.action.toString()})()">${a.label}</button>`
+  ).join('');
+  document.getElementById('modal').classList.remove('hidden');
+}
+
+function closeModal(e) {
+  if (e.target === document.getElementById('modal')) {
+    document.getElementById('modal').classList.add('hidden');
+  }
+}
+
+function closeModalForce() {
+  document.getElementById('modal').classList.add('hidden');
+}
+
+// ===================================================================
+//  INIT
+// ===================================================================
+load();
+applyLang();
+initOnboarding();
+
+if (state.onboarded) {
+  showScreen('dashboard');
+} else {
+  showScreen('onboard');
+}
+</script>
+
+</body>
+</html>

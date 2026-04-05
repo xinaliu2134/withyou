@@ -1,0 +1,1733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Meltdown Navigator — 同路 WithYou</title>
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  /* Dark mode (default — calming) */
+  --bg: #1a1d23;
+  --bg-card: #232730;
+  --bg-card-hover: #2a2e38;
+  --bg-input: #2a2e38;
+  --text: #e8e6e1;
+  --text-muted: #9b9a97;
+  --text-dim: #6b6a68;
+  --sage: #6B8F7B;
+  --sage-light: #8FB09D;
+  --sage-glow: rgba(107,143,123,0.15);
+  --blue: #7BA7BC;
+  --blue-light: #A5C7D6;
+  --coral: #D4917B;
+  --coral-light: #e0a890;
+  --red-soft: #c97070;
+  --red-bg: rgba(201,112,112,0.12);
+  --green-soft: #7bc98a;
+  --green-bg: rgba(123,201,138,0.12);
+  --yellow-soft: #c9b870;
+  --yellow-bg: rgba(201,184,112,0.12);
+  --shadow: 0 2px 12px rgba(0,0,0,0.3);
+  --radius: 16px;
+  --radius-sm: 10px;
+  --transition: 0.2s ease;
+  --font: 'Inter', 'Noto Sans SC', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.light-mode {
+  --bg: #FAF7F0;
+  --bg-card: #ffffff;
+  --bg-card-hover: #f5f2eb;
+  --bg-input: #f0ede6;
+  --text: #3D3D3D;
+  --text-muted: #6B6B6B;
+  --text-dim: #9b9b9b;
+  --shadow: 0 2px 16px rgba(107,143,123,0.10);
+  --red-bg: rgba(201,112,112,0.08);
+  --green-bg: rgba(123,201,138,0.08);
+  --yellow-bg: rgba(201,184,112,0.08);
+  --sage-glow: rgba(107,143,123,0.08);
+}
+
+html { scroll-behavior: smooth; -webkit-tap-highlight-color: transparent; }
+
+body {
+  font-family: var(--font);
+  background: var(--bg);
+  color: var(--text);
+  line-height: 1.5;
+  min-height: 100vh;
+  min-height: 100dvh;
+  overflow-x: hidden;
+  transition: background var(--transition), color var(--transition);
+}
+
+/* ---- Typography ---- */
+h1 { font-size: 1.6rem; font-weight: 700; }
+h2 { font-size: 1.3rem; font-weight: 600; }
+h3 { font-size: 1.1rem; font-weight: 600; }
+p { color: var(--text-muted); font-size: 0.95rem; }
+
+/* ---- Layout ---- */
+.container { max-width: 480px; margin: 0 auto; padding: 0 16px; }
+.screen { display: none; min-height: 100vh; min-height: 100dvh; }
+.screen.active { display: flex; flex-direction: column; }
+
+/* ---- Header ---- */
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; position: sticky; top: 0; z-index: 100;
+  background: var(--bg); border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+.light-mode .header { border-bottom-color: rgba(0,0,0,0.06); }
+.header-title { font-size: 1rem; font-weight: 600; display: flex; align-items: center; gap: 8px; }
+.header-actions { display: flex; gap: 8px; align-items: center; }
+
+/* ---- Buttons ---- */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 24px; border-radius: var(--radius-sm); font-size: 1rem;
+  font-weight: 600; border: none; cursor: pointer; transition: all var(--transition);
+  font-family: var(--font); text-decoration: none; color: #fff;
+  -webkit-user-select: none; user-select: none;
+  min-height: 52px; min-width: 52px;
+}
+.btn:active { transform: scale(0.97); }
+.btn-sage { background: var(--sage); }
+.btn-sage:hover { background: var(--sage-light); }
+.btn-blue { background: var(--blue); }
+.btn-blue:hover { background: var(--blue-light); }
+.btn-coral { background: var(--coral); }
+.btn-coral:hover { background: var(--coral-light); }
+.btn-ghost {
+  background: transparent; color: var(--text-muted);
+  border: 1px solid rgba(255,255,255,0.1); padding: 10px 16px;
+  font-size: 0.9rem; font-weight: 500;
+}
+.light-mode .btn-ghost { border-color: rgba(0,0,0,0.1); }
+.btn-ghost:hover { background: var(--bg-card); }
+.btn-icon {
+  background: transparent; border: none; color: var(--text-muted);
+  cursor: pointer; padding: 8px; border-radius: 8px; font-size: 1.2rem;
+  min-height: 40px; min-width: 40px; display: flex; align-items: center; justify-content: center;
+}
+.btn-icon:hover { background: var(--bg-card); }
+.btn-full { width: 100%; }
+.btn-lg { padding: 18px 32px; font-size: 1.1rem; border-radius: var(--radius); min-height: 60px; }
+.btn-xl { padding: 24px 32px; font-size: 1.3rem; border-radius: var(--radius); min-height: 72px; }
+
+/* ---- Cards ---- */
+.card {
+  background: var(--bg-card); border-radius: var(--radius); padding: 20px;
+  box-shadow: var(--shadow); transition: all var(--transition);
+}
+.card:hover { background: var(--bg-card-hover); }
+
+/* ---- Chips ---- */
+.chip-group { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  padding: 10px 16px; border-radius: 20px; font-size: 0.85rem; font-weight: 500;
+  cursor: pointer; transition: all var(--transition); border: 1.5px solid rgba(255,255,255,0.08);
+  background: var(--bg-card); color: var(--text-muted); font-family: var(--font);
+  -webkit-user-select: none; user-select: none; min-height: 44px;
+  display: inline-flex; align-items: center;
+}
+.light-mode .chip { border-color: rgba(0,0,0,0.08); }
+.chip.selected { background: var(--sage-glow); border-color: var(--sage); color: var(--sage-light); }
+.chip:active { transform: scale(0.96); }
+
+/* ---- Tabs ---- */
+.tabs {
+  display: flex; gap: 4px; padding: 4px; background: var(--bg-card);
+  border-radius: var(--radius-sm); margin: 0;
+}
+.tab {
+  flex: 1; padding: 10px 8px; text-align: center; border-radius: 8px;
+  font-size: 0.8rem; font-weight: 500; cursor: pointer; color: var(--text-muted);
+  transition: all var(--transition); border: none; background: transparent;
+  font-family: var(--font); min-height: 44px;
+  display: flex; align-items: center; justify-content: center;
+}
+.tab.active { background: var(--sage); color: #fff; }
+.tab:hover:not(.active) { background: var(--bg-card-hover); }
+
+/* ---- Lang toggle ---- */
+.lang-toggle {
+  font-size: 0.8rem; padding: 6px 12px; border-radius: 6px; cursor: pointer;
+  background: var(--bg-card); color: var(--text-muted); border: 1px solid rgba(255,255,255,0.08);
+  font-family: var(--font); font-weight: 500; min-height: 36px;
+}
+.light-mode .lang-toggle { border-color: rgba(0,0,0,0.08); }
+
+/* ---- Theme toggle ---- */
+.theme-toggle {
+  font-size: 1.1rem; cursor: pointer; background: none; border: none;
+  padding: 6px; color: var(--text-muted); min-height: 36px; min-width: 36px;
+}
+
+/* ============= HOME SCREEN ============= */
+#home { padding-bottom: 100px; }
+
+.home-hero {
+  text-align: center; padding: 40px 20px 24px;
+}
+.home-hero h1 { font-size: 1.5rem; margin-bottom: 6px; }
+.home-hero p { font-size: 0.95rem; }
+
+/* Emergency button */
+.emergency-btn-wrap { padding: 0 20px; margin-bottom: 24px; }
+.emergency-btn {
+  display: flex; align-items: center; justify-content: center; gap: 12px;
+  width: 100%; padding: 28px 24px; border-radius: var(--radius);
+  background: linear-gradient(135deg, #c0392b, #e74c3c);
+  color: #fff; font-size: 1.4rem; font-weight: 700; border: none;
+  cursor: pointer; font-family: var(--font); letter-spacing: 0.5px;
+  box-shadow: 0 4px 24px rgba(231,76,60,0.3);
+  transition: all var(--transition); min-height: 80px;
+  -webkit-user-select: none; user-select: none;
+  animation: pulse-subtle 3s ease-in-out infinite;
+}
+.emergency-btn:hover { box-shadow: 0 6px 32px rgba(231,76,60,0.45); }
+.emergency-btn:active { transform: scale(0.98); }
+
+@keyframes pulse-subtle {
+  0%, 100% { box-shadow: 0 4px 24px rgba(231,76,60,0.3); }
+  50% { box-shadow: 0 4px 32px rgba(231,76,60,0.45); }
+}
+
+/* Feature cards */
+.feature-grid { display: flex; flex-direction: column; gap: 12px; padding: 0 20px; }
+.feature-card {
+  display: flex; align-items: center; gap: 16px; padding: 18px 20px;
+  background: var(--bg-card); border-radius: var(--radius); cursor: pointer;
+  transition: all var(--transition); border: none; width: 100%;
+  text-align: left; font-family: var(--font); color: var(--text);
+}
+.feature-card:hover { background: var(--bg-card-hover); transform: translateY(-1px); }
+.feature-card:active { transform: scale(0.98); }
+.feature-icon {
+  width: 48px; height: 48px; border-radius: 12px; display: flex;
+  align-items: center; justify-content: center; font-size: 1.5rem; flex-shrink: 0;
+}
+.feature-card h3 { font-size: 0.95rem; margin-bottom: 2px; }
+.feature-card p { font-size: 0.8rem; color: var(--text-muted); }
+
+.fc-explain .feature-icon { background: var(--yellow-bg); }
+.fc-reflect .feature-icon { background: var(--green-bg); }
+.fc-patterns .feature-icon { background: rgba(123,167,188,0.12); }
+.fc-toolkit .feature-icon { background: var(--sage-glow); }
+
+/* Bottom ref */
+.refs {
+  margin-top: 32px; padding: 0 20px; text-align: center;
+  font-size: 0.72rem; color: var(--text-dim); line-height: 1.6;
+}
+
+/* ============= EMERGENCY MODE ============= */
+#emergency {
+  position: fixed; inset: 0; z-index: 9999;
+  background: #111318; color: #e8e6e1;
+  display: none; flex-direction: column;
+}
+#emergency.active { display: flex; }
+
+.emergency-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 20px; flex-shrink: 0;
+}
+.emergency-close {
+  background: rgba(255,255,255,0.08); border: none; color: #e8e6e1;
+  padding: 10px 16px; border-radius: 8px; font-size: 0.9rem;
+  cursor: pointer; font-family: var(--font); font-weight: 500;
+  min-height: 44px;
+}
+.emergency-step-indicator {
+  font-size: 0.8rem; color: rgba(255,255,255,0.4); font-weight: 500;
+}
+
+.emergency-body {
+  flex: 1; display: flex; flex-direction: column; justify-content: center;
+  padding: 20px 28px; overflow-y: auto; gap: 20px;
+}
+.emergency-body h1 {
+  font-size: 2rem; font-weight: 700; line-height: 1.2;
+  margin-bottom: 4px;
+}
+.emergency-body .subtitle {
+  font-size: 1.1rem; color: rgba(255,255,255,0.7); margin-bottom: 12px;
+}
+.emergency-body ul {
+  list-style: none; display: flex; flex-direction: column; gap: 12px;
+}
+.emergency-body li {
+  font-size: 1.05rem; line-height: 1.5; padding-left: 28px; position: relative;
+  color: rgba(255,255,255,0.85);
+}
+.emergency-body li::before {
+  content: ''; position: absolute; left: 0; top: 8px;
+  width: 12px; height: 12px; border-radius: 50%;
+  background: var(--sage); opacity: 0.7;
+}
+.emergency-body .emphasis {
+  font-size: 1.15rem; font-weight: 600; color: #fff;
+  padding: 16px 20px; background: rgba(255,255,255,0.05);
+  border-radius: 12px; border-left: 3px solid var(--sage);
+}
+.emergency-body .reassurance {
+  font-size: 1rem; color: rgba(255,255,255,0.6);
+  font-style: italic; text-align: center; margin-top: 8px;
+}
+
+.emergency-footer {
+  padding: 20px 28px 36px; flex-shrink: 0;
+  display: flex; flex-direction: column; gap: 10px;
+}
+.emergency-next {
+  width: 100%; padding: 22px 24px; border-radius: var(--radius);
+  font-size: 1.2rem; font-weight: 700; border: none; cursor: pointer;
+  font-family: var(--font); color: #fff; min-height: 68px;
+  transition: all var(--transition);
+}
+.emergency-next.green { background: #27ae60; }
+.emergency-next.green:hover { background: #2ecc71; }
+.emergency-next.blue { background: var(--blue); }
+.emergency-next.blue:hover { background: var(--blue-light); }
+.emergency-next.sage { background: var(--sage); }
+.emergency-next.sage:hover { background: var(--sage-light); }
+.emergency-next:active { transform: scale(0.98); }
+
+.emergency-alt {
+  width: 100%; padding: 14px; border-radius: var(--radius-sm);
+  font-size: 0.95rem; font-weight: 500; border: 1px solid rgba(255,255,255,0.15);
+  cursor: pointer; font-family: var(--font); color: rgba(255,255,255,0.6);
+  background: transparent; min-height: 52px;
+}
+.emergency-alt:hover { background: rgba(255,255,255,0.05); }
+
+/* Breathing animation */
+.breathe-container {
+  display: flex; flex-direction: column; align-items: center;
+  justify-content: center; gap: 16px; padding: 20px 0;
+}
+.breathe-circle {
+  width: 140px; height: 140px; border-radius: 50%;
+  background: radial-gradient(circle, var(--sage-light), var(--sage));
+  opacity: 0.9; display: flex; align-items: center; justify-content: center;
+  font-size: 1.1rem; font-weight: 600; color: #fff;
+  transition: transform 4s ease-in-out, opacity 4s ease-in-out;
+}
+.breathe-circle.inhale { transform: scale(1.4); opacity: 1; }
+.breathe-circle.hold { transform: scale(1.4); opacity: 0.85; }
+.breathe-circle.exhale { transform: scale(0.8); opacity: 0.7; }
+.breathe-label {
+  font-size: 1.2rem; font-weight: 600; color: rgba(255,255,255,0.8);
+  min-height: 30px;
+}
+
+/* Timer */
+.timer-display {
+  text-align: center; padding: 16px; background: rgba(255,255,255,0.05);
+  border-radius: 12px; margin-top: 8px;
+}
+.timer-time { font-size: 2.4rem; font-weight: 700; font-variant-numeric: tabular-nums; }
+.timer-label { font-size: 0.85rem; color: rgba(255,255,255,0.5); margin-top: 4px; }
+.timer-controls { display: flex; gap: 10px; margin-top: 10px; justify-content: center; }
+.timer-btn {
+  padding: 8px 20px; border-radius: 8px; font-size: 0.85rem;
+  border: 1px solid rgba(255,255,255,0.15); background: transparent;
+  color: rgba(255,255,255,0.6); cursor: pointer; font-family: var(--font);
+  min-height: 40px;
+}
+.timer-btn:hover { background: rgba(255,255,255,0.05); }
+
+/* ============= EXPLAIN CARDS ============= */
+#explain { padding-bottom: 100px; }
+
+.explain-preview {
+  background: #fff; color: #222; border-radius: var(--radius);
+  padding: 28px 24px; margin: 16px 0; text-align: center;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15); position: relative;
+  min-height: 200px; display: flex; flex-direction: column;
+  align-items: center; justify-content: center; gap: 12px;
+}
+.explain-preview .card-type { font-size: 0.75rem; color: #888; text-transform: uppercase; letter-spacing: 2px; font-weight: 600; }
+.explain-preview .card-symbol { font-size: 2rem; }
+.explain-preview .card-text { font-size: 1rem; line-height: 1.6; color: #333; max-width: 320px; }
+.explain-preview .card-child-name { font-weight: 600; color: var(--sage); }
+.explain-preview .card-custom { font-size: 0.9rem; color: #555; margin-top: 4px; }
+.explain-preview .card-footer {
+  margin-top: 8px; font-size: 0.7rem; color: #aaa;
+  padding-top: 8px; border-top: 1px solid #eee; width: 100%;
+}
+
+.explain-form { display: flex; flex-direction: column; gap: 16px; padding: 0 20px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
+.form-input, .form-select {
+  padding: 12px 16px; border-radius: var(--radius-sm);
+  background: var(--bg-input); border: 1px solid rgba(255,255,255,0.08);
+  color: var(--text); font-size: 0.95rem; font-family: var(--font);
+  min-height: 48px;
+}
+.light-mode .form-input, .light-mode .form-select { border-color: rgba(0,0,0,0.08); }
+.form-input:focus, .form-select:focus { outline: none; border-color: var(--sage); }
+.form-select { appearance: auto; }
+
+/* ============= REFLECTION ============= */
+#reflection { padding-bottom: 100px; }
+
+.reflection-section { padding: 0 20px; margin-bottom: 24px; }
+.reflection-section h3 { margin-bottom: 10px; }
+
+.emoji-scale {
+  display: flex; gap: 8px; justify-content: space-between;
+}
+.emoji-option {
+  flex: 1; display: flex; flex-direction: column; align-items: center; gap: 4px;
+  padding: 12px 4px; border-radius: var(--radius-sm); cursor: pointer;
+  transition: all var(--transition); border: 2px solid transparent;
+  background: var(--bg-card); min-height: 64px;
+}
+.emoji-option.selected { border-color: var(--sage); background: var(--sage-glow); }
+.emoji-option:active { transform: scale(0.95); }
+.emoji-face { font-size: 1.6rem; }
+.emoji-label { font-size: 0.6rem; color: var(--text-dim); text-align: center; }
+
+.location-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+
+/* Duration slider */
+.duration-display {
+  text-align: center; font-size: 1.3rem; font-weight: 600;
+  color: var(--sage-light); margin-bottom: 8px;
+}
+input[type="range"] {
+  width: 100%; height: 6px; -webkit-appearance: none; appearance: none;
+  background: var(--bg-input); border-radius: 3px; outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none; width: 28px; height: 28px;
+  border-radius: 50%; background: var(--sage); cursor: pointer;
+}
+
+/* Textarea */
+.form-textarea {
+  width: 100%; padding: 12px 16px; border-radius: var(--radius-sm);
+  background: var(--bg-input); border: 1px solid rgba(255,255,255,0.08);
+  color: var(--text); font-size: 0.9rem; font-family: var(--font);
+  resize: vertical; min-height: 80px; line-height: 1.5;
+}
+.light-mode .form-textarea { border-color: rgba(0,0,0,0.08); }
+.form-textarea:focus { outline: none; border-color: var(--sage); }
+
+/* ============= PATTERNS / DASHBOARD ============= */
+#patterns { padding-bottom: 100px; }
+
+.dashboard-empty {
+  text-align: center; padding: 60px 20px; color: var(--text-muted);
+}
+.dashboard-empty .empty-icon { font-size: 3rem; margin-bottom: 16px; opacity: 0.4; }
+.dashboard-empty p { font-size: 0.9rem; }
+
+.insight-card {
+  background: var(--bg-card); border-radius: var(--radius); padding: 20px;
+  margin: 0 20px 12px; border-left: 3px solid var(--sage);
+}
+.insight-card h3 { font-size: 0.9rem; margin-bottom: 8px; }
+.insight-card p { font-size: 0.85rem; }
+
+.chart-bar-group { display: flex; flex-direction: column; gap: 8px; margin-top: 12px; }
+.chart-bar-row { display: flex; align-items: center; gap: 10px; }
+.chart-bar-label { font-size: 0.8rem; color: var(--text-muted); min-width: 100px; text-align: right; }
+.chart-bar {
+  height: 24px; border-radius: 4px; background: var(--sage);
+  transition: width 0.5s ease; min-width: 4px;
+}
+.chart-bar-value { font-size: 0.8rem; color: var(--text-dim); min-width: 24px; }
+
+.stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 0 20px 16px; }
+.stat-card {
+  background: var(--bg-card); border-radius: var(--radius-sm); padding: 16px;
+  text-align: center;
+}
+.stat-value { font-size: 1.6rem; font-weight: 700; color: var(--sage-light); }
+.stat-label { font-size: 0.75rem; color: var(--text-dim); margin-top: 2px; }
+
+/* ============= SENSORY TOOLKIT ============= */
+#toolkit { padding-bottom: 100px; }
+
+.checklist { display: flex; flex-direction: column; gap: 2px; padding: 0 20px; }
+.checklist-item {
+  display: flex; align-items: center; gap: 14px; padding: 14px 16px;
+  background: var(--bg-card); border-radius: var(--radius-sm);
+  cursor: pointer; transition: all var(--transition);
+  -webkit-user-select: none; user-select: none; min-height: 52px;
+}
+.checklist-item:active { transform: scale(0.99); }
+.checklist-check {
+  width: 24px; height: 24px; border-radius: 6px;
+  border: 2px solid rgba(255,255,255,0.15); flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  transition: all var(--transition);
+}
+.light-mode .checklist-check { border-color: rgba(0,0,0,0.15); }
+.checklist-item.checked .checklist-check {
+  background: var(--sage); border-color: var(--sage);
+}
+.checklist-item.checked .checklist-check::after {
+  content: '\2713'; color: #fff; font-size: 0.85rem; font-weight: 700;
+}
+.checklist-item.checked .checklist-text { text-decoration: line-through; opacity: 0.5; }
+.checklist-text { font-size: 0.9rem; flex: 1; }
+.checklist-remove {
+  background: none; border: none; color: var(--text-dim); cursor: pointer;
+  font-size: 1.1rem; padding: 4px; min-width: 32px; min-height: 32px;
+  display: flex; align-items: center; justify-content: center;
+}
+.add-item-row {
+  display: flex; gap: 8px; padding: 8px 20px; margin-top: 8px;
+}
+.add-item-row input {
+  flex: 1; padding: 10px 14px; border-radius: var(--radius-sm);
+  background: var(--bg-input); border: 1px solid rgba(255,255,255,0.08);
+  color: var(--text); font-size: 0.9rem; font-family: var(--font);
+  min-height: 44px;
+}
+.light-mode .add-item-row input { border-color: rgba(0,0,0,0.08); }
+.add-item-row input:focus { outline: none; border-color: var(--sage); }
+
+/* ============= HISTORY ============= */
+.history-list { display: flex; flex-direction: column; gap: 8px; padding: 0 20px; }
+.history-item {
+  background: var(--bg-card); border-radius: var(--radius-sm); padding: 14px 16px;
+  display: flex; justify-content: space-between; align-items: center;
+  cursor: pointer; transition: all var(--transition);
+}
+.history-item:hover { background: var(--bg-card-hover); }
+.history-meta { display: flex; flex-direction: column; gap: 2px; }
+.history-date { font-size: 0.85rem; font-weight: 600; }
+.history-detail { font-size: 0.75rem; color: var(--text-muted); }
+.history-intensity { font-size: 1.4rem; }
+
+/* ============= BACK NAV ============= */
+.back-btn {
+  display: flex; align-items: center; gap: 6px;
+  background: none; border: none; color: var(--text-muted);
+  font-size: 0.9rem; cursor: pointer; padding: 8px 0;
+  font-family: var(--font);
+}
+.back-btn:hover { color: var(--text); }
+
+/* Section padding helper */
+.section-pad { padding: 16px 20px; }
+.section-title {
+  font-size: 0.8rem; font-weight: 600; color: var(--text-dim);
+  text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 12px;
+  padding: 0 20px;
+}
+
+/* ============= PRINT STYLES ============= */
+@media print {
+  body { background: #fff !important; }
+  .header, .emergency-btn-wrap, .feature-grid, .refs,
+  .btn, .tabs, .explain-form, .form-group { display: none !important; }
+  .explain-preview {
+    box-shadow: none !important; border: 2px solid #ddd;
+    page-break-inside: avoid; margin: 0; padding: 32px;
+    width: 3.5in; height: 2.2in;
+  }
+  .screen { display: block !important; min-height: auto !important; }
+  #explain { display: block !important; }
+}
+
+/* ============= TRANSITIONS ============= */
+.fade-in { animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+
+/* ============= TOAST ============= */
+.toast {
+  position: fixed; bottom: 32px; left: 50%; transform: translateX(-50%);
+  background: var(--sage); color: #fff; padding: 12px 24px;
+  border-radius: var(--radius-sm); font-size: 0.9rem; font-weight: 500;
+  z-index: 10000; opacity: 0; transition: opacity 0.3s;
+  pointer-events: none;
+}
+.toast.show { opacity: 1; }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 2px; }
+</style>
+</head>
+<body>
+
+<!-- ====== TOAST ====== -->
+<div class="toast" id="toast"></div>
+
+<!-- ====== HOME SCREEN ====== -->
+<div class="screen active" id="home">
+  <div class="header">
+    <div class="header-title">
+      <span>Meltdown Navigator</span>
+    </div>
+    <div class="header-actions">
+      <button class="lang-toggle" onclick="toggleLang()" id="langBtn">中文</button>
+      <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn" aria-label="Toggle theme">&#9790;</button>
+    </div>
+  </div>
+
+  <div class="home-hero">
+    <h1 id="t-home-title">Before, During & After</h1>
+    <p id="t-home-sub">Your pocket guide for meltdown moments</p>
+  </div>
+
+  <div class="emergency-btn-wrap">
+    <button class="emergency-btn" onclick="startEmergency()" id="t-emergency-btn">
+      &#x1F198; <span id="t-sos-text">HELP NOW / 紧急帮助</span>
+    </button>
+  </div>
+
+  <div class="feature-grid">
+    <button class="feature-card fc-explain" onclick="showScreen('explain')">
+      <div class="feature-icon">&#128196;</div>
+      <div>
+        <h3 id="t-fc-explain">Explain Cards</h3>
+        <p id="t-fc-explain-sub">Cards to show others — 8 languages</p>
+      </div>
+    </button>
+
+    <button class="feature-card fc-reflect" onclick="showScreen('reflection')">
+      <div class="feature-icon">&#128221;</div>
+      <div>
+        <h3 id="t-fc-reflect">Post-Meltdown Reflection</h3>
+        <p id="t-fc-reflect-sub">Log and learn from incidents</p>
+      </div>
+    </button>
+
+    <button class="feature-card fc-patterns" onclick="showScreen('patterns')">
+      <div class="feature-icon">&#128202;</div>
+      <div>
+        <h3 id="t-fc-patterns">Pattern Dashboard</h3>
+        <p id="t-fc-patterns-sub">Spot triggers and trends</p>
+      </div>
+    </button>
+
+    <button class="feature-card fc-toolkit" onclick="showScreen('toolkit')">
+      <div class="feature-icon">&#127890;</div>
+      <div>
+        <h3 id="t-fc-toolkit">Sensory Toolkit</h3>
+        <p id="t-fc-toolkit-sub">What to carry in your bag</p>
+      </div>
+    </button>
+  </div>
+
+  <div class="refs" id="t-refs">
+    Based on: Mazefsky et al. (2013), Bearss et al. (2015),<br>National Autistic Society meltdown guidance
+  </div>
+</div>
+
+<!-- ====== EMERGENCY MODE ====== -->
+<div class="screen" id="emergency">
+  <div class="emergency-header">
+    <span class="emergency-step-indicator" id="emergencyStepIndicator"></span>
+    <button class="emergency-close" onclick="exitEmergency()" id="t-exit-emergency">Exit</button>
+  </div>
+  <div class="emergency-body" id="emergencyBody"></div>
+  <div class="emergency-footer" id="emergencyFooter"></div>
+</div>
+
+<!-- ====== EXPLAIN CARDS ====== -->
+<div class="screen" id="explain">
+  <div class="header">
+    <button class="back-btn" onclick="showScreen('home')">&#8592; <span id="t-back-1">Back</span></button>
+    <div class="header-actions">
+      <button class="lang-toggle" onclick="toggleLang()" id="langBtn2">中文</button>
+    </div>
+  </div>
+
+  <div class="section-pad">
+    <h2 id="t-explain-title">Explain Cards</h2>
+    <p id="t-explain-desc" style="margin-top:4px">Show these to strangers, teachers, or anyone who needs to understand quickly.</p>
+  </div>
+
+  <div class="section-pad">
+    <div class="tabs" id="cardTypeTabs">
+      <button class="tab active" onclick="setCardType('general')" id="t-tab-general">General</button>
+      <button class="tab" onclick="setCardType('meltdown')" id="t-tab-meltdown">Meltdown</button>
+      <button class="tab" onclick="setCardType('nonverbal')" id="t-tab-nonverbal">Non-verbal</button>
+    </div>
+  </div>
+
+  <div class="section-pad">
+    <div class="explain-preview" id="explainPreview"></div>
+  </div>
+
+  <div class="explain-form">
+    <div class="form-group">
+      <label class="form-label" id="t-lbl-childname">Child's name (optional)</label>
+      <input class="form-input" id="cardChildName" type="text" placeholder="" oninput="updateCardPreview()">
+    </div>
+    <div class="form-group">
+      <label class="form-label" id="t-lbl-customtext">Custom line (optional)</label>
+      <input class="form-input" id="cardCustomText" type="text" placeholder="" oninput="updateCardPreview()">
+    </div>
+    <div class="form-group">
+      <label class="form-label" id="t-lbl-cardlang">Card language</label>
+      <select class="form-select" id="cardLangSelect" onchange="updateCardPreview()">
+        <option value="en">English</option>
+        <option value="zh">中文</option>
+        <option value="nl">Nederlands</option>
+        <option value="de">Deutsch</option>
+        <option value="fr">Fran&ccedil;ais</option>
+        <option value="pt">Portugu&ecirc;s</option>
+        <option value="es">Espa&ntilde;ol</option>
+        <option value="it">Italiano</option>
+      </select>
+    </div>
+    <div style="display:flex;gap:10px">
+      <button class="btn btn-sage btn-full" onclick="printCard()" id="t-btn-print">&#128424; Print Card</button>
+      <button class="btn btn-blue btn-full" onclick="screenshotCard()" id="t-btn-save">&#128247; Save Image</button>
+    </div>
+  </div>
+</div>
+
+<!-- ====== REFLECTION ====== -->
+<div class="screen" id="reflection">
+  <div class="header">
+    <button class="back-btn" onclick="showScreen('home')">&#8592; <span id="t-back-2">Back</span></button>
+    <div class="header-actions">
+      <button class="btn-ghost" onclick="showScreen('history')" id="t-view-history">History</button>
+    </div>
+  </div>
+
+  <div class="section-pad">
+    <h2 id="t-reflect-title">Post-Meltdown Reflection</h2>
+    <p id="t-reflect-desc" style="margin-top:4px">Take your time. You can do this later.</p>
+  </div>
+
+  <!-- Date/Time -->
+  <div class="reflection-section">
+    <h3 id="t-when">When?</h3>
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <input class="form-input" type="date" id="refDate" style="flex:1">
+      <input class="form-input" type="time" id="refTime" style="flex:1">
+    </div>
+  </div>
+
+  <!-- Location -->
+  <div class="reflection-section">
+    <h3 id="t-where">Where?</h3>
+    <div class="chip-group" id="locationChips"></div>
+  </div>
+
+  <!-- Duration -->
+  <div class="reflection-section">
+    <h3 id="t-duration">How long? (estimate)</h3>
+    <div class="duration-display" id="durationDisplay">10 min</div>
+    <input type="range" id="durationSlider" min="1" max="60" value="10" oninput="updateDuration()">
+  </div>
+
+  <!-- Intensity -->
+  <div class="reflection-section">
+    <h3 id="t-intensity">How intense?</h3>
+    <div class="emoji-scale" id="intensityScale"></div>
+  </div>
+
+  <!-- Antecedent -->
+  <div class="reflection-section">
+    <h3 id="t-before">What happened before?</h3>
+    <div class="chip-group" id="antecedentChips"></div>
+  </div>
+
+  <!-- Behavior -->
+  <div class="reflection-section">
+    <h3 id="t-behavior">What did the child do?</h3>
+    <div class="chip-group" id="behaviorChips"></div>
+  </div>
+
+  <!-- What helped -->
+  <div class="reflection-section">
+    <h3 id="t-helped">What helped?</h3>
+    <div class="chip-group" id="helpedChips"></div>
+  </div>
+
+  <!-- What didn't help -->
+  <div class="reflection-section">
+    <h3 id="t-nothelped">What didn't help?</h3>
+    <div class="chip-group" id="notHelpedChips"></div>
+  </div>
+
+  <!-- Parent state -->
+  <div class="reflection-section">
+    <h3 id="t-parentstate">How are YOU feeling?</h3>
+    <div class="emoji-scale" id="parentStateScale"></div>
+  </div>
+
+  <!-- Notes -->
+  <div class="reflection-section">
+    <h3 id="t-notes">Notes (optional)</h3>
+    <textarea class="form-textarea" id="refNotes" rows="3"></textarea>
+  </div>
+
+  <div class="section-pad">
+    <button class="btn btn-sage btn-full btn-lg" onclick="saveReflection()" id="t-btn-save-reflect">Save Reflection</button>
+  </div>
+</div>
+
+<!-- ====== HISTORY ====== -->
+<div class="screen" id="history">
+  <div class="header">
+    <button class="back-btn" onclick="showScreen('reflection')">&#8592; <span id="t-back-3">Back</span></button>
+    <div class="header-actions">
+      <button class="btn-ghost" onclick="clearHistory()" id="t-clear" style="color:var(--red-soft);font-size:0.8rem">Clear All</button>
+    </div>
+  </div>
+  <div class="section-pad"><h2 id="t-history-title">Incident History</h2></div>
+  <div class="history-list" id="historyList"></div>
+</div>
+
+<!-- ====== PATTERNS DASHBOARD ====== -->
+<div class="screen" id="patterns">
+  <div class="header">
+    <button class="back-btn" onclick="showScreen('home')">&#8592; <span id="t-back-4">Back</span></button>
+  </div>
+  <div class="section-pad"><h2 id="t-patterns-title">Pattern Dashboard</h2></div>
+  <div id="dashboardContent"></div>
+</div>
+
+<!-- ====== SENSORY TOOLKIT ====== -->
+<div class="screen" id="toolkit">
+  <div class="header">
+    <button class="back-btn" onclick="showScreen('home')">&#8592; <span id="t-back-5">Back</span></button>
+  </div>
+  <div class="section-pad">
+    <h2 id="t-toolkit-title">Sensory Toolkit</h2>
+    <p id="t-toolkit-desc" style="margin-top:4px">Your go-bag checklist. Tap to check off packed items.</p>
+  </div>
+  <div class="checklist" id="toolkitChecklist"></div>
+  <div class="add-item-row">
+    <input type="text" id="addItemInput" placeholder="" maxlength="60">
+    <button class="btn btn-sage" onclick="addToolkitItem()" id="t-btn-add">+ Add</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// STATE
+// ============================================================
+let lang = localStorage.getItem('mn-lang') || 'en';
+let theme = localStorage.getItem('mn-theme') || 'dark';
+let currentScreen = 'home';
+let emergencyStep = 0;
+let emergencyTimer = null;
+let emergencyTimerSeconds = 0;
+let breatheInterval = null;
+let currentCardType = 'general';
+let reflectionData = {};
+
+// ============================================================
+// TRANSLATIONS
+// ============================================================
+const T = {
+  en: {
+    'home-title': 'Before, During & After',
+    'home-sub': 'Your pocket guide for meltdown moments',
+    'sos-text': 'HELP NOW',
+    'exit-emergency': 'Exit',
+    'fc-explain': 'Explain Cards',
+    'fc-explain-sub': 'Cards to show others — 8 languages',
+    'fc-reflect': 'Post-Meltdown Reflection',
+    'fc-reflect-sub': 'Log and learn from incidents',
+    'fc-patterns': 'Pattern Dashboard',
+    'fc-patterns-sub': 'Spot triggers and trends',
+    'fc-toolkit': 'Sensory Toolkit',
+    'fc-toolkit-sub': 'What to carry in your bag',
+    'refs': 'Based on: Mazefsky et al. (2013), Bearss et al. (2015), National Autistic Society meltdown guidance',
+    'back': 'Back',
+    'explain-title': 'Explain Cards',
+    'explain-desc': 'Show these to strangers, teachers, or anyone who needs to understand quickly.',
+    'tab-general': 'General',
+    'tab-meltdown': 'Meltdown',
+    'tab-nonverbal': 'Non-verbal',
+    'lbl-childname': "Child's name (optional)",
+    'lbl-customtext': 'Custom line (optional)',
+    'lbl-cardlang': 'Card language',
+    'btn-print': '&#128424; Print Card',
+    'btn-save': '&#128247; Save Image',
+    'reflect-title': 'Post-Meltdown Reflection',
+    'reflect-desc': 'Take your time. You can do this later.',
+    'when': 'When?',
+    'where': 'Where?',
+    'duration': 'How long? (estimate)',
+    'intensity': 'How intense?',
+    'before': 'What happened before?',
+    'behavior': 'What did the child do?',
+    'helped': 'What helped?',
+    'nothelped': "What didn't help?",
+    'parentstate': 'How are YOU feeling?',
+    'notes': 'Notes (optional)',
+    'btn-save-reflect': 'Save Reflection',
+    'view-history': 'History',
+    'history-title': 'Incident History',
+    'clear': 'Clear All',
+    'patterns-title': 'Pattern Dashboard',
+    'toolkit-title': 'Sensory Toolkit',
+    'toolkit-desc': 'Your go-bag checklist. Tap to check off packed items.',
+    'btn-add': '+ Add',
+    'toast-saved': 'Saved',
+    'toast-cleared': 'History cleared',
+    'no-data': 'Log 5 or more incidents to see patterns.',
+    'no-history': 'No incidents logged yet.',
+    locations: ['Home','Store','School','Restaurant','Car','Outdoors','Other'],
+    antecedents: ['Transition','Sensory overload','Demand','Denied item','Tired','Hungry','Unexpected change','Social pressure','Pain/illness','Unknown'],
+    behaviors: ['Crying/screaming','Hitting','Self-injury','Running away','Throwing things','Shutting down','Other'],
+    helped: ['Quiet space','Comfort item','Deep pressure','Ignoring','Distraction','Music','Movement','Just time'],
+    notHelped: ['Talking/reasoning','Restraint','Loud voice','Trying to move them','Bribing'],
+    intensity: ['Mild','Moderate','Strong','Severe','Extreme'],
+    parentState: ['Overwhelmed','Shaken','Tired','Managing','Okay'],
+    // Emergency steps
+    e1_title: 'SAFETY FIRST',
+    e1_sub: 'Check right now:',
+    e1_items: ['Is your child safe from harm?','Are others around safe?','Remove any dangerous objects nearby','Move to a quieter or safer space if you can'],
+    e1_btn: "We're safe \u2192",
+    e2_title: 'BREATHE',
+    e2_sub: 'You need to be calm before you can help.',
+    e2_note: 'Take 3 slow breaths with me.',
+    e2_inhale: 'Breathe in...',
+    e2_hold: 'Hold...',
+    e2_exhale: 'Breathe out...',
+    e2_btn: "I'm calmer \u2192",
+    e3_title: 'REDUCE STIMULATION',
+    e3_sub: 'Do what you can:',
+    e3_items: ['Lower the lights if possible','Reduce noise \u2014 turn off TV, music, radio','Give physical space \u2014 don\'t crowd','Speak quietly or don\'t speak at all','Offer a comfort item if one is near'],
+    e3_btn: "Done what I can \u2192",
+    e4_title: 'WAIT',
+    e4_emphasis: 'A meltdown has to run its course.',
+    e4_sub: 'This is NOT a tantrum. Your child is overwhelmed, not manipulating you.',
+    e4_note: 'Average duration: 5\u201320 minutes. Stay nearby. Stay calm. Stay safe.',
+    e4_btn: "It's passing \u2192",
+    e4_alt: 'I need more help',
+    e4_timer_label: 'Time elapsed',
+    e5_title: 'RECOVERY',
+    e5_sub: 'The worst is over.',
+    e5_items: ['Offer water','Offer a quiet, low-demand activity','Don\'t discuss what happened right now','Your child may need extra sleep or downtime','You did well. This is hard.'],
+    e5_emphasis: 'You can reflect on this later when you are both ready.',
+    e5_btn: 'Log this incident \u2192',
+    e5_alt: 'Back to home',
+    e_more_title: 'YOU ARE NOT ALONE',
+    e_more_items: ['This moment will pass','Your child is not choosing this','You are doing the best you can','If you are in danger, call emergency services'],
+    e_more_btn: 'Back',
+  },
+  zh: {
+    'home-title': '\u5D29\u6E83\u524D\u3001\u4E2D\u3001\u540E',
+    'home-sub': '\u5D29\u6E83\u65F6\u523B\u7684\u53E3\u888B\u6307\u5357',
+    'sos-text': '\u7D27\u6025\u5E2E\u52A9',
+    'exit-emergency': '\u9000\u51FA',
+    'fc-explain': '\u89E3\u91CA\u5361',
+    'fc-explain-sub': '\u7ED9\u4ED6\u4EBA\u770B\u7684\u5361\u7247 \u2014 8\u79CD\u8BED\u8A00',
+    'fc-reflect': '\u4E8B\u540E\u53CD\u601D',
+    'fc-reflect-sub': '\u8BB0\u5F55\u5E76\u5B66\u4E60\u6BCF\u6B21\u7ECF\u5386',
+    'fc-patterns': '\u6A21\u5F0F\u5206\u6790',
+    'fc-patterns-sub': '\u53D1\u73B0\u89E6\u53D1\u56E0\u7D20\u548C\u8D8B\u52BF',
+    'fc-toolkit': '\u611F\u89C9\u5DE5\u5177\u5305',
+    'fc-toolkit-sub': '\u51FA\u95E8\u968F\u8EAB\u643A\u5E26\u6E05\u5355',
+    'refs': '\u53C2\u8003: Mazefsky\u7B49(2013), Bearss\u7B49(2015), \u82F1\u56FD\u81EA\u95ED\u75C7\u534F\u4F1A\u5D29\u6E83\u6307\u5357',
+    'back': '\u8FD4\u56DE',
+    'explain-title': '\u89E3\u91CA\u5361',
+    'explain-desc': '\u7ED9\u964C\u751F\u4EBA\u3001\u8001\u5E08\u6216\u4EFB\u4F55\u9700\u8981\u5FEB\u901F\u4E86\u89E3\u7684\u4EBA\u770B\u3002',
+    'tab-general': '\u901A\u7528',
+    'tab-meltdown': '\u5D29\u6E83\u65F6',
+    'tab-nonverbal': '\u975E\u8BED\u8A00',
+    'lbl-childname': '\u5B69\u5B50\u540D\u5B57\uFF08\u53EF\u9009\uFF09',
+    'lbl-customtext': '\u81EA\u5B9A\u4E49\u5185\u5BB9\uFF08\u53EF\u9009\uFF09',
+    'lbl-cardlang': '\u5361\u7247\u8BED\u8A00',
+    'btn-print': '&#128424; \u6253\u5370\u5361\u7247',
+    'btn-save': '&#128247; \u4FDD\u5B58\u56FE\u7247',
+    'reflect-title': '\u4E8B\u540E\u53CD\u601D',
+    'reflect-desc': '\u4E0D\u6025\uFF0C\u4F60\u53EF\u4EE5\u7A0D\u540E\u518D\u586B\u3002',
+    'when': '\u4EC0\u4E48\u65F6\u5019\uFF1F',
+    'where': '\u5728\u54EA\u91CC\uFF1F',
+    'duration': '\u6301\u7EED\u591A\u4E45\uFF1F\uFF08\u4F30\u8BA1\uFF09',
+    'intensity': '\u5F3A\u5EA6\u5982\u4F55\uFF1F',
+    'before': '\u4E4B\u524D\u53D1\u751F\u4E86\u4EC0\u4E48\uFF1F',
+    'behavior': '\u5B69\u5B50\u505A\u4E86\u4EC0\u4E48\uFF1F',
+    'helped': '\u4EC0\u4E48\u6709\u5E2E\u52A9\uFF1F',
+    'nothelped': '\u4EC0\u4E48\u6CA1\u6709\u5E2E\u52A9\uFF1F',
+    'parentstate': '\u4F60\u81EA\u5DF1\u611F\u89C9\u5982\u4F55\uFF1F',
+    'notes': '\u5907\u6CE8\uFF08\u53EF\u9009\uFF09',
+    'btn-save-reflect': '\u4FDD\u5B58\u53CD\u601D',
+    'view-history': '\u5386\u53F2\u8BB0\u5F55',
+    'history-title': '\u4E8B\u4EF6\u5386\u53F2',
+    'clear': '\u6E05\u9664\u5168\u90E8',
+    'patterns-title': '\u6A21\u5F0F\u5206\u6790',
+    'toolkit-title': '\u611F\u89C9\u5DE5\u5177\u5305',
+    'toolkit-desc': '\u51FA\u95E8\u643A\u5E26\u6E05\u5355\u3002\u70B9\u51FB\u6807\u8BB0\u5DF2\u6253\u5305\u7269\u54C1\u3002',
+    'btn-add': '+ \u6DFB\u52A0',
+    'toast-saved': '\u5DF2\u4FDD\u5B58',
+    'toast-cleared': '\u5386\u53F2\u5DF2\u6E05\u9664',
+    'no-data': '\u8BB0\u5F555\u6B21\u4EE5\u4E0A\u4E8B\u4EF6\u540E\u53EF\u67E5\u770B\u6A21\u5F0F\u3002',
+    'no-history': '\u8FD8\u6CA1\u6709\u8BB0\u5F55\u3002',
+    locations: ['\u5BB6\u91CC','\u5546\u5E97','\u5B66\u6821','\u9910\u5385','\u8F66\u91CC','\u6237\u5916','\u5176\u4ED6'],
+    antecedents: ['\u8FC7\u6E21/\u8F6C\u6362','\u611F\u89C9\u8D85\u8F7D','\u8981\u6C42/\u4EFB\u52A1','\u88AB\u62D2\u7269\u54C1','\u7D2F\u4E86','\u997F\u4E86','\u610F\u5916\u53D8\u5316','\u793E\u4EA4\u538B\u529B','\u75BC\u75DB/\u751F\u75C5','\u4E0D\u786E\u5B9A'],
+    behaviors: ['\u54ED\u53EB/\u5C16\u53EB','\u6253\u4EBA','\u81EA\u4F24','\u8DD1\u5F00','\u6254\u4E1C\u897F','\u5173\u95ED/\u50F5\u4F4F','\u5176\u4ED6'],
+    helped: ['\u5B89\u9759\u7A7A\u95F4','\u5B89\u629A\u7269','\u6DF1\u538B','\u4E0D\u7406\u4F1A','\u8F6C\u79FB\u6CE8\u610F','\u97F3\u4E50','\u8FD0\u52A8','\u53EA\u662F\u7B49\u5F85'],
+    notHelped: ['\u8BF4\u7406/\u8BB2\u9053\u7406','\u7EA6\u675F/\u6309\u4F4F','\u5927\u58F0\u97F3','\u5F3A\u884C\u79FB\u52A8','\u5229\u8BF1'],
+    intensity: ['\u8F7B\u5FAE','\u4E2D\u7B49','\u8F83\u5F3A','\u4E25\u91CD','\u6781\u7AEF'],
+    parentState: ['\u5D29\u6E83','\u52A8\u6447','\u75B2\u60EB','\u5E94\u4ED8\u5F97\u6765','\u8FD8\u597D'],
+    e1_title: '\u5B89\u5168\u7B2C\u4E00',
+    e1_sub: '\u73B0\u5728\u68C0\u67E5\uFF1A',
+    e1_items: ['\u5B69\u5B50\u5B89\u5168\u5417\uFF1F','\u5468\u56F4\u7684\u4EBA\u5B89\u5168\u5417\uFF1F','\u79FB\u5F00\u9644\u8FD1\u7684\u5371\u9669\u7269\u54C1','\u5982\u679C\u53EF\u4EE5\uFF0C\u8F6C\u79FB\u5230\u66F4\u5B89\u9759\u7684\u5730\u65B9'],
+    e1_btn: '\u6211\u4EEC\u5B89\u5168\u4E86 \u2192',
+    e2_title: '\u6DF1\u547C\u5438',
+    e2_sub: '\u4F60\u9700\u8981\u5148\u5E73\u9759\u4E0B\u6765\u624D\u80FD\u5E2E\u52A9\u5B69\u5B50\u3002',
+    e2_note: '\u8DDF\u6211\u4E00\u8D77\u6162\u6162\u6DF1\u547C\u54783\u6B21\u3002',
+    e2_inhale: '\u5438\u6C14...',
+    e2_hold: '\u5C4F\u4F4F...',
+    e2_exhale: '\u547C\u6C14...',
+    e2_btn: '\u6211\u5E73\u9759\u4E86\u4E00\u4E9B \u2192',
+    e3_title: '\u51CF\u5C11\u523A\u6FC0',
+    e3_sub: '\u5C3D\u4F60\u6240\u80FD\uFF1A',
+    e3_items: ['\u5C3D\u53EF\u80FD\u8C03\u6697\u706F\u5149','\u51CF\u5C11\u566A\u97F3 \u2014 \u5173\u6389\u7535\u89C6\u3001\u97F3\u4E50','\u7ED9\u5B69\u5B50\u7A7A\u95F4 \u2014 \u4E0D\u8981\u56F4\u4F4F','\u8F7B\u58F0\u8BF4\u8BDD\u6216\u4E0D\u8BF4\u8BDD','\u5982\u679C\u6709\u5B89\u629A\u7269\u54C1\uFF0C\u9012\u7ED9\u5B69\u5B50'],
+    e3_btn: '\u5DF2\u7ECF\u505A\u4E86 \u2192',
+    e4_title: '\u7B49\u5F85',
+    e4_emphasis: '\u5D29\u6E83\u5FC5\u987B\u81EA\u7136\u7ED3\u675F\u3002',
+    e4_sub: '\u8FD9\u4E0D\u662F\u53D1\u813E\u6C14\u3002\u5B69\u5B50\u662F\u88AB\u538B\u5782\u4E86\uFF0C\u4E0D\u662F\u5728\u64CD\u7EB5\u4F60\u3002',
+    e4_note: '\u5E73\u5747\u65F6\u95F4\uFF1A5\u201320\u5206\u949F\u3002\u7559\u5728\u9644\u8FD1\u3002\u4FDD\u6301\u5E73\u9759\u3002\u4FDD\u6301\u5B89\u5168\u3002',
+    e4_btn: '\u5F00\u59CB\u5E73\u606F\u4E86 \u2192',
+    e4_alt: '\u6211\u9700\u8981\u66F4\u591A\u5E2E\u52A9',
+    e4_timer_label: '\u5DF2\u7ECF\u8FC7\u53BB',
+    e5_title: '\u6062\u590D',
+    e5_sub: '\u6700\u96BE\u7684\u65F6\u5019\u8FC7\u53BB\u4E86\u3002',
+    e5_items: ['\u7ED9\u5B69\u5B50\u559D\u6C34','\u63D0\u4F9B\u4E00\u4E2A\u5B89\u9759\u7684\u6D3B\u52A8','\u73B0\u5728\u4E0D\u8981\u8BA8\u8BBA\u521A\u624D\u53D1\u751F\u7684\u4E8B','\u5B69\u5B50\u53EF\u80FD\u9700\u8981\u989D\u5916\u7684\u4F11\u606F','\u4F60\u505A\u5F97\u5F88\u597D\u3002\u8FD9\u5F88\u96BE\u3002'],
+    e5_emphasis: '\u7B49\u4F60\u4EEC\u90FD\u51C6\u5907\u597D\u4E86\uFF0C\u518D\u6765\u53CD\u601D\u3002',
+    e5_btn: '\u8BB0\u5F55\u8FD9\u6B21\u4E8B\u4EF6 \u2192',
+    e5_alt: '\u8FD4\u56DE\u9996\u9875',
+    e_more_title: '\u4F60\u4E0D\u662F\u4E00\u4E2A\u4EBA',
+    e_more_items: ['\u8FD9\u4E2A\u65F6\u523B\u4F1A\u8FC7\u53BB','\u5B69\u5B50\u4E0D\u662F\u6545\u610F\u7684','\u4F60\u5DF2\u7ECF\u5C3D\u529B\u4E86','\u5982\u679C\u6709\u5371\u9669\uFF0C\u8BF7\u62E8\u6253\u6025\u6551\u7535\u8BDD'],
+    e_more_btn: '\u8FD4\u56DE',
+  }
+};
+
+// Explain card texts in 8 languages
+const CARD_TEXTS = {
+  general: {
+    en: 'My child has autism spectrum disorder. They may behave differently in unfamiliar situations. They are not being naughty. Thank you for your understanding.',
+    zh: '\u6211\u7684\u5B69\u5B50\u6709\u81EA\u95ED\u75C7\u8C31\u7CFB\u969C\u788D\u3002\u5728\u964C\u751F\u73AF\u5883\u4E2D\uFF0C\u4ED6\u4EEC\u53EF\u80FD\u884C\u4E3A\u4E0E\u4F17\u4E0D\u540C\u3002\u4ED6\u4EEC\u4E0D\u662F\u5728\u6DD8\u6C14\u3002\u611F\u8C22\u60A8\u7684\u7406\u89E3\u3002',
+    nl: 'Mijn kind heeft een autismespectrumstoornis. Ze kunnen zich anders gedragen in onbekende situaties. Ze zijn niet stout. Bedankt voor uw begrip.',
+    de: 'Mein Kind hat eine Autismus-Spektrum-St\u00F6rung. Es kann sich in unbekannten Situationen anders verhalten. Es ist nicht ungezogen. Vielen Dank f\u00FCr Ihr Verst\u00E4ndnis.',
+    fr: 'Mon enfant est autiste. Il/elle peut se comporter diff\u00E9remment dans des situations inhabituelles. Ce n\'est pas un caprice. Merci de votre compr\u00E9hension.',
+    pt: 'Meu filho(a) tem transtorno do espectro autista. Ele(a) pode se comportar de forma diferente em situa\u00E7\u00F5es desconhecidas. N\u00E3o est\u00E1 sendo mal-educado(a). Obrigado(a) pela compreens\u00E3o.',
+    es: 'Mi hijo(a) tiene trastorno del espectro autista. Puede comportarse de manera diferente en situaciones desconocidas. No est\u00E1 siendo malcriado(a). Gracias por su comprensi\u00F3n.',
+    it: 'Mio/a figlio/a ha un disturbo dello spettro autistico. Pu\u00F2 comportarsi diversamente in situazioni non familiari. Non sta facendo i capricci. Grazie per la comprensione.',
+  },
+  meltdown: {
+    en: 'My child is experiencing a sensory overload / meltdown. This is NOT a tantrum. Please give us space. We are okay.',
+    zh: '\u6211\u7684\u5B69\u5B50\u6B63\u5728\u7ECF\u5386\u611F\u89C9\u8D85\u8F7D/\u5D29\u6E83\u3002\u8FD9\u4E0D\u662F\u53D1\u813E\u6C14\u3002\u8BF7\u7ED9\u6211\u4EEC\u4E00\u4E9B\u7A7A\u95F4\u3002\u6211\u4EEC\u6CA1\u4E8B\u3002',
+    nl: 'Mijn kind heeft een sensorische overbelasting / meltdown. Dit is GEEN driftbui. Geef ons alstublieft ruimte. Het gaat goed met ons.',
+    de: 'Mein Kind erlebt eine sensorische \u00DCberreizung / einen Meltdown. Das ist KEIN Wutanfall. Bitte geben Sie uns Raum. Es geht uns gut.',
+    fr: 'Mon enfant est en surcharge sensorielle / crise. Ce n\'est PAS un caprice. Merci de nous laisser de l\'espace. Tout va bien.',
+    pt: 'Meu filho(a) est\u00E1 em sobrecarga sensorial / crise. Isso N\u00C3O \u00E9 birra. Por favor, nos d\u00EA espa\u00E7o. Estamos bem.',
+    es: 'Mi hijo(a) est\u00E1 experimentando una sobrecarga sensorial / crisis. Esto NO es un berrinche. Por favor, d\u00E9nos espacio. Estamos bien.',
+    it: 'Mio/a figlio/a sta vivendo un sovraccarico sensoriale / crisi. NON \u00E8 un capriccio. Per favore, dateci spazio. Stiamo bene.',
+  },
+  nonverbal: {
+    en: 'My child communicates differently. They may not respond to verbal instructions. Please be patient.',
+    zh: '\u6211\u7684\u5B69\u5B50\u7684\u6C9F\u901A\u65B9\u5F0F\u4E0D\u540C\u3002\u4ED6\u4EEC\u53EF\u80FD\u65E0\u6CD5\u56DE\u5E94\u53E3\u5934\u6307\u4EE4\u3002\u8BF7\u8010\u5FC3\u7B49\u5F85\u3002',
+    nl: 'Mijn kind communiceert anders. Ze reageren mogelijk niet op verbale instructies. Wees alstublieft geduldig.',
+    de: 'Mein Kind kommuniziert anders. Es reagiert m\u00F6glicherweise nicht auf verbale Anweisungen. Bitte haben Sie Geduld.',
+    fr: 'Mon enfant communique diff\u00E9remment. Il/elle peut ne pas r\u00E9pondre aux instructions verbales. Merci d\'\u00EAtre patient(e).',
+    pt: 'Meu filho(a) se comunica de forma diferente. Pode n\u00E3o responder a instru\u00E7\u00F5es verbais. Por favor, tenha paci\u00EAncia.',
+    es: 'Mi hijo(a) se comunica de manera diferente. Puede no responder a instrucciones verbales. Por favor, tenga paciencia.',
+    it: 'Mio/a figlio/a comunica in modo diverso. Potrebbe non rispondere alle istruzioni verbali. Per favore, abbiate pazienza.',
+  }
+};
+
+const CARD_SYMBOLS = { general: '\u2665', meltdown: '\u26A0', nonverbal: '\u2B50' };
+
+// Default toolkit items
+const DEFAULT_TOOLKIT = [
+  { id: 1, text: { en: 'Noise-cancelling headphones / ear defenders', zh: '\u964D\u566A\u8033\u673A/\u8033\u7F69' }, checked: false, custom: false },
+  { id: 2, text: { en: 'Sunglasses', zh: '\u592A\u9633\u955C' }, checked: false, custom: false },
+  { id: 3, text: { en: 'Chewy / fidget toy', zh: '\u5632\u56BC\u73A9\u5177/\u6307\u5C16\u964C\u751F\u5316\u73A9\u5177' }, checked: false, custom: false },
+  { id: 4, text: { en: 'Comfort item (specific to child)', zh: '\u5B89\u629A\u7269\uFF08\u5B69\u5B50\u4E13\u5C5E\uFF09' }, checked: false, custom: false },
+  { id: 5, text: { en: 'Weighted lap pad', zh: '\u52A0\u91CD\u819D\u4E0A\u57AB' }, checked: false, custom: false },
+  { id: 6, text: { en: 'Snacks (safe foods)', zh: '\u96F6\u98DF\uFF08\u5B89\u5168\u98DF\u54C1\uFF09' }, checked: false, custom: false },
+  { id: 7, text: { en: 'Water bottle', zh: '\u6C34\u58F6' }, checked: false, custom: false },
+  { id: 8, text: { en: 'Explain cards (from this app)', zh: '\u89E3\u91CA\u5361\uFF08\u672C\u5E94\u7528\u751F\u6210\uFF09' }, checked: false, custom: false },
+  { id: 9, text: { en: 'Change of clothes', zh: '\u5907\u7528\u8863\u670D' }, checked: false, custom: false },
+  { id: 10, text: { en: 'Tablet with calming videos loaded', zh: '\u52A0\u8F7D\u4E86\u5B89\u629A\u89C6\u9891\u7684\u5E73\u677F' }, checked: false, custom: false },
+];
+
+// ============================================================
+// INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  applyTheme();
+  applyLang();
+  initReflectionForm();
+  renderToolkit();
+  updateCardPreview();
+  setDefaultDateTime();
+});
+
+// ============================================================
+// SCREEN NAVIGATION
+// ============================================================
+function showScreen(id) {
+  document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+  const target = document.getElementById(id);
+  if (target) {
+    target.classList.add('active');
+    target.classList.add('fade-in');
+    setTimeout(() => target.classList.remove('fade-in'), 300);
+  }
+  currentScreen = id;
+  if (id === 'patterns') renderDashboard();
+  if (id === 'history') renderHistory();
+  window.scrollTo(0, 0);
+}
+
+// ============================================================
+// THEME
+// ============================================================
+function toggleTheme() {
+  theme = theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('mn-theme', theme);
+  applyTheme();
+}
+
+function applyTheme() {
+  document.body.classList.toggle('light-mode', theme === 'light');
+  const btn = document.getElementById('themeBtn');
+  btn.innerHTML = theme === 'dark' ? '&#9788;' : '&#9790;';
+}
+
+// ============================================================
+// LANGUAGE
+// ============================================================
+function toggleLang() {
+  lang = lang === 'en' ? 'zh' : 'en';
+  localStorage.setItem('mn-lang', lang);
+  applyLang();
+}
+
+function t(key) { return T[lang][key] || T.en[key] || key; }
+
+function applyLang() {
+  const langBtns = document.querySelectorAll('.lang-toggle');
+  langBtns.forEach(b => b.textContent = lang === 'en' ? '中文' : 'EN');
+
+  // Update all t- prefixed elements
+  const keys = [
+    'home-title','home-sub','sos-text','fc-explain','fc-explain-sub',
+    'fc-reflect','fc-reflect-sub','fc-patterns','fc-patterns-sub',
+    'fc-toolkit','fc-toolkit-sub','explain-title','explain-desc',
+    'tab-general','tab-meltdown','tab-nonverbal',
+    'lbl-childname','lbl-customtext','lbl-cardlang',
+    'btn-print','btn-save','reflect-title','reflect-desc',
+    'when','where','duration','intensity','before','behavior',
+    'helped','nothelped','parentstate','notes','btn-save-reflect',
+    'view-history','history-title','clear','patterns-title',
+    'toolkit-title','toolkit-desc','btn-add','exit-emergency'
+  ];
+  keys.forEach(k => {
+    const el = document.getElementById('t-' + k);
+    if (el) el.innerHTML = t(k);
+  });
+  // Back buttons
+  for (let i = 1; i <= 5; i++) {
+    const el = document.getElementById('t-back-' + i);
+    if (el) el.textContent = t('back');
+  }
+  // Refs
+  const refs = document.getElementById('t-refs');
+  if (refs) refs.innerHTML = t('refs');
+
+  // Re-render dynamic content
+  initReflectionForm();
+  renderToolkit();
+  updateCardPreview();
+  if (currentScreen === 'patterns') renderDashboard();
+  if (currentScreen === 'history') renderHistory();
+}
+
+// ============================================================
+// EMERGENCY MODE
+// ============================================================
+function startEmergency() {
+  emergencyStep = 1;
+  showScreen('emergency');
+  renderEmergencyStep();
+}
+
+function exitEmergency() {
+  stopBreathing();
+  stopEmergencyTimer();
+  showScreen('home');
+}
+
+function nextEmergencyStep() {
+  emergencyStep++;
+  if (emergencyStep > 5) {
+    exitEmergency();
+    return;
+  }
+  renderEmergencyStep();
+}
+
+function renderEmergencyStep() {
+  const body = document.getElementById('emergencyBody');
+  const footer = document.getElementById('emergencyFooter');
+  const indicator = document.getElementById('emergencyStepIndicator');
+  indicator.textContent = emergencyStep <= 5 ? `${emergencyStep} / 5` : '';
+
+  stopBreathing();
+
+  switch(emergencyStep) {
+    case 1: // SAFETY
+      body.innerHTML = `
+        <h1>${t('e1_title')}</h1>
+        <p class="subtitle">${t('e1_sub')}</p>
+        <ul>${t('e1_items').map(i => `<li>${i}</li>`).join('')}</ul>
+      `;
+      footer.innerHTML = `<button class="emergency-next green" onclick="nextEmergencyStep()">${t('e1_btn')}</button>`;
+      break;
+
+    case 2: // BREATHE
+      body.innerHTML = `
+        <h1>${t('e2_title')}</h1>
+        <p class="subtitle">${t('e2_sub')}</p>
+        <div class="breathe-container">
+          <div class="breathe-circle" id="breatheCircle"></div>
+          <div class="breathe-label" id="breatheLabel"></div>
+        </div>
+        <p class="reassurance">${t('e2_note')}</p>
+      `;
+      footer.innerHTML = `<button class="emergency-next blue" onclick="nextEmergencyStep()">${t('e2_btn')}</button>`;
+      startBreathing();
+      break;
+
+    case 3: // REDUCE
+      body.innerHTML = `
+        <h1>${t('e3_title')}</h1>
+        <p class="subtitle">${t('e3_sub')}</p>
+        <ul>${t('e3_items').map(i => `<li>${i}</li>`).join('')}</ul>
+      `;
+      footer.innerHTML = `<button class="emergency-next sage" onclick="nextEmergencyStep()">${t('e3_btn')}</button>`;
+      break;
+
+    case 4: // WAIT
+      body.innerHTML = `
+        <h1>${t('e4_title')}</h1>
+        <div class="emphasis">${t('e4_emphasis')}</div>
+        <p class="subtitle">${t('e4_sub')}</p>
+        <p class="reassurance">${t('e4_note')}</p>
+        <div class="timer-display">
+          <div class="timer-time" id="timerTime">00:00</div>
+          <div class="timer-label">${t('e4_timer_label')}</div>
+          <div class="timer-controls">
+            <button class="timer-btn" onclick="toggleTimer()" id="timerToggle">Start</button>
+            <button class="timer-btn" onclick="resetTimer()">Reset</button>
+          </div>
+        </div>
+      `;
+      footer.innerHTML = `
+        <button class="emergency-next sage" onclick="nextEmergencyStep()">${t('e4_btn')}</button>
+        <button class="emergency-alt" onclick="showMoreHelp()">${t('e4_alt')}</button>
+      `;
+      emergencyTimerSeconds = 0;
+      break;
+
+    case 5: // RECOVER
+      stopEmergencyTimer();
+      body.innerHTML = `
+        <h1>${t('e5_title')}</h1>
+        <p class="subtitle">${t('e5_sub')}</p>
+        <ul>${t('e5_items').map(i => `<li>${i}</li>`).join('')}</ul>
+        <div class="emphasis">${t('e5_emphasis')}</div>
+      `;
+      footer.innerHTML = `
+        <button class="emergency-next sage" onclick="exitEmergency();showScreen('reflection')">${t('e5_btn')}</button>
+        <button class="emergency-alt" onclick="exitEmergency()">${t('e5_alt')}</button>
+      `;
+      break;
+
+    case 6: // MORE HELP
+      body.innerHTML = `
+        <h1>${t('e_more_title')}</h1>
+        <ul>${t('e_more_items').map(i => `<li>${i}</li>`).join('')}</ul>
+      `;
+      footer.innerHTML = `<button class="emergency-next blue" onclick="emergencyStep=4;renderEmergencyStep()">${t('e_more_btn')}</button>`;
+      break;
+  }
+}
+
+function showMoreHelp() {
+  emergencyStep = 6;
+  renderEmergencyStep();
+}
+
+// Breathing animation
+function startBreathing() {
+  const circle = document.getElementById('breatheCircle');
+  const label = document.getElementById('breatheLabel');
+  if (!circle || !label) return;
+
+  let phase = 0; // 0=inhale, 1=hold, 2=exhale
+  const phases = [
+    { cls: 'inhale', key: 'e2_inhale', dur: 4000 },
+    { cls: 'hold', key: 'e2_hold', dur: 4000 },
+    { cls: 'exhale', key: 'e2_exhale', dur: 4000 },
+  ];
+
+  function tick() {
+    const p = phases[phase % 3];
+    circle.className = 'breathe-circle ' + p.cls;
+    label.textContent = t(p.key);
+    phase++;
+  }
+  tick();
+  breatheInterval = setInterval(tick, 4000);
+}
+
+function stopBreathing() {
+  if (breatheInterval) { clearInterval(breatheInterval); breatheInterval = null; }
+}
+
+// Timer
+function toggleTimer() {
+  if (emergencyTimer) {
+    stopEmergencyTimer();
+  } else {
+    emergencyTimer = setInterval(() => {
+      emergencyTimerSeconds++;
+      const m = Math.floor(emergencyTimerSeconds / 60).toString().padStart(2, '0');
+      const s = (emergencyTimerSeconds % 60).toString().padStart(2, '0');
+      const el = document.getElementById('timerTime');
+      if (el) el.textContent = `${m}:${s}`;
+    }, 1000);
+    const btn = document.getElementById('timerToggle');
+    if (btn) btn.textContent = 'Pause';
+  }
+}
+
+function resetTimer() {
+  stopEmergencyTimer();
+  emergencyTimerSeconds = 0;
+  const el = document.getElementById('timerTime');
+  if (el) el.textContent = '00:00';
+}
+
+function stopEmergencyTimer() {
+  if (emergencyTimer) { clearInterval(emergencyTimer); emergencyTimer = null; }
+  const btn = document.getElementById('timerToggle');
+  if (btn) btn.textContent = 'Start';
+}
+
+// ============================================================
+// EXPLAIN CARDS
+// ============================================================
+function setCardType(type) {
+  currentCardType = type;
+  document.querySelectorAll('#cardTypeTabs .tab').forEach(t => t.classList.remove('active'));
+  const idx = { general: 0, meltdown: 1, nonverbal: 2 }[type];
+  document.querySelectorAll('#cardTypeTabs .tab')[idx].classList.add('active');
+  updateCardPreview();
+}
+
+function updateCardPreview() {
+  const preview = document.getElementById('explainPreview');
+  if (!preview) return;
+  const cardLang = document.getElementById('cardLangSelect')?.value || 'en';
+  const childName = document.getElementById('cardChildName')?.value?.trim() || '';
+  const customText = document.getElementById('cardCustomText')?.value?.trim() || '';
+  const texts = CARD_TEXTS[currentCardType];
+  let text = texts[cardLang] || texts.en;
+
+  // Replace "My child" with name if provided
+  if (childName) {
+    text = text
+      .replace(/My child/i, childName)
+      .replace(/\u6211\u7684\u5B69\u5B50/g, childName)
+      .replace(/Mijn kind/i, childName)
+      .replace(/Mein Kind/i, childName)
+      .replace(/Mon enfant/i, childName)
+      .replace(/Meu filho\(a\)/i, childName)
+      .replace(/Mi hijo\(a\)/i, childName)
+      .replace(/Mio\/a figlio\/a/i, childName);
+  }
+
+  const typeLabels = {
+    general: { en: 'Autism Awareness', zh: '\u81EA\u95ED\u75C7\u8BA4\u77E5' },
+    meltdown: { en: 'Meltdown in Progress', zh: '\u5D29\u6E83\u8FDB\u884C\u4E2D' },
+    nonverbal: { en: 'Communication Support', zh: '\u6C9F\u901A\u652F\u6301' },
+  };
+
+  preview.innerHTML = `
+    <div class="card-type">${typeLabels[currentCardType][lang] || typeLabels[currentCardType].en}</div>
+    <div class="card-symbol">${CARD_SYMBOLS[currentCardType]}</div>
+    <div class="card-text">${text}</div>
+    ${customText ? `<div class="card-custom">${customText}</div>` : ''}
+    <div class="card-footer">\u540C\u8DEF WithYou &mdash; Meltdown Navigator</div>
+  `;
+}
+
+function printCard() {
+  window.print();
+}
+
+function screenshotCard() {
+  toast(lang === 'zh' ? '\u8BF7\u622A\u56FE\u4FDD\u5B58\u4E0A\u65B9\u5361\u7247' : 'Take a screenshot of the card above to save it');
+}
+
+// ============================================================
+// REFLECTION FORM
+// ============================================================
+function initReflectionForm() {
+  // Locations
+  renderChipGroup('locationChips', t('locations'), 'location', true);
+  // Antecedents
+  renderChipGroup('antecedentChips', t('antecedents'), 'antecedent');
+  // Behaviors
+  renderChipGroup('behaviorChips', t('behaviors'), 'behavior');
+  // Helped
+  renderChipGroup('helpedChips', t('helped'), 'helpedItem');
+  // Not helped
+  renderChipGroup('notHelpedChips', t('notHelped'), 'notHelpedItem');
+  // Intensity
+  renderEmojiScale('intensityScale', t('intensity'), 'intensity');
+  // Parent state
+  renderEmojiScale('parentStateScale', t('parentState'), 'parentState');
+}
+
+function renderChipGroup(containerId, items, dataKey, singleSelect) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  container.innerHTML = items.map((item, i) =>
+    `<button class="chip" data-key="${dataKey}" data-index="${i}" onclick="toggleChip(this, '${dataKey}', ${!!singleSelect})">${item}</button>`
+  ).join('');
+}
+
+function toggleChip(el, key, single) {
+  if (single) {
+    el.parentElement.querySelectorAll('.chip').forEach(c => c.classList.remove('selected'));
+  }
+  el.classList.toggle('selected');
+}
+
+const INTENSITY_EMOJI = ['\uD83D\uDE0C', '\uD83D\uDE10', '\uD83D\uDE1F', '\uD83D\uDE23', '\uD83D\uDE31'];
+const PARENT_EMOJI = ['\uD83D\uDE2D', '\uD83D\uDE30', '\uD83D\uDE29', '\uD83D\uDE15', '\uD83D\uDE42'];
+
+function renderEmojiScale(containerId, labels, scaleKey) {
+  const container = document.getElementById(containerId);
+  if (!container) return;
+  const emojis = scaleKey === 'intensity' ? INTENSITY_EMOJI : PARENT_EMOJI;
+  container.innerHTML = labels.map((label, i) =>
+    `<div class="emoji-option" onclick="selectEmoji(this, '${scaleKey}', ${i})" data-value="${i}">
+      <span class="emoji-face">${emojis[i]}</span>
+      <span class="emoji-label">${label}</span>
+    </div>`
+  ).join('');
+}
+
+function selectEmoji(el, key, value) {
+  el.parentElement.querySelectorAll('.emoji-option').forEach(o => o.classList.remove('selected'));
+  el.classList.add('selected');
+  reflectionData[key] = value;
+}
+
+function setDefaultDateTime() {
+  const now = new Date();
+  const dateEl = document.getElementById('refDate');
+  const timeEl = document.getElementById('refTime');
+  if (dateEl) dateEl.value = now.toISOString().slice(0, 10);
+  if (timeEl) timeEl.value = now.toTimeString().slice(0, 5);
+}
+
+function updateDuration() {
+  const val = document.getElementById('durationSlider').value;
+  document.getElementById('durationDisplay').textContent = val + ' min';
+}
+
+function getSelectedChips(key) {
+  return Array.from(document.querySelectorAll(`.chip[data-key="${key}"].selected`))
+    .map(c => c.textContent);
+}
+
+function saveReflection() {
+  const entry = {
+    id: Date.now(),
+    date: document.getElementById('refDate')?.value || '',
+    time: document.getElementById('refTime')?.value || '',
+    location: getSelectedChips('location'),
+    duration: parseInt(document.getElementById('durationSlider')?.value || '10'),
+    intensity: reflectionData.intensity ?? -1,
+    antecedents: getSelectedChips('antecedent'),
+    behaviors: getSelectedChips('behavior'),
+    helped: getSelectedChips('helpedItem'),
+    notHelped: getSelectedChips('notHelpedItem'),
+    parentState: reflectionData.parentState ?? -1,
+    notes: document.getElementById('refNotes')?.value || '',
+  };
+
+  const logs = JSON.parse(localStorage.getItem('mn-logs') || '[]');
+  logs.push(entry);
+  localStorage.setItem('mn-logs', JSON.stringify(logs));
+
+  toast(t('toast-saved'));
+
+  // Reset form
+  reflectionData = {};
+  document.querySelectorAll('.chip.selected').forEach(c => c.classList.remove('selected'));
+  document.querySelectorAll('.emoji-option.selected').forEach(o => o.classList.remove('selected'));
+  document.getElementById('refNotes').value = '';
+  document.getElementById('durationSlider').value = 10;
+  updateDuration();
+  setDefaultDateTime();
+
+  showScreen('home');
+}
+
+// ============================================================
+// HISTORY
+// ============================================================
+function renderHistory() {
+  const container = document.getElementById('historyList');
+  const logs = JSON.parse(localStorage.getItem('mn-logs') || '[]');
+  if (logs.length === 0) {
+    container.innerHTML = `<div class="dashboard-empty"><p>${t('no-history')}</p></div>`;
+    return;
+  }
+  container.innerHTML = logs.slice().reverse().map(entry => {
+    const intensityEmoji = entry.intensity >= 0 ? INTENSITY_EMOJI[entry.intensity] : '\u2014';
+    const loc = entry.location?.join(', ') || '';
+    return `<div class="history-item" onclick="viewEntry(${entry.id})">
+      <div class="history-meta">
+        <span class="history-date">${entry.date} ${entry.time || ''}</span>
+        <span class="history-detail">${loc} \u2022 ${entry.duration}min</span>
+      </div>
+      <span class="history-intensity">${intensityEmoji}</span>
+    </div>`;
+  }).join('');
+}
+
+function viewEntry(id) {
+  const logs = JSON.parse(localStorage.getItem('mn-logs') || '[]');
+  const entry = logs.find(l => l.id === id);
+  if (!entry) return;
+  const details = [
+    entry.antecedents?.length ? `<b>${t('before')}</b> ${entry.antecedents.join(', ')}` : '',
+    entry.behaviors?.length ? `<b>${t('behavior')}</b> ${entry.behaviors.join(', ')}` : '',
+    entry.helped?.length ? `<b>${t('helped')}</b> ${entry.helped.join(', ')}` : '',
+    entry.notHelped?.length ? `<b>${t('nothelped')}</b> ${entry.notHelped.join(', ')}` : '',
+    entry.notes ? `<b>${t('notes')}</b> ${entry.notes}` : '',
+  ].filter(Boolean).join('<br>');
+  toast(details || 'No details');
+}
+
+function clearHistory() {
+  if (!confirm(lang === 'zh' ? '\u786E\u5B9A\u6E05\u9664\u6240\u6709\u8BB0\u5F55\uFF1F' : 'Clear all incident logs?')) return;
+  localStorage.removeItem('mn-logs');
+  toast(t('toast-cleared'));
+  renderHistory();
+}
+
+// ============================================================
+// PATTERN DASHBOARD
+// ============================================================
+function renderDashboard() {
+  const container = document.getElementById('dashboardContent');
+  const logs = JSON.parse(localStorage.getItem('mn-logs') || '[]');
+
+  if (logs.length < 5) {
+    container.innerHTML = `<div class="dashboard-empty">
+      <div class="empty-icon">\uD83D\uDCCA</div>
+      <p>${t('no-data')}</p>
+      <p style="margin-top:8px;font-size:0.8rem;color:var(--text-dim)">${logs.length}/5 ${lang === 'zh' ? '\u5DF2\u8BB0\u5F55' : 'logged'}</p>
+    </div>`;
+    return;
+  }
+
+  // Compute stats
+  const totalIncidents = logs.length;
+  const avgDuration = Math.round(logs.reduce((s, l) => s + (l.duration || 0), 0) / logs.length);
+  const avgIntensity = (logs.filter(l => l.intensity >= 0).reduce((s, l) => s + l.intensity, 0) / logs.filter(l => l.intensity >= 0).length).toFixed(1);
+
+  // Trigger counts
+  const triggerCounts = {};
+  logs.forEach(l => (l.antecedents || []).forEach(a => { triggerCounts[a] = (triggerCounts[a] || 0) + 1; }));
+  const sortedTriggers = Object.entries(triggerCounts).sort((a, b) => b[1] - a[1]).slice(0, 6);
+  const maxTrigger = sortedTriggers[0]?.[1] || 1;
+
+  // Strategy counts
+  const strategyCounts = {};
+  logs.forEach(l => (l.helped || []).forEach(h => { strategyCounts[h] = (strategyCounts[h] || 0) + 1; }));
+  const sortedStrategies = Object.entries(strategyCounts).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const maxStrategy = sortedStrategies[0]?.[1] || 1;
+
+  // Location counts
+  const locCounts = {};
+  logs.forEach(l => (l.location || []).forEach(loc => { locCounts[loc] = (locCounts[loc] || 0) + 1; }));
+  const topLocation = Object.entries(locCounts).sort((a, b) => b[1] - a[1])[0];
+
+  // Trend: compare first half vs second half
+  const half = Math.floor(logs.length / 2);
+  const firstHalf = logs.slice(0, half);
+  const secondHalf = logs.slice(half);
+  const firstAvg = firstHalf.length ? firstHalf.filter(l => l.intensity >= 0).reduce((s, l) => s + l.intensity, 0) / firstHalf.filter(l => l.intensity >= 0).length : 0;
+  const secondAvg = secondHalf.length ? secondHalf.filter(l => l.intensity >= 0).reduce((s, l) => s + l.intensity, 0) / secondHalf.filter(l => l.intensity >= 0).length : 0;
+  const trendDir = secondAvg < firstAvg - 0.3 ? 'decreasing' : secondAvg > firstAvg + 0.3 ? 'increasing' : 'stable';
+  const trendEmoji = { decreasing: '\u2193', increasing: '\u2191', stable: '\u2192' }[trendDir];
+  const trendColor = { decreasing: 'var(--green-soft)', increasing: 'var(--red-soft)', stable: 'var(--yellow-soft)' }[trendDir];
+
+  // Insight
+  const topTrigger = sortedTriggers[0]?.[0] || '';
+  const insightTexts = {
+    en: {
+      'Transition': 'Transitions are your most common trigger \u2014 consider using a visual timer or countdown before transitions.',
+      'Sensory overload': 'Sensory overload is the top trigger \u2014 your sensory toolkit bag is especially important.',
+      'Demand': 'Demands trigger many incidents \u2014 try breaking tasks into smaller steps.',
+      'Tired': 'Fatigue is a major factor \u2014 watch energy levels and plan rest breaks.',
+      'Hungry': 'Hunger is a key trigger \u2014 keep safe snacks accessible at all times.',
+      default: `"${topTrigger}" is the most common trigger pattern.`,
+    },
+    zh: {
+      '\u8FC7\u6E21/\u8F6C\u6362': '\u8FC7\u6E21/\u8F6C\u6362\u662F\u6700\u5E38\u89C1\u89E6\u53D1\u56E0\u7D20 \u2014 \u8003\u8651\u5728\u8FC7\u6E21\u524D\u4F7F\u7528\u89C6\u89C9\u8BA1\u65F6\u5668\u3002',
+      '\u611F\u89C9\u8D85\u8F7D': '\u611F\u89C9\u8D85\u8F7D\u662F\u9996\u8981\u89E6\u53D1\u56E0\u7D20 \u2014 \u611F\u89C9\u5DE5\u5177\u5305\u5C24\u5176\u91CD\u8981\u3002',
+      '\u8981\u6C42/\u4EFB\u52A1': '\u4EFB\u52A1\u8981\u6C42\u89E6\u53D1\u4E86\u5F88\u591A\u4E8B\u4EF6 \u2014 \u5C1D\u8BD5\u5C06\u4EFB\u52A1\u5206\u89E3\u4E3A\u66F4\u5C0F\u7684\u6B65\u9AA4\u3002',
+      default: `\u201C${topTrigger}\u201D\u662F\u6700\u5E38\u89C1\u7684\u89E6\u53D1\u6A21\u5F0F\u3002`,
+    }
+  };
+  const insightText = (insightTexts[lang] || insightTexts.en)[topTrigger] || (insightTexts[lang] || insightTexts.en).default;
+
+  container.innerHTML = `
+    <div class="stat-grid">
+      <div class="stat-card">
+        <div class="stat-value">${totalIncidents}</div>
+        <div class="stat-label">${lang === 'zh' ? '\u603B\u4E8B\u4EF6' : 'Total Incidents'}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${avgDuration}<span style="font-size:0.9rem">min</span></div>
+        <div class="stat-label">${lang === 'zh' ? '\u5E73\u5747\u65F6\u957F' : 'Avg Duration'}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value">${INTENSITY_EMOJI[Math.round(avgIntensity)] || ''}</div>
+        <div class="stat-label">${lang === 'zh' ? '\u5E73\u5747\u5F3A\u5EA6' : 'Avg Intensity'}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-value" style="color:${trendColor}">${trendEmoji}</div>
+        <div class="stat-label">${lang === 'zh' ? '\u8D8B\u52BF' : 'Trend'}: ${lang === 'zh' ? ({decreasing:'\u4E0B\u964D',increasing:'\u4E0A\u5347',stable:'\u7A33\u5B9A'}[trendDir]) : trendDir}</div>
+      </div>
+    </div>
+
+    <div class="section-title">${lang === 'zh' ? '\u5E38\u89C1\u89E6\u53D1\u56E0\u7D20' : 'TOP TRIGGERS'}</div>
+    <div class="insight-card">
+      <div class="chart-bar-group">
+        ${sortedTriggers.map(([name, count]) => `
+          <div class="chart-bar-row">
+            <span class="chart-bar-label">${name}</span>
+            <div class="chart-bar" style="width:${(count / maxTrigger * 140)}px"></div>
+            <span class="chart-bar-value">${count}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    <div class="section-title">${lang === 'zh' ? '\u6709\u6548\u7B56\u7565' : 'WHAT WORKS'}</div>
+    <div class="insight-card">
+      <div class="chart-bar-group">
+        ${sortedStrategies.map(([name, count]) => `
+          <div class="chart-bar-row">
+            <span class="chart-bar-label">${name}</span>
+            <div class="chart-bar" style="width:${(count / maxStrategy * 140)}px;background:var(--blue)"></div>
+            <span class="chart-bar-value">${count}</span>
+          </div>
+        `).join('')}
+      </div>
+    </div>
+
+    ${topLocation ? `<div class="section-title">${lang === 'zh' ? '\u6700\u5E38\u89C1\u5730\u70B9' : 'MOST COMMON LOCATION'}</div>
+    <div class="insight-card">
+      <h3>${topLocation[0]} (${topLocation[1]}x)</h3>
+    </div>` : ''}
+
+    <div class="section-title">${lang === 'zh' ? '\u6D1E\u5BDF' : 'INSIGHT'}</div>
+    <div class="insight-card" style="border-left-color:var(--coral)">
+      <p style="color:var(--text)">${insightText}</p>
+    </div>
+  `;
+}
+
+// ============================================================
+// SENSORY TOOLKIT
+// ============================================================
+function getToolkit() {
+  const stored = localStorage.getItem('mn-toolkit');
+  if (stored) return JSON.parse(stored);
+  return DEFAULT_TOOLKIT.map(item => ({ ...item }));
+}
+
+function saveToolkit(items) {
+  localStorage.setItem('mn-toolkit', JSON.stringify(items));
+}
+
+function renderToolkit() {
+  const container = document.getElementById('toolkitChecklist');
+  if (!container) return;
+  const items = getToolkit();
+  container.innerHTML = items.map(item => {
+    const text = typeof item.text === 'object' ? (item.text[lang] || item.text.en || item.text) : item.text;
+    return `<div class="checklist-item ${item.checked ? 'checked' : ''}" onclick="toggleToolkitItem(${item.id})">
+      <div class="checklist-check"></div>
+      <span class="checklist-text">${text}</span>
+      ${item.custom ? `<button class="checklist-remove" onclick="event.stopPropagation();removeToolkitItem(${item.id})">&times;</button>` : ''}
+    </div>`;
+  }).join('');
+
+  const addInput = document.getElementById('addItemInput');
+  if (addInput) addInput.placeholder = lang === 'zh' ? '\u6DFB\u52A0\u7269\u54C1...' : 'Add item...';
+}
+
+function toggleToolkitItem(id) {
+  const items = getToolkit();
+  const item = items.find(i => i.id === id);
+  if (item) item.checked = !item.checked;
+  saveToolkit(items);
+  renderToolkit();
+}
+
+function removeToolkitItem(id) {
+  let items = getToolkit();
+  items = items.filter(i => i.id !== id);
+  saveToolkit(items);
+  renderToolkit();
+}
+
+function addToolkitItem() {
+  const input = document.getElementById('addItemInput');
+  const text = input?.value?.trim();
+  if (!text) return;
+  const items = getToolkit();
+  const maxId = items.reduce((max, i) => Math.max(max, i.id), 0);
+  items.push({ id: maxId + 1, text: text, checked: false, custom: true });
+  saveToolkit(items);
+  input.value = '';
+  renderToolkit();
+}
+
+// ============================================================
+// TOAST
+// ============================================================
+function toast(msg) {
+  const el = document.getElementById('toast');
+  el.innerHTML = msg;
+  el.classList.add('show');
+  setTimeout(() => el.classList.remove('show'), 2500);
+}
+</script>
+</body>
+</html>
