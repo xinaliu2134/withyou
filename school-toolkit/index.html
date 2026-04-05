@@ -1,0 +1,1103 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>学校工具包 — 同路 WithYou</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --sage: #6B8F7B;
+  --sage-light: #8FB09D;
+  --sage-pale: #E8F0EB;
+  --sage-dark: #4A6B56;
+  --cream: #FAF7F0;
+  --cream-dark: #F0EBDF;
+  --blue: #7BA7BC;
+  --blue-light: #A5C7D6;
+  --blue-pale: #E4EFF4;
+  --warm-text: #3D3D3D;
+  --warm-text-light: #6B6B6B;
+  --coral: #D4917B;
+  --coral-pale: #F5E0D8;
+  --yellow: #C9A84C;
+  --yellow-bg: #FDF6E3;
+  --red: #C47A6E;
+  --red-bg: #F8E8E5;
+  --green-bg: #E8F0EB;
+  --shadow: 0 2px 16px rgba(107,143,123,0.10);
+  --shadow-lg: 0 6px 28px rgba(107,143,123,0.14);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+  background: var(--cream);
+  color: var(--warm-text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.hidden { display: none !important; }
+
+/* ===== Top Bar ===== */
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.topbar-back { color: var(--sage); text-decoration: none; font-size: 0.88rem; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+.topbar-title { font-size: 0.95rem; font-weight: 600; color: var(--sage); }
+.lang-toggle {
+  background: var(--sage-pale); border: none; border-radius: 20px; padding: 4px 12px;
+  font-size: 0.78rem; font-weight: 500; color: var(--sage); cursor: pointer; transition: background 0.2s;
+}
+.lang-toggle:hover { background: var(--sage-light); color: #fff; }
+
+/* ===== Tabs ===== */
+.tabs {
+  display: flex; gap: 4px; padding: 16px 20px 0; max-width: 680px; margin: 0 auto;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.tab {
+  padding: 10px 14px; border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  font-size: 0.78rem; font-weight: 500; background: var(--cream-dark);
+  color: var(--warm-text-light); border: none; cursor: pointer; white-space: nowrap; transition: all 0.2s;
+}
+.tab.active { background: #fff; color: var(--sage); font-weight: 600; }
+
+/* ===== Panel ===== */
+.panel {
+  background: #fff; border-radius: 0 0 var(--radius) var(--radius);
+  padding: 24px 20px; margin: 0 auto; max-width: 680px; min-height: 400px; box-shadow: var(--shadow);
+}
+
+/* ===== Card ===== */
+.card {
+  background: #fff; border: 1px solid var(--cream-dark); border-radius: var(--radius-sm);
+  padding: 16px; margin-bottom: 12px;
+}
+.card-title { font-size: 0.92rem; font-weight: 600; color: var(--sage-dark); margin-bottom: 8px; }
+
+/* ===== Buttons ===== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 24px; border-radius: var(--radius-sm); font-size: 0.92rem;
+  font-weight: 600; font-family: inherit; border: none; cursor: pointer; transition: all 0.2s;
+}
+.btn-primary { background: var(--sage); color: #fff; width: 100%; }
+.btn-primary:hover { background: var(--sage-dark); }
+.btn-secondary { background: #fff; color: var(--sage); border: 2px solid var(--sage-pale); }
+.btn-secondary:hover { background: var(--sage-pale); }
+.btn-small { padding: 8px 16px; font-size: 0.82rem; }
+
+/* ===== Form ===== */
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 6px; color: var(--warm-text); }
+.form-input, .form-select, .form-textarea {
+  width: 100%; padding: 12px 14px; border: 2px solid var(--cream-dark);
+  border-radius: var(--radius-sm); font-size: 0.92rem; font-family: inherit;
+  color: var(--warm-text); background: #fff; outline: none; transition: border-color 0.2s;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--sage-light); }
+.form-textarea { resize: vertical; min-height: 80px; }
+
+/* ===== Country tabs ===== */
+.country-tabs {
+  display: flex; gap: 4px; margin-bottom: 16px; flex-wrap: wrap;
+}
+.country-tab {
+  padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 500;
+  background: var(--cream); border: 2px solid var(--cream-dark); color: var(--warm-text-light);
+  cursor: pointer; transition: all 0.2s;
+}
+.country-tab.active { background: var(--sage-pale); border-color: var(--sage); color: var(--sage-dark); }
+
+/* ===== Rights info ===== */
+.rights-block { margin-bottom: 16px; }
+.rights-term {
+  font-weight: 600; font-size: 0.88rem; color: var(--sage-dark);
+  padding: 8px 0 4px; border-bottom: 1px solid var(--cream-dark); margin-bottom: 6px;
+}
+.rights-desc { font-size: 0.85rem; line-height: 1.6; color: var(--warm-text); margin-bottom: 12px; }
+
+/* ===== Goal bank ===== */
+.goal-domain-tabs { display: flex; gap: 6px; margin-bottom: 12px; flex-wrap: wrap; }
+.domain-tab {
+  padding: 6px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 500;
+  background: var(--cream); border: 2px solid var(--cream-dark); color: var(--warm-text-light);
+  cursor: pointer; transition: all 0.2s;
+}
+.domain-tab.active { background: var(--blue-pale); border-color: var(--blue); color: var(--blue); }
+
+.goal-item {
+  padding: 12px 14px; background: var(--cream); border-radius: var(--radius-sm);
+  margin-bottom: 8px; font-size: 0.85rem; line-height: 1.55;
+}
+.goal-baseline { font-size: 0.78rem; color: var(--warm-text-light); margin-top: 4px; }
+
+/* ===== Checklist ===== */
+.checklist-item {
+  display: flex; align-items: flex-start; gap: 10px; padding: 10px 0;
+  border-bottom: 1px solid var(--cream-dark); font-size: 0.88rem;
+}
+.checklist-item:last-child { border-bottom: none; }
+.checklist-item input[type="checkbox"] {
+  width: 20px; height: 20px; margin-top: 2px; accent-color: var(--sage); flex-shrink: 0;
+}
+.checklist-section { font-weight: 600; color: var(--sage-dark); padding: 12px 0 6px; font-size: 0.88rem; }
+
+/* ===== Templates ===== */
+.template-selector { display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap; }
+.template-btn {
+  padding: 8px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 500;
+  background: var(--cream); border: 2px solid var(--cream-dark); color: var(--warm-text-light);
+  cursor: pointer; transition: all 0.2s;
+}
+.template-btn.active { background: var(--coral-pale); border-color: var(--coral); color: var(--coral); }
+
+.template-content {
+  background: var(--cream); border-radius: var(--radius-sm); padding: 16px;
+  font-size: 0.85rem; line-height: 1.7; white-space: pre-wrap; margin-bottom: 16px;
+}
+.template-field {
+  background: var(--yellow-bg); padding: 2px 8px; border-radius: 4px; border-bottom: 2px dashed var(--yellow);
+  cursor: text;
+}
+
+/* ===== Teacher card ===== */
+.teacher-card {
+  background: #fff; border: 2px solid var(--sage); border-radius: var(--radius);
+  padding: 20px; max-width: 480px; margin: 0 auto;
+}
+.tc-header { text-align: center; margin-bottom: 16px; }
+.tc-header h3 { color: var(--sage-dark); font-size: 1rem; }
+.tc-row { display: flex; gap: 12px; margin-bottom: 12px; }
+.tc-row .form-group { flex: 1; margin-bottom: 0; }
+.tc-label { font-size: 0.78rem; font-weight: 600; color: var(--sage); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+
+/* ===== Search ===== */
+.search-bar { margin-bottom: 16px; }
+
+.section-title { font-size: 1.05rem; font-weight: 600; color: var(--sage-dark); margin-bottom: 8px; }
+.section-sub { font-size: 0.82rem; color: var(--warm-text-light); margin-bottom: 16px; }
+.empty-state { text-align: center; padding: 40px 20px; color: var(--warm-text-light); font-size: 0.92rem; }
+.empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4; }
+
+@media print {
+  .topbar, .tabs, .btn, .search-bar, .country-tabs, .goal-domain-tabs, .template-selector { display: none !important; }
+  .panel { box-shadow: none; border: 1px solid #ddd; }
+  .teacher-card { border: 2px solid #333; page-break-inside: avoid; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="../index.html" class="topbar-back">&#8592; <span data-i18n="back">返回</span></a>
+    <span class="topbar-title" data-i18n="title">学校工具包</span>
+  </div>
+  <button class="lang-toggle" onclick="toggleLang()">EN / 中</button>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('rights')" data-i18n="tab_rights">各国权利</button>
+  <button class="tab" onclick="showTab('goals')" data-i18n="tab_goals">IEP目标库</button>
+  <button class="tab" onclick="showTab('meeting')" data-i18n="tab_meeting">会议准备</button>
+  <button class="tab" onclick="showTab('letters')" data-i18n="tab_letters">信函模板</button>
+  <button class="tab" onclick="showTab('teacher')" data-i18n="tab_teacher">教师卡</button>
+</div>
+
+<!-- ==================== RIGHTS PANEL ==================== -->
+<div class="panel" id="panel-rights">
+  <div class="section-title" data-i18n="rights_title">各国特殊教育权利</div>
+  <p class="section-sub" data-i18n="rights_sub">了解您所在国家的特殊教育法规与权利</p>
+  <div class="country-tabs" id="country-tabs"></div>
+  <div id="rights-content"></div>
+</div>
+
+<!-- ==================== IEP GOALS PANEL ==================== -->
+<div class="panel hidden" id="panel-goals">
+  <div class="section-title" data-i18n="goals_title">IEP目标库</div>
+  <p class="section-sub" data-i18n="goals_sub">可量化的IEP目标，包含基线与目标格式</p>
+  <div class="search-bar">
+    <input class="form-input" id="goal-search" placeholder="" oninput="renderGoals()">
+  </div>
+  <div class="goal-domain-tabs" id="domain-tabs"></div>
+  <div id="goals-list"></div>
+</div>
+
+<!-- ==================== MEETING PREP PANEL ==================== -->
+<div class="panel hidden" id="panel-meeting">
+  <div class="section-title" data-i18n="meeting_title">会议准备清单</div>
+  <p class="section-sub" data-i18n="meeting_sub">IEP会议前、中、后的完整检查清单</p>
+  <div id="meeting-checklist"></div>
+</div>
+
+<!-- ==================== LETTERS PANEL ==================== -->
+<div class="panel hidden" id="panel-letters">
+  <div class="section-title" data-i18n="letters_title">信函模板</div>
+  <p class="section-sub" data-i18n="letters_sub">可填写、可打印的标准信函</p>
+  <div class="template-selector" id="template-tabs"></div>
+  <div id="letter-content"></div>
+  <button class="btn btn-primary" onclick="window.print()" data-i18n="print">打印</button>
+</div>
+
+<!-- ==================== TEACHER CARD PANEL ==================== -->
+<div class="panel hidden" id="panel-teacher">
+  <div class="section-title" data-i18n="tc_title">教师沟通卡</div>
+  <p class="section-sub" data-i18n="tc_sub">一页式可填写、可打印的教师沟通卡</p>
+  <div class="teacher-card" id="teacher-card-form">
+    <div class="tc-header"><h3 data-i18n="tc_heading">我的孩子 — 教师须知</h3></div>
+    <div class="tc-row">
+      <div class="form-group"><div class="tc-label" data-i18n="tc_name">姓名</div><input class="form-input" id="tc-name" oninput="saveTeacherCard()"></div>
+      <div class="form-group"><div class="tc-label" data-i18n="tc_diagnosis">诊断</div><input class="form-input" id="tc-diagnosis" oninput="saveTeacherCard()"></div>
+    </div>
+    <div class="form-group"><div class="tc-label" data-i18n="tc_needs">关键需求</div><textarea class="form-textarea" id="tc-needs" rows="2" oninput="saveTeacherCard()"></textarea></div>
+    <div class="form-group"><div class="tc-label" data-i18n="tc_comm_style">沟通方式</div><textarea class="form-textarea" id="tc-comm" rows="2" oninput="saveTeacherCard()"></textarea></div>
+    <div class="form-group"><div class="tc-label" data-i18n="tc_sensory">感觉需求</div><textarea class="form-textarea" id="tc-sensory" rows="2" oninput="saveTeacherCard()"></textarea></div>
+    <div class="form-group"><div class="tc-label" data-i18n="tc_triggers">触发因素</div><textarea class="form-textarea" id="tc-triggers" rows="2" oninput="saveTeacherCard()"></textarea></div>
+    <div class="form-group"><div class="tc-label" data-i18n="tc_calming">安抚策略</div><textarea class="form-textarea" id="tc-calming" rows="2" oninput="saveTeacherCard()"></textarea></div>
+    <div class="tc-row">
+      <div class="form-group"><div class="tc-label" data-i18n="tc_emergency1">紧急联系人1</div><input class="form-input" id="tc-em1" oninput="saveTeacherCard()"></div>
+      <div class="form-group"><div class="tc-label" data-i18n="tc_emergency2">紧急联系人2</div><input class="form-input" id="tc-em2" oninput="saveTeacherCard()"></div>
+    </div>
+  </div>
+  <div style="height:16px;"></div>
+  <button class="btn btn-primary" onclick="window.print()" data-i18n="print_card">打印教师卡</button>
+</div>
+
+<div style="height:40px;"></div>
+
+<script>
+// ===================================================================
+//  I18N
+// ===================================================================
+let lang = 'zh';
+const I18N = {
+  zh: {
+    back: '返回', title: '学校工具包',
+    tab_rights: '各国权利', tab_goals: 'IEP目标库', tab_meeting: '会议准备', tab_letters: '信函模板', tab_teacher: '教师卡',
+    rights_title: '各国特殊教育权利', rights_sub: '了解您所在国家的特殊教育法规与权利',
+    goals_title: 'IEP目标库', goals_sub: '可量化的IEP目标，包含基线与目标格式',
+    meeting_title: '会议准备清单', meeting_sub: 'IEP会议前、中、后的完整检查清单',
+    letters_title: '信函模板', letters_sub: '可填写、可打印的标准信函',
+    tc_title: '教师沟通卡', tc_sub: '一页式可填写、可打印的教师沟通卡',
+    save: '保存', cancel: '取消', print: '打印', print_card: '打印教师卡',
+    search_goals: '搜索目标...',
+    tc_heading: '我的孩子 — 教师须知',
+    tc_name: '姓名', tc_diagnosis: '诊断', tc_needs: '关键需求', tc_comm_style: '沟通方式',
+    tc_sensory: '感觉需求', tc_triggers: '触发因素', tc_calming: '安抚策略',
+    tc_emergency1: '紧急联系人1', tc_emergency2: '紧急联系人2',
+    dom_social: '社交', dom_comm: '沟通', dom_behavior: '行为', dom_academic: '学业', dom_daily: '日常生活',
+    tpl_eval: '请求评估', tpl_iep: '请求IEP会议', tpl_disagree: '不同意通知', tpl_accomm: '请求调整', tpl_followup: '后续跟进',
+    pre_meeting: '会议前', during_meeting: '会议中', post_meeting: '会议后',
+    baseline: '基线', target: '目标',
+    ref_note: '参考: IDEA 2004; Wrightslaw'
+  },
+  en: {
+    back: 'Back', title: 'School & IEP Toolkit',
+    tab_rights: 'Rights', tab_goals: 'IEP Goals', tab_meeting: 'Meeting Prep', tab_letters: 'Letters', tab_teacher: 'Teacher Card',
+    rights_title: 'Special Education Rights by Country', rights_sub: 'Know your rights in your country',
+    goals_title: 'IEP Goal Bank', goals_sub: 'Measurable goals with baseline/target format',
+    meeting_title: 'Meeting Prep Checklist', meeting_sub: 'Complete checklist for before, during, and after IEP meetings',
+    letters_title: 'Template Letters', letters_sub: 'Fillable, printable standard letters',
+    tc_title: 'Teacher Communication Card', tc_sub: 'One-page fillable, printable teacher communication card',
+    save: 'Save', cancel: 'Cancel', print: 'Print', print_card: 'Print Teacher Card',
+    search_goals: 'Search goals...',
+    tc_heading: 'About My Child — For Teachers',
+    tc_name: 'Name', tc_diagnosis: 'Diagnosis', tc_needs: 'Key Needs', tc_comm_style: 'Communication Style',
+    tc_sensory: 'Sensory Needs', tc_triggers: 'Triggers', tc_calming: 'Calming Strategies',
+    tc_emergency1: 'Emergency Contact 1', tc_emergency2: 'Emergency Contact 2',
+    dom_social: 'Social', dom_comm: 'Communication', dom_behavior: 'Behavior', dom_academic: 'Academic', dom_daily: 'Daily Living',
+    tpl_eval: 'Request Evaluation', tpl_iep: 'Request IEP Meeting', tpl_disagree: 'Disagreement Notice', tpl_accomm: 'Request Accommodations', tpl_followup: 'Follow-Up',
+    pre_meeting: 'Before Meeting', during_meeting: 'During Meeting', post_meeting: 'After Meeting',
+    baseline: 'Baseline', target: 'Target',
+    ref_note: 'References: IDEA 2004; Wrightslaw'
+  }
+};
+
+function t(key) { return I18N[lang][key] || key; }
+function applyLang() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (I18N[lang][k]) el.textContent = I18N[lang][k];
+  });
+  const gs = document.getElementById('goal-search');
+  if (gs) gs.placeholder = t('search_goals');
+}
+function toggleLang() { lang = lang === 'zh' ? 'en' : 'zh'; applyLang(); renderAll(); }
+
+// ===================================================================
+//  DATA
+// ===================================================================
+const STORAGE_KEY = 'withyou_school';
+let data = { checklist: {}, teacherCard: {} };
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+function load() { const s = localStorage.getItem(STORAGE_KEY); if (s) { try { data = JSON.parse(s); } catch(e) {} } }
+
+// ===================================================================
+//  TABS
+// ===================================================================
+const TABS = ['rights','goals','meeting','letters','teacher'];
+let activeTab = 'rights';
+function showTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab').forEach((el, i) => el.classList.toggle('active', TABS[i] === tab));
+  TABS.forEach(p => document.getElementById('panel-' + p).classList.toggle('hidden', p !== tab));
+  renderAll();
+}
+
+// ===================================================================
+//  RIGHTS BY COUNTRY
+// ===================================================================
+const COUNTRIES = ['US','NL','UK','DE','FR','CN'];
+let activeCountry = 'US';
+
+const RIGHTS = {
+  US: {
+    zh: [
+      { term: 'IDEA (残障人士教育法)', desc: '联邦法律，保障3-21岁残障儿童获得免费适当的公共教育(FAPE)。学校必须为符合条件的学生制定个别化教育计划(IEP)。' },
+      { term: 'IEP (个别化教育计划)', desc: '为每个符合条件的残障学生量身定制的书面教育计划。包括当前表现水平、年度目标、所需服务和支持。家长是IEP团队的平等成员。' },
+      { term: '504计划', desc: '为不符合IDEA但需要调整的学生提供的计划。基于1973年康复法案第504条。可包括延长考试时间、优先座位等调整。' },
+      { term: 'FAPE (免费适当公共教育)', desc: '所有残障儿童有权获得免费的、适合其需求的公共教育，无论残障的性质或程度如何。' },
+      { term: 'LRE (最少限制环境)', desc: '残障学生应尽可能与非残障同龄人一起接受教育。只有在使用辅助和服务后仍无法在普通课堂取得令人满意的教育效果时，才可以将学生安置在更具限制性的环境中。' }
+    ],
+    en: [
+      { term: 'IDEA (Individuals with Disabilities Education Act)', desc: 'Federal law ensuring free appropriate public education (FAPE) for children with disabilities ages 3-21. Schools must develop an IEP for eligible students.' },
+      { term: 'IEP (Individualized Education Program)', desc: 'A written plan tailored for each eligible student with a disability. Includes present levels, annual goals, services, and supports. Parents are equal members of the IEP team.' },
+      { term: '504 Plan', desc: 'For students who need accommodations but do not qualify under IDEA. Based on Section 504 of the Rehabilitation Act of 1973. Can include extended time, preferential seating, etc.' },
+      { term: 'FAPE (Free Appropriate Public Education)', desc: 'All children with disabilities are entitled to a free public education appropriate to their needs, regardless of the nature or severity of disability.' },
+      { term: 'LRE (Least Restrictive Environment)', desc: 'Students with disabilities should be educated with non-disabled peers to the maximum extent appropriate. Removal from regular classes only when education cannot be achieved satisfactorily with supplementary aids and services.' }
+    ]
+  },
+  NL: {
+    zh: [
+      { term: 'Passend Onderwijs (适切教育)', desc: '2014年荷兰法律，要求学校为每个学生提供适合其需求的教育。学校有"照顾义务"(zorgplicht)为有特殊需求的学生寻找合适的教育场所。' },
+      { term: 'SBO (特殊基础教育)', desc: '为需要额外支持但不需要特殊学校的学生提供的小班教学。班级更小，更多个别关注。' },
+      { term: 'SO (特殊教育)', desc: '为有严重身体、智力或行为障碍的学生提供的专门学校。分为四个类别(cluster 1-4)。' },
+      { term: 'Samenwerkingsverband', desc: '区域学校合作组织，管理特殊教育预算和资源分配。负责批准额外支持和安置决定。' },
+      { term: 'OPP (发展前景计划)', desc: '类似IEP的个性化发展计划，描述学生的目标和所需支持。由学校与家长共同制定。' }
+    ],
+    en: [
+      { term: 'Passend Onderwijs (Inclusive Education)', desc: '2014 Dutch law requiring schools to provide education appropriate to each student. Schools have a "duty of care" (zorgplicht) to find suitable education for students with special needs.' },
+      { term: 'SBO (Special Primary Education)', desc: 'Smaller classes for students who need extra support but not a special school. More individual attention and adapted teaching.' },
+      { term: 'SO (Special Education)', desc: 'Specialized schools for students with serious physical, intellectual, or behavioral disabilities. Divided into four clusters (1-4).' },
+      { term: 'Samenwerkingsverband', desc: 'Regional school cooperation organizations managing special education budgets and resources. Responsible for approving additional support and placement decisions.' },
+      { term: 'OPP (Development Perspective Plan)', desc: 'Individualized development plan similar to an IEP. Describes goals and required support. Created jointly by school and parents.' }
+    ]
+  },
+  UK: {
+    zh: [
+      { term: 'EHCP (教育健康与照护计划)', desc: '为有复杂特殊教育需求的0-25岁年轻人提供的法律文件。详细描述教育、健康和社会照护需求及所需支持。' },
+      { term: 'SENCO (特殊教育需求协调员)', desc: '每所学校必须有一名SENCO，负责协调对有SEN学生的支持。是家长的主要联系人。' },
+      { term: 'SEN Support (特殊教育需求支持)', desc: '学校级别的支持，不需要EHCP。使用"评估-计划-执行-审查"循环来识别和满足需求。' },
+      { term: 'SEND法规2015', desc: '规定了地方当局和学校对有特殊教育需求和残障儿童的职责。家长有权对EHCP决定提出上诉。' },
+      { term: 'Local Offer (地方服务)', desc: '每个地方当局必须公布其为有SEND的儿童和年轻人提供的所有服务信息。' }
+    ],
+    en: [
+      { term: 'EHCP (Education, Health and Care Plan)', desc: 'Legal document for young people 0-25 with complex special educational needs. Details education, health, and social care needs and required provision.' },
+      { term: 'SENCO (Special Educational Needs Coordinator)', desc: 'Every school must have a SENCO who coordinates support for pupils with SEN. Primary contact for parents.' },
+      { term: 'SEN Support', desc: 'School-level support without needing an EHCP. Uses the Assess-Plan-Do-Review cycle to identify and meet needs.' },
+      { term: 'SEND Code of Practice 2015', desc: 'Sets out duties of local authorities and schools toward children with special educational needs and disabilities. Parents can appeal EHCP decisions.' },
+      { term: 'Local Offer', desc: 'Every local authority must publish information about all services available for children and young people with SEND.' }
+    ]
+  },
+  DE: {
+    zh: [
+      { term: 'Forderschule (特殊学校)', desc: '为有特殊教育需求的学生提供的专门学校。德国有多种类型：学习障碍、智力障碍、情绪行为障碍、身体障碍等。' },
+      { term: 'Inklusion (融合教育)', desc: '2009年联合国残障人士公约批准后，德国推动融合教育。各联邦州实施进度不同。目标是让更多残障学生在普通学校就读。' },
+      { term: 'Schulbegleiter (学校陪伴员)', desc: '为有特殊需求的学生提供个人协助的专业人员。帮助学生参与课堂活动、组织学习材料、管理行为等。由社会福利局资助。' },
+      { term: 'Feststellungsverfahren', desc: '确定特殊教育需求的正式评估程序。由学校或家长发起，包括教育心理学评估。结果决定支持类型和安置。' },
+      { term: 'Nachteilsausgleich (不利补偿)', desc: '为残障学生提供的考试和学习调整。如延长时间、口头考试、技术辅助等。不改变学习内容要求。' }
+    ],
+    en: [
+      { term: 'Forderschule (Special School)', desc: 'Specialized schools for students with special educational needs. Germany has multiple types: learning disabilities, intellectual disabilities, emotional-behavioral, physical, etc.' },
+      { term: 'Inklusion (Inclusive Education)', desc: 'Following the 2009 ratification of the UN CRPD, Germany promotes inclusive education. Implementation varies by federal state. Goal: more disabled students in mainstream schools.' },
+      { term: 'Schulbegleiter (School Companion)', desc: 'Professional providing personal assistance to students with special needs. Helps with classroom participation, organizing materials, behavior management. Funded by social welfare office.' },
+      { term: 'Feststellungsverfahren', desc: 'Formal assessment procedure to determine special educational needs. Initiated by school or parents, includes educational psychology evaluation. Results determine support type and placement.' },
+      { term: 'Nachteilsausgleich (Disadvantage Compensation)', desc: 'Exam and learning accommodations for students with disabilities. Extended time, oral exams, assistive technology, etc. Does not change content requirements.' }
+    ]
+  },
+  FR: {
+    zh: [
+      { term: 'MDPH (残障人士之家)', desc: '每个省的残障人士服务中心。负责评估残障程度、制定补偿计划、分配资源。是所有残障相关服务的入口。' },
+      { term: 'AESH (残障学生陪伴员)', desc: '在学校为残障学生提供个人协助。帮助课堂参与、日常活动、社交互动。由教育部资助。' },
+      { term: 'PPS (个性化入学计划)', desc: '为残障学生制定的教育计划，描述所需的调整、支持和服务。由学校团队与家长共同制定。' },
+      { term: 'ULIS (融合与适应班)', desc: '普通学校内的小班，为有特殊需求的学生提供额外支持。学生部分时间在普通班级，部分时间在ULIS。最多12人。' },
+      { term: 'GEVASCO (学校情况评估指南)', desc: '标准化评估工具，用于评估残障学生在学校的需求。每次评估或重新评估时使用。结果用于制定PPS。' }
+    ],
+    en: [
+      { term: 'MDPH (Maison Departementale des Personnes Handicapees)', desc: 'Departmental disability service center. Evaluates disability level, creates compensation plans, allocates resources. Gateway to all disability-related services.' },
+      { term: 'AESH (Accompagnant des Eleves en Situation de Handicap)', desc: 'Personal assistance for disabled students in school. Helps with classroom participation, daily activities, social interactions. Funded by the Ministry of Education.' },
+      { term: 'PPS (Projet Personnalise de Scolarisation)', desc: 'Education plan for disabled students describing needed adjustments, support, and services. Created jointly by school team and parents.' },
+      { term: 'ULIS (Localized Units for Inclusive Education)', desc: 'Small classes within mainstream schools providing extra support. Students split time between regular classes and ULIS. Maximum 12 students.' },
+      { term: 'GEVASCO (School Situation Assessment Guide)', desc: 'Standardized assessment tool for evaluating disabled students\' needs in school. Used for each evaluation or reassessment. Results inform the PPS.' }
+    ]
+  },
+  CN: {
+    zh: [
+      { term: '随班就读', desc: '让残障儿童在普通学校的普通班级中接受教育。是中国融合教育的主要形式。学校应提供必要的支持和调整。' },
+      { term: '特殊教育学校', desc: '为有严重残障的儿童提供专门教育。包括盲校、聋校、培智学校等。提供针对性的课程和康复训练。' },
+      { term: '残疾人教育条例', desc: '国务院2017年修订的法规，保障残障人受教育权利。规定了各级政府、学校和家庭的责任。' },
+      { term: '个别化教育计划(IEP)', desc: '特殊教育学校和随班就读学校为每个残障学生制定的教育计划。包括长短期目标、教学策略、评估方法。' },
+      { term: '资源教室', desc: '在普通学校设立的为随班就读学生提供个别化辅导的专门教室。配备专业教师和教学资源。' },
+      { term: '残疾儿童康复救助制度', desc: '国家为0-6岁残障儿童提供康复手术、辅助器具适配、康复训练等救助服务的制度。' }
+    ],
+    en: [
+      { term: 'Learning in Regular Classrooms (随班就读)', desc: 'Educating children with disabilities in regular classrooms of mainstream schools. The main form of inclusive education in China. Schools should provide necessary support and accommodations.' },
+      { term: 'Special Education Schools', desc: 'Specialized schools for children with severe disabilities. Includes schools for blind, deaf, and intellectually disabled. Provides targeted curriculum and rehabilitation.' },
+      { term: 'Regulations on Education of Persons with Disabilities', desc: 'State Council regulation (revised 2017) protecting the right to education for persons with disabilities. Defines responsibilities of government, schools, and families.' },
+      { term: 'IEP (Individualized Education Plan)', desc: 'Education plan created for each student with disability in special education and inclusive settings. Includes goals, teaching strategies, and assessment methods.' },
+      { term: 'Resource Rooms', desc: 'Dedicated rooms in mainstream schools providing individualized instruction for students in inclusive education. Equipped with specialist teachers and teaching resources.' },
+      { term: 'Rehabilitation Assistance for Children with Disabilities', desc: 'National system providing rehabilitation surgery, assistive devices, and rehabilitation training for children with disabilities aged 0-6.' }
+    ]
+  }
+};
+
+function renderRights() {
+  const tabs = document.getElementById('country-tabs');
+  tabs.innerHTML = COUNTRIES.map(c =>
+    `<span class="country-tab ${activeCountry === c ? 'active' : ''}" onclick="activeCountry='${c}';renderRights()">${c}</span>`
+  ).join('');
+
+  const items = RIGHTS[activeCountry]?.[lang] || RIGHTS[activeCountry]?.en || [];
+  document.getElementById('rights-content').innerHTML = items.map(r =>
+    `<div class="rights-block"><div class="rights-term">${r.term}</div><div class="rights-desc">${r.desc}</div></div>`
+  ).join('');
+}
+
+// ===================================================================
+//  IEP GOAL BANK
+// ===================================================================
+const DOMAINS = ['dom_social','dom_comm','dom_behavior','dom_academic','dom_daily'];
+let activeDomain = 'dom_social';
+
+const GOALS = {
+  dom_social: {
+    zh: [
+      {g:'在小组活动中主动向同伴发起互动',b:'目前0次/天主动发起',tgt:'每天至少2次主动发起'},
+      {g:'维持与同伴的来回对话至少3个回合',b:'目前仅能1个回合',tgt:'连续3个回合'},
+      {g:'在游戏中等待轮次并遵守规则',b:'目前无法等待',tgt:'80%的机会中能等待'},
+      {g:'识别他人面部表情并说出对应情绪',b:'能识别1种表情',tgt:'能识别4种基本表情'},
+      {g:'在适当时候使用问候语(你好/再见)',b:'需要提示才能问候',tgt:'80%的场合独立问候'},
+      {g:'在小组中分享个人物品或轮流使用',b:'拒绝分享',tgt:'50%的机会中主动分享'},
+      {g:'在冲突中使用语言而非身体表达不满',b:'80%用身体',tgt:'80%用语言'},
+      {g:'主动寻求帮助而非独自挣扎或发脾气',b:'通常发脾气',tgt:'70%的时候主动求助'},
+      {g:'在小组讨论中举手并等待被叫到',b:'直接插嘴',tgt:'80%的时候举手等待'},
+      {g:'在非结构化时间(课间)加入同伴活动',b:'独自一人',tgt:'每天至少加入1次'},
+      {g:'对他人的想法或感受表达同理心',b:'未观察到同理表达',tgt:'每周至少2次'},
+      {g:'在合作任务中与同伴协商和妥协',b:'坚持自己的方式',tgt:'50%的时候能妥协'},
+      {g:'维持适当的个人空间距离',b:'经常站太近',tgt:'80%的互动中保持适当距离'},
+      {g:'识别和使用讽刺/幽默的社交语境',b:'无法理解幽默',tgt:'能理解基本幽默'},
+      {g:'在新环境中主动自我介绍',b:'需要完全提示',tgt:'仅需最少提示'}
+    ],
+    en: [
+      {g:'Initiate interactions with peers during group activities',b:'Currently 0 initiations/day',tgt:'At least 2 initiations/day'},
+      {g:'Maintain a back-and-forth conversation with peers for at least 3 turns',b:'Currently 1 turn only',tgt:'3 consecutive turns'},
+      {g:'Wait for turns and follow rules during games',b:'Currently unable to wait',tgt:'Wait in 80% of opportunities'},
+      {g:'Identify facial expressions and name the corresponding emotions',b:'Can identify 1 expression',tgt:'Identify 4 basic expressions'},
+      {g:'Use greetings (hello/goodbye) at appropriate times',b:'Needs prompts to greet',tgt:'Independent greetings 80% of the time'},
+      {g:'Share personal items or take turns in a group',b:'Refuses to share',tgt:'Voluntarily shares 50% of the time'},
+      {g:'Use words instead of physical actions to express frustration',b:'80% physical',tgt:'80% verbal'},
+      {g:'Seek help proactively instead of struggling alone or having a meltdown',b:'Usually melts down',tgt:'Seeks help 70% of the time'},
+      {g:'Raise hand and wait to be called during group discussion',b:'Interrupts directly',tgt:'Raises hand 80% of the time'},
+      {g:'Join peer activities during unstructured time (recess)',b:'Plays alone',tgt:'Joins at least 1x/day'},
+      {g:'Express empathy toward others\' thoughts or feelings',b:'No empathetic responses observed',tgt:'At least 2x/week'},
+      {g:'Negotiate and compromise with peers during cooperative tasks',b:'Insists on own way',tgt:'Compromises 50% of the time'},
+      {g:'Maintain appropriate personal space',b:'Frequently stands too close',tgt:'Appropriate distance 80% of interactions'},
+      {g:'Understand sarcasm/humor in social contexts',b:'Cannot understand humor',tgt:'Understands basic humor'},
+      {g:'Introduce self in new environments',b:'Requires full prompting',tgt:'Minimal prompting only'}
+    ]
+  },
+  dom_comm: {
+    zh: [
+      {g:'使用2-3个词的短语表达需求',b:'仅用单个词',tgt:'一致使用2-3词短语'},
+      {g:'回答"什么""哪里"问题',b:'无法回答wh-问题',tgt:'正确回答80%'},
+      {g:'使用AAC设备构建3个词的句子',b:'使用单个符号',tgt:'一致使用3词组合'},
+      {g:'在对话中维持话题至少3个交流回合',b:'1个回合后离题',tgt:'3个回合'},
+      {g:'使用适当的音量和语调说话',b:'经常太大声/太小声',tgt:'80%的时候音量适当'},
+      {g:'叙述简单的个人经历(3个步骤)',b:'无法叙述',tgt:'独立叙述3步骤事件'},
+      {g:'理解并执行两步指令',b:'仅执行一步',tgt:'80%正确执行两步'},
+      {g:'在需要时请求澄清或重复',b:'不请求澄清',tgt:'70%的时候请求'},
+      {g:'使用连接词(然后、因为、但是)连接句子',b:'仅用简单句',tgt:'每天至少使用3次'},
+      {g:'描述物品的功能(用来做什么)',b:'无法描述功能',tgt:'正确描述10个物品'},
+      {g:'在对话中使用代词(我/你/他)',b:'仅用名字',tgt:'80%正确使用'},
+      {g:'理解和使用时间概念(先/后/昨天/明天)',b:'无时间概念',tgt:'理解4个基本时间词'},
+      {g:'通过描述特征来帮助听者理解不认识的词',b:'无法描述',tgt:'能描述3个特征'},
+      {g:'在故事复述中包含主要人物和事件',b:'仅说碎片',tgt:'包含人物+2个事件'},
+      {g:'使用PECS或手语进行至少10种不同的请求',b:'3种请求',tgt:'10种独立请求'}
+    ],
+    en: [
+      {g:'Use 2-3 word phrases to express needs',b:'Uses single words only',tgt:'Consistently uses 2-3 word phrases'},
+      {g:'Answer "what" and "where" questions',b:'Cannot answer wh-questions',tgt:'Correctly answers 80%'},
+      {g:'Use AAC device to construct 3-word sentences',b:'Uses single symbols',tgt:'Consistently uses 3-word combinations'},
+      {g:'Maintain topic in conversation for at least 3 exchanges',b:'Goes off-topic after 1 turn',tgt:'3 exchanges on topic'},
+      {g:'Speak with appropriate volume and intonation',b:'Often too loud/quiet',tgt:'Appropriate volume 80% of the time'},
+      {g:'Narrate simple personal experiences (3 steps)',b:'Cannot narrate',tgt:'Independently narrates 3-step events'},
+      {g:'Understand and follow 2-step directions',b:'Follows 1-step only',tgt:'80% correct on 2-step'},
+      {g:'Request clarification or repetition when needed',b:'Does not request clarification',tgt:'Requests 70% of the time'},
+      {g:'Use conjunctions (then, because, but) to connect sentences',b:'Simple sentences only',tgt:'Uses at least 3x/day'},
+      {g:'Describe the function of objects (what is it used for)',b:'Cannot describe functions',tgt:'Correctly describes 10 objects'},
+      {g:'Use pronouns (I/you/he/she) in conversation',b:'Uses names only',tgt:'80% correct pronoun use'},
+      {g:'Understand and use time concepts (before/after/yesterday/tomorrow)',b:'No time concepts',tgt:'Understands 4 basic time words'},
+      {g:'Describe features to help listener understand unknown words',b:'Cannot describe',tgt:'Can describe 3 features'},
+      {g:'Include main characters and events in story retelling',b:'Fragments only',tgt:'Includes character + 2 events'},
+      {g:'Use PECS or sign language for at least 10 different requests',b:'3 requests',tgt:'10 independent requests'}
+    ]
+  },
+  dom_behavior: {
+    zh: [
+      {g:'在座位上保持安坐至少10分钟',b:'2分钟后离座',tgt:'10分钟安坐'},
+      {g:'在过渡活动时减少问题行为',b:'每次过渡都有问题行为',tgt:'80%的过渡无问题'},
+      {g:'使用视觉时间表独立完成日常流程',b:'需要全程提示',tgt:'仅需开始提示'},
+      {g:'在挫折时使用替代策略(深呼吸、请求帮助)',b:'每次挫折都发脾气',tgt:'70%使用替代策略'},
+      {g:'接受计划变更而不出现严重情绪反应',b:'每次变更都崩溃',tgt:'80%的变更可以接受'},
+      {g:'在焦虑时识别并使用自我调节策略',b:'无法自我调节',tgt:'独立使用2种策略'},
+      {g:'在课堂上保持注意力(跟随教学)',b:'注意力仅维持1分钟',tgt:'维持5分钟'},
+      {g:'独立完成多步骤任务而不需要反复提示',b:'每步都需提示',tgt:'仅需初始提示'},
+      {g:'在不喜欢的活动中坚持至完成',b:'拒绝参与',tgt:'70%的时候完成任务'},
+      {g:'使用1-5级情绪量表识别和表达情绪强度',b:'无法量化情绪',tgt:'正确使用量表80%'},
+      {g:'在群体环境中控制冲动行为(不打断、不抢夺)',b:'频繁冲动',tgt:'80%的时候可控制'},
+      {g:'在感觉过载时主动去安静角落',b:'感觉过载时崩溃',tgt:'70%的时候主动寻求安静'},
+      {g:'遵守课堂规则(举手、安静、坐好)',b:'遵守30%',tgt:'遵守80%'},
+      {g:'在活动之间顺利过渡(2分钟内)',b:'过渡需要10分钟+',tgt:'2分钟内完成过渡'},
+      {g:'使用社会故事中学到的策略应对新情境',b:'无法泛化',tgt:'在3个新情境中使用'}
+    ],
+    en: [
+      {g:'Remain seated for at least 10 minutes',b:'Leaves seat after 2 min',tgt:'10 min seated'},
+      {g:'Reduce problem behaviors during transitions',b:'Problem behavior every transition',tgt:'80% transitions without incident'},
+      {g:'Use visual schedule to complete daily routines independently',b:'Requires full prompting',tgt:'Needs initial prompt only'},
+      {g:'Use coping strategies (deep breathing, asking for help) when frustrated',b:'Meltdown every time',tgt:'Uses strategies 70% of the time'},
+      {g:'Accept schedule changes without significant emotional reaction',b:'Meltdown every change',tgt:'Accepts 80% of changes'},
+      {g:'Identify and use self-regulation strategies when anxious',b:'Cannot self-regulate',tgt:'Independently uses 2 strategies'},
+      {g:'Maintain attention during instruction',b:'Attention lasts 1 min',tgt:'Maintains 5 min'},
+      {g:'Complete multi-step tasks without repeated prompts',b:'Needs prompt each step',tgt:'Needs initial prompt only'},
+      {g:'Persist through non-preferred activities to completion',b:'Refuses to participate',tgt:'Completes 70% of the time'},
+      {g:'Use 1-5 emotion scale to identify and express intensity',b:'Cannot quantify emotions',tgt:'Correct scale use 80%'},
+      {g:'Control impulsive behaviors in group settings',b:'Frequent impulses',tgt:'Controls 80% of the time'},
+      {g:'Proactively go to quiet corner when sensory overloaded',b:'Melts down when overloaded',tgt:'Self-removes 70% of the time'},
+      {g:'Follow classroom rules (raise hand, quiet, sit properly)',b:'Follows 30%',tgt:'Follows 80%'},
+      {g:'Transition between activities smoothly (within 2 min)',b:'Transitions take 10+ min',tgt:'Within 2 min'},
+      {g:'Apply social story strategies to new situations',b:'Cannot generalize',tgt:'Uses in 3 new situations'}
+    ]
+  },
+  dom_academic: {
+    zh: [
+      {g:'独立写出自己的名字',b:'需要手把手辅助',tgt:'独立书写'},
+      {g:'识别并命名26个字母/50个常用汉字',b:'识别10个',tgt:'识别目标数量'},
+      {g:'从1数到20',b:'数到5',tgt:'数到20'},
+      {g:'理解加法概念(10以内)',b:'无加法概念',tgt:'正确完成80%的10以内加法'},
+      {g:'独立阅读简单句子(5个词)',b:'识别个别词',tgt:'流利阅读简单句'},
+      {g:'按照书面指令完成简单任务',b:'无法阅读指令',tgt:'独立完成3步书面指令'},
+      {g:'使用图形组织器组织想法',b:'无法组织想法',tgt:'独立使用思维导图'},
+      {g:'在辅助技术支持下完成书面作业',b:'无法完成书面作业',tgt:'使用工具完成80%的作业'},
+      {g:'理解时间概念(整点和半点)',b:'无时间概念',tgt:'正确识别整点和半点'},
+      {g:'使用计算器完成两位数运算',b:'无法使用计算器',tgt:'独立使用完成运算'}
+    ],
+    en: [
+      {g:'Write own name independently',b:'Requires hand-over-hand assistance',tgt:'Independent writing'},
+      {g:'Identify and name 26 letters / 50 common characters',b:'Identifies 10',tgt:'Identifies target number'},
+      {g:'Count from 1 to 20',b:'Counts to 5',tgt:'Counts to 20'},
+      {g:'Understand addition concept (within 10)',b:'No addition concept',tgt:'80% correct within 10'},
+      {g:'Read simple sentences independently (5 words)',b:'Recognizes individual words',tgt:'Reads simple sentences fluently'},
+      {g:'Follow written instructions to complete simple tasks',b:'Cannot read instructions',tgt:'Follows 3-step written instructions independently'},
+      {g:'Use graphic organizers to organize ideas',b:'Cannot organize ideas',tgt:'Uses mind maps independently'},
+      {g:'Complete written assignments with assistive technology',b:'Cannot complete written assignments',tgt:'Completes 80% with tools'},
+      {g:'Understand time concepts (hour and half-hour)',b:'No time concepts',tgt:'Correctly identifies hour and half-hour'},
+      {g:'Use calculator for 2-digit operations',b:'Cannot use calculator',tgt:'Uses independently for operations'}
+    ]
+  },
+  dom_daily: {
+    zh: [
+      {g:'独立穿脱外套和鞋子',b:'需要全程辅助',tgt:'仅需最少提示'},
+      {g:'独立如厕(包括清洁和洗手)',b:'需要辅助',tgt:'完全独立'},
+      {g:'使用餐具独立进食',b:'用手抓食',tgt:'正确使用勺/叉'},
+      {g:'整理个人物品(书包、课桌)',b:'无法整理',tgt:'在视觉提示下独立整理'},
+      {g:'在学校食堂排队并获取午餐',b:'无法参与',tgt:'独立完成'},
+      {g:'识别并回应火警/紧急警报',b:'不理解警报',tgt:'正确回应并疏散'},
+      {g:'在校园内安全移动(走廊、楼梯)',b:'需要1对1陪同',tgt:'在视距监督下独立移动'},
+      {g:'管理个人卫生(洗手、擤鼻涕、梳头)',b:'需要提示和辅助',tgt:'80%独立完成'},
+      {g:'使用钱币完成简单购买',b:'无金钱概念',tgt:'完成5元以内的购买'},
+      {g:'在出发前检查并准备所需物品',b:'总是忘记物品',tgt:'使用清单独立准备'}
+    ],
+    en: [
+      {g:'Independently put on and remove coat and shoes',b:'Requires full assistance',tgt:'Minimal prompting only'},
+      {g:'Independent toileting (including cleaning and handwashing)',b:'Requires assistance',tgt:'Fully independent'},
+      {g:'Eat independently using utensils',b:'Eats with hands',tgt:'Uses spoon/fork correctly'},
+      {g:'Organize personal belongings (backpack, desk)',b:'Cannot organize',tgt:'Organizes with visual cues'},
+      {g:'Queue and get lunch in school cafeteria',b:'Cannot participate',tgt:'Independent'},
+      {g:'Recognize and respond to fire/emergency alarm',b:'Does not understand alarm',tgt:'Responds correctly and evacuates'},
+      {g:'Navigate school campus safely (hallways, stairs)',b:'Needs 1-to-1 escort',tgt:'Independent with visual supervision'},
+      {g:'Manage personal hygiene (handwashing, nose-blowing, hair)',b:'Needs prompting and assistance',tgt:'80% independent'},
+      {g:'Use money for simple purchases',b:'No money concept',tgt:'Completes purchases under $5'},
+      {g:'Check and prepare needed items before leaving',b:'Always forgets items',tgt:'Prepares independently using checklist'}
+    ]
+  }
+};
+
+function renderGoals() {
+  const tabs = document.getElementById('domain-tabs');
+  tabs.innerHTML = DOMAINS.map(d =>
+    `<span class="domain-tab ${activeDomain === d ? 'active' : ''}" onclick="activeDomain='${d}';renderGoals()">${t(d)}</span>`
+  ).join('');
+
+  const search = (document.getElementById('goal-search')?.value || '').toLowerCase();
+  let goals = GOALS[activeDomain]?.[lang] || GOALS[activeDomain]?.en || [];
+  if (search) goals = goals.filter(g => g.g.toLowerCase().includes(search));
+
+  document.getElementById('goals-list').innerHTML = goals.map(g =>
+    `<div class="goal-item">
+      <div>${g.g}</div>
+      <div class="goal-baseline"><strong>${t('baseline')}:</strong> ${g.b} → <strong>${t('target')}:</strong> ${g.tgt}</div>
+    </div>`
+  ).join('') || `<div class="empty-state">${lang === 'zh' ? '没有匹配的目标' : 'No matching goals'}</div>`;
+}
+
+// ===================================================================
+//  MEETING PREP CHECKLIST
+// ===================================================================
+const CHECKLIST = {
+  zh: {
+    pre_meeting: [
+      '收集所有相关文件(评估报告、成绩单、治疗记录)',
+      '回顾当前IEP/504计划目标完成情况',
+      '准备您希望讨论的问题清单',
+      '了解您的权利(可带支持人参加)',
+      '准备孩子在家的表现记录/视频',
+      '联系治疗师获取最新进展报告',
+      '确认会议时间、地点和参会人员',
+      '准备笔记本记录会议内容'
+    ],
+    during_meeting: [
+      '记录所有决定和行动计划',
+      '不懂就问 — 要求用简单语言解释',
+      '坚持可量化的目标(谁、什么、何时、如何衡量)',
+      '讨论孩子的优势，不仅仅是挑战',
+      '确认所有服务的频率和时长',
+      '如果不同意，可以拒绝签字(这是您的权利)',
+      '要求会议记录副本'
+    ],
+    post_meeting: [
+      '收到并审查IEP/会议记录的书面副本',
+      '检查文件是否准确反映了会议中讨论和同意的内容',
+      '如有错误或遗漏，立即书面通知学校',
+      '在日历上标记下次审查日期',
+      '将所有文件归档保存',
+      '与孩子的治疗师分享更新的目标',
+      '在家配合执行相关策略'
+    ]
+  },
+  en: {
+    pre_meeting: [
+      'Gather all relevant documents (evaluations, report cards, therapy records)',
+      'Review current IEP/504 plan goal progress',
+      'Prepare a list of questions you want to discuss',
+      'Know your rights (you can bring a support person)',
+      'Prepare records/videos of your child\'s performance at home',
+      'Contact therapists for latest progress reports',
+      'Confirm meeting time, location, and attendees',
+      'Bring a notebook to record meeting notes'
+    ],
+    during_meeting: [
+      'Document all decisions and action items',
+      'Ask questions — request plain language explanations',
+      'Insist on measurable goals (who, what, when, how measured)',
+      'Discuss child\'s strengths, not just challenges',
+      'Confirm frequency and duration of all services',
+      'If you disagree, you can refuse to sign (this is your right)',
+      'Request a copy of meeting notes'
+    ],
+    post_meeting: [
+      'Receive and review written copy of IEP/meeting notes',
+      'Check that documents accurately reflect what was discussed and agreed',
+      'If errors or omissions, notify school in writing immediately',
+      'Mark next review date on calendar',
+      'File all documents for safekeeping',
+      'Share updated goals with child\'s therapists',
+      'Implement relevant strategies at home'
+    ]
+  }
+};
+
+function renderChecklist() {
+  const sections = ['pre_meeting','during_meeting','post_meeting'];
+  const items = CHECKLIST[lang] || CHECKLIST.en;
+  let html = '';
+  sections.forEach(sec => {
+    html += `<div class="checklist-section">${t(sec)}</div>`;
+    items[sec].forEach((item, i) => {
+      const key = sec + '_' + i;
+      const checked = data.checklist[key] ? 'checked' : '';
+      html += `<div class="checklist-item">
+        <input type="checkbox" ${checked} onchange="toggleCheck('${key}',this.checked)">
+        <span>${item}</span>
+      </div>`;
+    });
+  });
+  document.getElementById('meeting-checklist').innerHTML = html;
+}
+
+function toggleCheck(key, val) {
+  data.checklist[key] = val;
+  save();
+}
+
+// ===================================================================
+//  TEMPLATE LETTERS
+// ===================================================================
+const TPL_KEYS = ['tpl_eval','tpl_iep','tpl_disagree','tpl_accomm','tpl_followup'];
+let activeTpl = 'tpl_eval';
+
+const TEMPLATES = {
+  tpl_eval: {
+    zh: `[日期]
+
+致: [学校名称] [校长/特教主任姓名]
+来自: [家长姓名]
+关于: [孩子姓名]，[年级/班级]
+
+尊敬的[收件人姓名]:
+
+我是[孩子姓名]的[父亲/母亲]，就读于贵校[年级/班级]。
+
+我写信正式请求对我的孩子进行全面的特殊教育评估。我观察到以下方面的困难:
+
+[描述观察到的困难，例如: 学业表现、社交互动、行为、注意力等]
+
+根据[适用法律，如IDEA/残疾人教育条例]，我了解学校有义务在收到书面请求后[天数]天内回复。
+
+请在收到此信后尽快与我联系，讨论评估的时间安排和流程。
+
+感谢您的关注。
+
+此致
+[家长姓名]
+[联系电话]
+[电子邮箱]`,
+    en: `[Date]
+
+To: [School Name] [Principal/Special Ed Director Name]
+From: [Parent Name]
+Re: [Child Name], [Grade/Class]
+
+Dear [Recipient Name],
+
+I am the [mother/father] of [Child Name], who is in [grade/class] at your school.
+
+I am writing to formally request a comprehensive special education evaluation for my child. I have observed difficulties in the following areas:
+
+[Describe observed difficulties, e.g., academic performance, social interaction, behavior, attention, etc.]
+
+Under [applicable law, e.g., IDEA/Section 504], I understand the school is obligated to respond within [number] days of receiving a written request.
+
+Please contact me as soon as possible after receiving this letter to discuss the timeline and process for evaluation.
+
+Thank you for your attention to this matter.
+
+Sincerely,
+[Parent Name]
+[Phone Number]
+[Email Address]`
+  },
+  tpl_iep: {
+    zh: `[日期]
+
+致: [学校名称] [特教主任/IEP协调员]
+来自: [家长姓名]
+关于: 请求召开IEP会议 — [孩子姓名]
+
+尊敬的[收件人姓名]:
+
+我写信请求为我的孩子[孩子姓名]召开IEP团队会议。原因如下:
+
+[选择适用的原因:]
+- 我对当前IEP目标的进展有疑虑
+- 我希望讨论增加/修改服务
+- 孩子的需求发生了变化
+- 需要讨论行为支持计划
+- 其他: [说明]
+
+我可以在以下时间参加会议: [列出可用时间]
+
+请在收到此信后[天数]天内与我联系安排会议。
+
+此致
+[家长姓名]
+[联系方式]`,
+    en: `[Date]
+
+To: [School Name] [Special Ed Director/IEP Coordinator]
+From: [Parent Name]
+Re: Request for IEP Meeting — [Child Name]
+
+Dear [Recipient Name],
+
+I am writing to request an IEP team meeting for my child, [Child Name]. The reasons are as follows:
+
+[Select applicable reasons:]
+- I have concerns about progress on current IEP goals
+- I would like to discuss adding/modifying services
+- My child's needs have changed
+- Need to discuss a behavior support plan
+- Other: [explain]
+
+I am available for a meeting at the following times: [list available times]
+
+Please contact me within [number] days of receiving this letter to schedule the meeting.
+
+Sincerely,
+[Parent Name]
+[Contact Information]`
+  },
+  tpl_disagree: {
+    zh: `[日期]
+
+致: [学校名称] [相关负责人]
+来自: [家长姓名]
+关于: 不同意通知 — [孩子姓名]
+
+尊敬的[收件人姓名]:
+
+我收到了关于[孩子姓名]的[评估结果/IEP建议/安置决定](日期: [决定日期])。
+
+经过仔细审查，我不同意以下内容:
+
+[具体说明不同意的部分和原因]
+
+我希望:
+- [ ] 召开会议进一步讨论
+- [ ] 获得独立教育评估(IEE)
+- [ ] 启动正式争议解决程序
+- [ ] 进行调解
+
+根据[适用法律]，我了解我有权对此决定提出异议。请在[天数]天内回复此信。
+
+我保留所有法律权利。
+
+此致
+[家长姓名]
+[联系方式]`,
+    en: `[Date]
+
+To: [School Name] [Relevant Administrator]
+From: [Parent Name]
+Re: Notice of Disagreement — [Child Name]
+
+Dear [Recipient Name],
+
+I have received the [evaluation results/IEP recommendation/placement decision] regarding [Child Name] (dated: [decision date]).
+
+After careful review, I disagree with the following:
+
+[Specify what you disagree with and why]
+
+I would like to:
+- [ ] Schedule a meeting for further discussion
+- [ ] Obtain an Independent Educational Evaluation (IEE)
+- [ ] Initiate formal dispute resolution
+- [ ] Request mediation
+
+Under [applicable law], I understand I have the right to dispute this decision. Please respond to this letter within [number] days.
+
+I reserve all legal rights.
+
+Sincerely,
+[Parent Name]
+[Contact Information]`
+  },
+  tpl_accomm: {
+    zh: `[日期]
+
+致: [学校名称] [校长/班主任]
+来自: [家长姓名]
+关于: 请求教学调整 — [孩子姓名]
+
+尊敬的[收件人姓名]:
+
+基于[孩子姓名]的[诊断/评估结果]，我请求以下教学调整:
+
+环境调整:
+[例如: 优先座位、减少教室干扰、安静角落]
+
+教学调整:
+[例如: 延长完成时间、减少作业量、视觉辅助]
+
+考试调整:
+[例如: 延长考试时间、单独考场、口头考试]
+
+行为支持:
+[例如: 视觉时间表、休息时间、感觉工具]
+
+附件: [相关诊断/评估报告]
+
+请在[天数]天内与我联系讨论这些调整的实施。
+
+此致
+[家长姓名]
+[联系方式]`,
+    en: `[Date]
+
+To: [School Name] [Principal/Teacher]
+From: [Parent Name]
+Re: Request for Accommodations — [Child Name]
+
+Dear [Recipient Name],
+
+Based on [Child Name]'s [diagnosis/evaluation results], I am requesting the following accommodations:
+
+Environmental Accommodations:
+[e.g., preferential seating, reduced classroom distractions, quiet corner]
+
+Instructional Accommodations:
+[e.g., extended completion time, reduced workload, visual aids]
+
+Testing Accommodations:
+[e.g., extended test time, separate testing room, oral testing]
+
+Behavioral Support:
+[e.g., visual schedule, break time, sensory tools]
+
+Attached: [relevant diagnosis/evaluation reports]
+
+Please contact me within [number] days to discuss implementing these accommodations.
+
+Sincerely,
+[Parent Name]
+[Contact Information]`
+  },
+  tpl_followup: {
+    zh: `[日期]
+
+致: [学校名称] [收件人]
+来自: [家长姓名]
+关于: 会议后续跟进 — [孩子姓名]
+
+尊敬的[收件人姓名]:
+
+感谢您在[会议日期]参加了关于[孩子姓名]的[IEP/504/其他]会议。
+
+根据我的记录，会议中达成了以下共识:
+
+1. [决定/行动1]
+   负责人: [姓名] 截止日期: [日期]
+
+2. [决定/行动2]
+   负责人: [姓名] 截止日期: [日期]
+
+3. [决定/行动3]
+   负责人: [姓名] 截止日期: [日期]
+
+如果以上记录有任何不准确之处，请在[天数]天内通知我。如果我没有收到回复，我将视以上内容为准确记录。
+
+下次审查/会议日期: [日期]
+
+此致
+[家长姓名]
+[联系方式]`,
+    en: `[Date]
+
+To: [School Name] [Recipient]
+From: [Parent Name]
+Re: Meeting Follow-Up — [Child Name]
+
+Dear [Recipient Name],
+
+Thank you for attending the [IEP/504/other] meeting regarding [Child Name] on [meeting date].
+
+Based on my notes, the following was agreed upon during the meeting:
+
+1. [Decision/Action 1]
+   Responsible: [Name] Deadline: [Date]
+
+2. [Decision/Action 2]
+   Responsible: [Name] Deadline: [Date]
+
+3. [Decision/Action 3]
+   Responsible: [Name] Deadline: [Date]
+
+If any of the above is inaccurate, please notify me within [number] days. If I do not hear back, I will consider this an accurate record.
+
+Next review/meeting date: [Date]
+
+Sincerely,
+[Parent Name]
+[Contact Information]`
+  }
+};
+
+function renderLetters() {
+  const tabs = document.getElementById('template-tabs');
+  tabs.innerHTML = TPL_KEYS.map(k =>
+    `<span class="template-btn ${activeTpl === k ? 'active' : ''}" onclick="activeTpl='${k}';renderLetters()">${t(k)}</span>`
+  ).join('');
+
+  const content = TEMPLATES[activeTpl]?.[lang] || TEMPLATES[activeTpl]?.en || '';
+  // Highlight fillable fields
+  const highlighted = content.replace(/\[([^\]]+)\]/g, '<span class="template-field">[$1]</span>');
+  document.getElementById('letter-content').innerHTML = `<div class="template-content">${highlighted}</div>`;
+}
+
+// ===================================================================
+//  TEACHER CARD
+// ===================================================================
+function loadTeacherCard() {
+  const tc = data.teacherCard || {};
+  document.getElementById('tc-name').value = tc.name || '';
+  document.getElementById('tc-diagnosis').value = tc.diagnosis || '';
+  document.getElementById('tc-needs').value = tc.needs || '';
+  document.getElementById('tc-comm').value = tc.comm || '';
+  document.getElementById('tc-sensory').value = tc.sensory || '';
+  document.getElementById('tc-triggers').value = tc.triggers || '';
+  document.getElementById('tc-calming').value = tc.calming || '';
+  document.getElementById('tc-em1').value = tc.em1 || '';
+  document.getElementById('tc-em2').value = tc.em2 || '';
+}
+
+function saveTeacherCard() {
+  data.teacherCard = {
+    name: document.getElementById('tc-name').value,
+    diagnosis: document.getElementById('tc-diagnosis').value,
+    needs: document.getElementById('tc-needs').value,
+    comm: document.getElementById('tc-comm').value,
+    sensory: document.getElementById('tc-sensory').value,
+    triggers: document.getElementById('tc-triggers').value,
+    calming: document.getElementById('tc-calming').value,
+    em1: document.getElementById('tc-em1').value,
+    em2: document.getElementById('tc-em2').value
+  };
+  save();
+}
+
+// ===================================================================
+//  RENDER ALL
+// ===================================================================
+function renderAll() {
+  applyLang();
+  renderRights();
+  renderGoals();
+  renderChecklist();
+  renderLetters();
+  loadTeacherCard();
+}
+
+// ===================================================================
+//  INIT
+// ===================================================================
+load();
+renderAll();
+</script>
+</body>
+</html>

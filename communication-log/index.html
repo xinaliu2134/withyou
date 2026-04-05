@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>沟通记录 — 同路 WithYou</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --sage: #6B8F7B;
+  --sage-light: #8FB09D;
+  --sage-pale: #E8F0EB;
+  --sage-dark: #4A6B56;
+  --cream: #FAF7F0;
+  --cream-dark: #F0EBDF;
+  --blue: #7BA7BC;
+  --blue-light: #A5C7D6;
+  --blue-pale: #E4EFF4;
+  --warm-text: #3D3D3D;
+  --warm-text-light: #6B6B6B;
+  --coral: #D4917B;
+  --coral-pale: #F5E0D8;
+  --yellow: #C9A84C;
+  --yellow-bg: #FDF6E3;
+  --red: #C47A6E;
+  --red-bg: #F8E8E5;
+  --green-bg: #E8F0EB;
+  --shadow: 0 2px 16px rgba(107,143,123,0.10);
+  --shadow-lg: 0 6px 28px rgba(107,143,123,0.14);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+  background: var(--cream);
+  color: var(--warm-text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+
+.hidden { display: none !important; }
+.container { max-width: 680px; margin: 0 auto; padding: 0 20px; }
+
+/* ===== Top Bar ===== */
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 12px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.topbar-back {
+  color: var(--sage);
+  text-decoration: none;
+  font-size: 0.88rem;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+.topbar-title { font-size: 0.95rem; font-weight: 600; color: var(--sage); }
+.lang-toggle {
+  background: var(--sage-pale);
+  border: none;
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 0.78rem;
+  font-weight: 500;
+  color: var(--sage);
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.lang-toggle:hover { background: var(--sage-light); color: #fff; }
+
+/* ===== Tabs ===== */
+.tabs {
+  display: flex;
+  gap: 4px;
+  padding: 16px 20px 0;
+  max-width: 680px;
+  margin: 0 auto;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.tab {
+  padding: 10px 16px;
+  border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  font-size: 0.82rem;
+  font-weight: 500;
+  background: var(--cream-dark);
+  color: var(--warm-text-light);
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: all 0.2s;
+}
+.tab.active { background: #fff; color: var(--sage); font-weight: 600; }
+
+/* ===== Panels ===== */
+.panel {
+  background: #fff;
+  border-radius: 0 0 var(--radius) var(--radius);
+  padding: 24px 20px;
+  margin: 0 auto;
+  max-width: 680px;
+  min-height: 400px;
+  box-shadow: var(--shadow);
+}
+
+/* ===== Cards ===== */
+.card {
+  background: #fff;
+  border: 1px solid var(--cream-dark);
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin-bottom: 12px;
+}
+.card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.card-title { font-size: 0.92rem; font-weight: 600; color: var(--sage-dark); }
+
+/* ===== Buttons ===== */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 12px 24px;
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
+  font-weight: 600;
+  font-family: inherit;
+  border: none;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.btn-primary { background: var(--sage); color: #fff; width: 100%; }
+.btn-primary:hover { background: var(--sage-dark); }
+.btn-secondary { background: #fff; color: var(--sage); border: 2px solid var(--sage-pale); }
+.btn-secondary:hover { background: var(--sage-pale); }
+.btn-small { padding: 8px 16px; font-size: 0.82rem; }
+.btn-danger { background: var(--red-bg); color: var(--red); border: none; }
+
+/* ===== Form ===== */
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 6px; color: var(--warm-text); }
+.form-input, .form-select, .form-textarea {
+  width: 100%;
+  padding: 12px 14px;
+  border: 2px solid var(--cream-dark);
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
+  font-family: inherit;
+  color: var(--warm-text);
+  background: #fff;
+  outline: none;
+  transition: border-color 0.2s;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--sage-light); }
+.form-textarea { resize: vertical; min-height: 60px; }
+
+/* ===== Chips ===== */
+.chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.chip {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  border: 2px solid var(--cream-dark);
+  background: #fff;
+  color: var(--warm-text);
+}
+.chip.selected { background: var(--sage-pale); border-color: var(--sage); color: var(--sage-dark); }
+.chip.comm-verbal { border-color: var(--sage); }
+.chip.comm-gesture { border-color: var(--blue); }
+.chip.comm-pecs { border-color: var(--coral); }
+.chip.comm-aac { border-color: var(--yellow); }
+.chip.comm-sign { border-color: #9B8EC5; }
+
+/* ===== Milestone timeline ===== */
+.milestone-item {
+  display: flex;
+  gap: 12px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--cream-dark);
+  align-items: flex-start;
+}
+.milestone-item:last-child { border-bottom: none; }
+.milestone-dot {
+  width: 10px; height: 10px;
+  border-radius: 50%;
+  background: var(--sage);
+  margin-top: 6px;
+  flex-shrink: 0;
+}
+.milestone-content { flex: 1; }
+.milestone-date { font-size: 0.78rem; color: var(--warm-text-light); }
+.milestone-text { font-size: 0.88rem; font-weight: 500; }
+.milestone-type { font-size: 0.75rem; padding: 2px 8px; border-radius: 10px; display: inline-block; margin-top: 4px; }
+
+/* ===== Regression flag ===== */
+.regression-flag {
+  background: var(--red-bg);
+  border: 2px solid var(--red);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+}
+.regression-flag .flag-title { color: var(--red); font-weight: 700; font-size: 0.92rem; margin-bottom: 4px; }
+
+/* ===== AAC cards ===== */
+.aac-card {
+  background: var(--cream);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+}
+.aac-level { font-size: 0.78rem; font-weight: 600; color: var(--sage); margin-bottom: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+.aac-name { font-weight: 600; font-size: 0.92rem; margin-bottom: 4px; }
+.aac-desc { font-size: 0.82rem; color: var(--warm-text-light); line-height: 1.5; }
+.myth-box {
+  background: var(--sage-pale);
+  border-left: 4px solid var(--sage);
+  border-radius: 0 var(--radius-sm) var(--radius-sm) 0;
+  padding: 14px 16px;
+  margin: 16px 0;
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+/* ===== Word bank ===== */
+.word-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--cream-dark);
+  font-size: 0.88rem;
+}
+.word-item:last-child { border-bottom: none; }
+.word-text { font-weight: 500; }
+.word-date { font-size: 0.78rem; color: var(--warm-text-light); }
+.word-type-badge {
+  font-size: 0.72rem;
+  padding: 2px 8px;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
+/* ===== Log entry ===== */
+.log-entry {
+  padding: 12px 0;
+  border-bottom: 1px solid var(--cream-dark);
+}
+.log-entry:last-child { border-bottom: none; }
+.log-date { font-size: 0.78rem; color: var(--warm-text-light); margin-bottom: 4px; }
+.log-highlight { font-size: 0.85rem; color: var(--sage-dark); font-weight: 500; }
+
+/* ===== Section ===== */
+.section-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 16px;
+}
+.section-title { font-size: 1.05rem; font-weight: 600; color: var(--sage-dark); }
+.section-sub { font-size: 0.82rem; color: var(--warm-text-light); margin-bottom: 16px; }
+
+/* ===== Search ===== */
+.search-bar {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+.search-bar input { flex: 1; }
+
+/* ===== Sort controls ===== */
+.sort-controls {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+/* ===== Vocab counter ===== */
+.vocab-counter {
+  text-align: center;
+  background: var(--sage-pale);
+  border-radius: var(--radius);
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.vocab-number { font-size: 2.5rem; font-weight: 700; color: var(--sage); }
+.vocab-label { font-size: 0.85rem; color: var(--sage-dark); }
+
+/* ===== Empty state ===== */
+.empty-state {
+  text-align: center;
+  padding: 40px 20px;
+  color: var(--warm-text-light);
+  font-size: 0.92rem;
+}
+.empty-icon { font-size: 2.5rem; margin-bottom: 12px; opacity: 0.4; }
+
+/* ===== Tip card ===== */
+.tip-card {
+  background: var(--sage-pale);
+  border-radius: var(--radius-sm);
+  padding: 14px 16px;
+  margin-bottom: 10px;
+  font-size: 0.85rem;
+  line-height: 1.55;
+}
+.tip-card strong { color: var(--sage-dark); }
+
+@media print {
+  .topbar, .tabs, .btn { display: none !important; }
+  .panel { box-shadow: none; border: 1px solid #ddd; }
+}
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="../index.html" class="topbar-back">&#8592; <span data-i18n="back">返回</span></a>
+    <span class="topbar-title" data-i18n="title">沟通记录</span>
+  </div>
+  <button class="lang-toggle" onclick="toggleLang()">EN / 中</button>
+</div>
+
+<!-- Tabs -->
+<div class="tabs">
+  <button class="tab active" onclick="showTab('milestones')" data-i18n="tab_milestones">里程碑</button>
+  <button class="tab" onclick="showTab('aac')" data-i18n="tab_aac">AAC指南</button>
+  <button class="tab" onclick="showTab('log')" data-i18n="tab_log">每日记录</button>
+  <button class="tab" onclick="showTab('wordbank')" data-i18n="tab_wordbank">词汇库</button>
+</div>
+
+<!-- ==================== MILESTONES PANEL ==================== -->
+<div class="panel" id="panel-milestones">
+  <div class="section-header">
+    <span class="section-title" data-i18n="ms_title">沟通里程碑</span>
+    <button class="btn btn-secondary btn-small" onclick="openMilestoneForm()" data-i18n="add_milestone">+ 记录</button>
+  </div>
+
+  <!-- Vocab counter -->
+  <div class="vocab-counter">
+    <div class="vocab-number" id="vocab-count">0</div>
+    <div class="vocab-label" data-i18n="vocab_count_label">词汇总数</div>
+  </div>
+
+  <!-- Add milestone form -->
+  <div id="milestone-form" class="card hidden">
+    <div class="form-group">
+      <label class="form-label" data-i18n="ms_type">类型</label>
+      <div class="chip-row" id="ms-type-chips"></div>
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="ms_detail">详情</label>
+      <input class="form-input" id="ms-detail" placeholder="">
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="ms_date">日期</label>
+      <input class="form-input" id="ms-date" type="date">
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="comm_type">沟通方式</label>
+      <div class="chip-row" id="ms-comm-chips"></div>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-primary" style="flex:1" onclick="saveMilestone()" data-i18n="save">保存</button>
+      <button class="btn btn-secondary" style="flex:0" onclick="closeMilestoneForm()" data-i18n="cancel">取消</button>
+    </div>
+  </div>
+
+  <!-- Regression tracker -->
+  <div id="regression-area"></div>
+
+  <!-- Regression add -->
+  <div style="margin-bottom:16px;">
+    <button class="btn btn-danger btn-small" onclick="openRegressionForm()" data-i18n="report_regression">报告语言倒退</button>
+  </div>
+  <div id="regression-form" class="card hidden" style="border-color:var(--red);">
+    <div class="form-group">
+      <label class="form-label" data-i18n="lost_words">失去的词汇</label>
+      <input class="form-input" id="reg-words" placeholder="">
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="reg_date">发现日期</label>
+      <input class="form-input" id="reg-date" type="date">
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="reg_notes">备注</label>
+      <input class="form-input" id="reg-notes" placeholder="">
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-danger" style="flex:1" onclick="saveRegression()" data-i18n="save">保存</button>
+      <button class="btn btn-secondary" style="flex:0" onclick="closeRegressionForm()" data-i18n="cancel">取消</button>
+    </div>
+  </div>
+
+  <!-- Milestone list -->
+  <div id="milestone-list"></div>
+</div>
+
+<!-- ==================== AAC GUIDE PANEL ==================== -->
+<div class="panel hidden" id="panel-aac">
+  <div class="section-title" data-i18n="aac_title" style="margin-bottom:6px;">AAC资源指南</div>
+  <p class="section-sub" data-i18n="aac_sub">辅助沟通设备从低科技到高科技</p>
+
+  <div class="myth-box" id="myth-box">
+    <strong data-i18n="myth_title">打破迷思:</strong>
+    <span data-i18n="myth_text"> AAC不会阻碍语言发展! 研究表明AAC实际上促进自然语言的发展 (Romski & Sevcik, 2005; Millar et al., 2006)。</span>
+  </div>
+
+  <div id="aac-list"></div>
+
+  <div class="tip-card" style="margin-top:16px;">
+    <strong data-i18n="aac_tip_title">选择建议: </strong>
+    <span data-i18n="aac_tip_text">从低科技开始，根据孩子的运动能力、认知水平和沟通需求逐步升级。咨询言语治疗师获取个性化建议。</span>
+  </div>
+</div>
+
+<!-- ==================== DAILY LOG PANEL ==================== -->
+<div class="panel hidden" id="panel-log">
+  <div class="section-header">
+    <span class="section-title" data-i18n="log_title">每日沟通记录</span>
+    <button class="btn btn-secondary btn-small" onclick="openLogForm()" data-i18n="add_log">+ 记录</button>
+  </div>
+
+  <div id="log-form" class="card hidden">
+    <div class="form-group">
+      <label class="form-label" data-i18n="log_date">日期</label>
+      <input class="form-input" id="log-date" type="date">
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="new_words">新词汇/手势</label>
+      <input class="form-input" id="log-new-words" placeholder="">
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="attempts">沟通尝试次数</label>
+      <input class="form-input" id="log-attempts" type="number" min="0" value="0">
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="best_moment">最佳时刻</label>
+      <textarea class="form-textarea" id="log-best" rows="2"></textarea>
+    </div>
+    <div class="form-group">
+      <label class="form-label" data-i18n="challenges">挑战</label>
+      <textarea class="form-textarea" id="log-challenges" rows="2"></textarea>
+    </div>
+    <div style="display:flex;gap:8px;">
+      <button class="btn btn-primary" style="flex:1" onclick="saveLog()" data-i18n="save">保存</button>
+      <button class="btn btn-secondary" style="flex:0" onclick="closeLogForm()" data-i18n="cancel">取消</button>
+    </div>
+  </div>
+
+  <div id="log-list"></div>
+</div>
+
+<!-- ==================== WORD BANK PANEL ==================== -->
+<div class="panel hidden" id="panel-wordbank">
+  <div class="section-title" data-i18n="wb_title" style="margin-bottom:6px;">词汇库</div>
+  <p class="section-sub" data-i18n="wb_sub">孩子掌握的所有词汇/手势/符号</p>
+
+  <div class="search-bar">
+    <input class="form-input" id="wb-search" placeholder="" oninput="renderWordBank()">
+  </div>
+
+  <div class="sort-controls">
+    <button class="btn btn-secondary btn-small" onclick="sortWords('alpha')" data-i18n="sort_alpha">按字母</button>
+    <button class="btn btn-secondary btn-small" onclick="sortWords('date')" data-i18n="sort_date">按日期</button>
+    <button class="btn btn-secondary btn-small" onclick="sortWords('type')" data-i18n="sort_type">按类型</button>
+  </div>
+
+  <!-- Add word -->
+  <div class="card">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <input class="form-input" id="wb-word" style="flex:2;min-width:120px" placeholder="">
+      <select class="form-select" id="wb-type" style="flex:1;min-width:100px">
+        <option value="verbal" data-i18n="type_verbal">口语</option>
+        <option value="gesture" data-i18n="type_gesture">手势</option>
+        <option value="sign" data-i18n="type_sign">手语</option>
+        <option value="pecs" data-i18n="type_pecs">PECS</option>
+        <option value="aac" data-i18n="type_aac">AAC</option>
+      </select>
+      <button class="btn btn-primary btn-small" onclick="addWord()" data-i18n="add_btn">添加</button>
+    </div>
+  </div>
+
+  <div id="word-bank-list"></div>
+</div>
+
+<div style="height:40px;"></div>
+
+<script>
+// ===================================================================
+//  I18N
+// ===================================================================
+let lang = 'zh';
+const I18N = {
+  zh: {
+    back: '返回', title: '沟通记录',
+    tab_milestones: '里程碑', tab_aac: 'AAC指南', tab_log: '每日记录', tab_wordbank: '词汇库',
+    ms_title: '沟通里程碑', add_milestone: '+ 记录',
+    ms_type: '类型', ms_detail: '详情', ms_date: '日期', comm_type: '沟通方式',
+    save: '保存', cancel: '取消', add_btn: '添加',
+    type_first_word: '第一个词', type_vocab_milestone: '词汇里程碑', type_two_word: '首个两词组合', type_other: '其他',
+    comm_verbal: '口语', comm_gesture: '手势', comm_pecs: 'PECS', comm_aac: 'AAC', comm_sign: '手语',
+    vocab_count_label: '词汇总数',
+    report_regression: '报告语言倒退', lost_words: '失去的词汇', reg_date: '发现日期', reg_notes: '备注',
+    regression_title: '语言倒退警告', regression_alert: '请尽快联系儿童发育专家或言语治疗师。',
+    aac_title: 'AAC资源指南', aac_sub: '辅助沟通设备从低科技到高科技',
+    myth_title: '打破迷思:', myth_text: ' AAC不会阻碍语言发展! 研究表明AAC实际上促进自然语言的发展 (Romski & Sevcik, 2005; Millar et al., 2006)。',
+    aac_tip_title: '选择建议: ', aac_tip_text: '从低科技开始，根据孩子的运动能力、认知水平和沟通需求逐步升级。咨询言语治疗师获取个性化建议。',
+    low_tech: '低科技', mid_tech: '中科技', high_tech: '高科技',
+    log_title: '每日沟通记录', add_log: '+ 记录', log_date: '日期',
+    new_words: '新词汇/手势', attempts: '沟通尝试次数', best_moment: '最佳时刻', challenges: '挑战',
+    wb_title: '词汇库', wb_sub: '孩子掌握的所有词汇/手势/符号',
+    sort_alpha: '按字母', sort_date: '按日期', sort_type: '按类型',
+    type_verbal: '口语', type_gesture: '手势', type_sign: '手语', type_pecs: 'PECS', type_aac: 'AAC',
+    search_placeholder: '搜索词汇...',
+    word_placeholder: '输入词汇',
+    no_milestones: '还没有里程碑记录',
+    no_logs: '还没有日记记录',
+    no_words: '词汇库是空的，开始添加吧',
+    delete_confirm: '确定删除？',
+    attempts_label: '次沟通尝试',
+    best_label: '最佳: ', challenge_label: '挑战: ',
+    pecs_name: 'PECS图片交换系统', pecs_desc: '使用图片卡片进行沟通。孩子将图片递给沟通伙伴以表达需求。适合各年龄段，无需语言先决条件。',
+    board_name: '沟通板', board_desc: '主题性图片/文字板，可自定义。适用于日常活动、用餐、游戏等场景。便携、便宜、无需充电。',
+    bigmack_name: 'BigMack/小蜜蜂', bigmack_desc: '单一信息录音按钮。按压即播放预录信息。适合初级沟通者建立因果关系理解。',
+    gotalk_name: 'GoTalk', gotalk_desc: '多按钮录音沟通板(4-32格)。可更换覆盖图层以适应不同场景。耐用、电池寿命长。',
+    proloquo_name: 'Proloquo2Go', proloquo_desc: 'iPad/iPhone上的全功能AAC应用。超过10,000个符号，支持自然语音输出。可高度自定义，支持从初级到高级沟通者。',
+    touchchat_name: 'TouchChat', touchchat_desc: '功能丰富的AAC应用，支持WordPower和Minspeak等多种页面组织方式。适合有一定认知能力的沟通者。'
+  },
+  en: {
+    back: 'Back', title: 'Communication Log',
+    tab_milestones: 'Milestones', tab_aac: 'AAC Guide', tab_log: 'Daily Log', tab_wordbank: 'Word Bank',
+    ms_title: 'Communication Milestones', add_milestone: '+ Record',
+    ms_type: 'Type', ms_detail: 'Details', ms_date: 'Date', comm_type: 'Communication Type',
+    save: 'Save', cancel: 'Cancel', add_btn: 'Add',
+    type_first_word: 'First Word', type_vocab_milestone: 'Vocab Milestone', type_two_word: 'First 2-Word Combo', type_other: 'Other',
+    comm_verbal: 'Verbal', comm_gesture: 'Gesture', comm_pecs: 'PECS', comm_aac: 'AAC', comm_sign: 'Sign',
+    vocab_count_label: 'Total Vocabulary',
+    report_regression: 'Report Regression', lost_words: 'Lost Words', reg_date: 'Date Noticed', reg_notes: 'Notes',
+    regression_title: 'Language Regression Alert', regression_alert: 'Please contact a developmental specialist or speech therapist as soon as possible.',
+    aac_title: 'AAC Resource Guide', aac_sub: 'Augmentative communication from low-tech to high-tech',
+    myth_title: 'Myth Busted:', myth_text: ' AAC does NOT prevent speech! Research shows AAC actually promotes natural language development (Romski & Sevcik, 2005; Millar et al., 2006).',
+    aac_tip_title: 'Selection Tip: ', aac_tip_text: 'Start with low-tech, then upgrade based on motor skills, cognitive level, and communication needs. Consult an SLP for personalized guidance.',
+    low_tech: 'Low-Tech', mid_tech: 'Mid-Tech', high_tech: 'High-Tech',
+    log_title: 'Daily Communication Log', add_log: '+ Log', log_date: 'Date',
+    new_words: 'New Words/Signs', attempts: 'Communication Attempts', best_moment: 'Best Moment', challenges: 'Challenges',
+    wb_title: 'Word Bank', wb_sub: "All your child's words, signs & symbols",
+    sort_alpha: 'A-Z', sort_date: 'By Date', sort_type: 'By Type',
+    type_verbal: 'Verbal', type_gesture: 'Gesture', type_sign: 'Sign', type_pecs: 'PECS', type_aac: 'AAC',
+    search_placeholder: 'Search words...',
+    word_placeholder: 'Enter word',
+    no_milestones: 'No milestones recorded yet',
+    no_logs: 'No daily logs yet',
+    no_words: 'Word bank is empty. Start adding!',
+    delete_confirm: 'Delete this entry?',
+    attempts_label: ' communication attempts',
+    best_label: 'Best: ', challenge_label: 'Challenge: ',
+    pecs_name: 'PECS (Picture Exchange)', pecs_desc: 'Uses picture cards for communication. Child hands a picture to a partner to express needs. Suitable for all ages, no language prerequisites.',
+    board_name: 'Communication Boards', board_desc: 'Themed picture/word boards, customizable. Great for daily activities, mealtimes, play. Portable, cheap, no batteries.',
+    bigmack_name: 'BigMack / Step-by-Step', bigmack_desc: 'Single-message recorded button. Press to play a pre-recorded message. Great for early communicators to build cause-and-effect understanding.',
+    gotalk_name: 'GoTalk', gotalk_desc: 'Multi-button recording board (4-32 cells). Changeable overlays for different situations. Durable, long battery life.',
+    proloquo_name: 'Proloquo2Go', proloquo_desc: 'Full-featured AAC app for iPad/iPhone. Over 10,000 symbols with natural voice output. Highly customizable for beginners to advanced communicators.',
+    touchchat_name: 'TouchChat', touchchat_desc: 'Feature-rich AAC app supporting WordPower and Minspeak page layouts. Best for communicators with some cognitive readiness.'
+  }
+};
+
+function t(key) { return I18N[lang][key] || key; }
+
+function applyLang() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (I18N[lang][k]) el.textContent = I18N[lang][k];
+  });
+  const s = document.getElementById('wb-search');
+  if (s) s.placeholder = t('search_placeholder');
+  const w = document.getElementById('wb-word');
+  if (w) w.placeholder = t('word_placeholder');
+  // Update select options
+  document.querySelectorAll('option[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (I18N[lang][k]) el.textContent = I18N[lang][k];
+  });
+}
+
+function toggleLang() {
+  lang = lang === 'zh' ? 'en' : 'zh';
+  applyLang();
+  renderAll();
+}
+
+// ===================================================================
+//  DATA
+// ===================================================================
+const STORAGE_KEY = 'withyou_communication';
+let data = {
+  milestones: [],
+  regressions: [],
+  logs: [],
+  wordBank: []
+};
+
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+function load() {
+  const s = localStorage.getItem(STORAGE_KEY);
+  if (s) { try { data = JSON.parse(s); } catch(e) {} }
+}
+
+// ===================================================================
+//  TAB SWITCHING
+// ===================================================================
+const TABS = ['milestones','aac','log','wordbank'];
+let activeTab = 'milestones';
+
+function showTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab').forEach((el, i) => {
+    el.classList.toggle('active', TABS[i] === tab);
+  });
+  TABS.forEach(p => {
+    document.getElementById('panel-' + p).classList.toggle('hidden', p !== tab);
+  });
+  renderAll();
+}
+
+// ===================================================================
+//  MILESTONES
+// ===================================================================
+const MS_TYPES = ['type_first_word','type_vocab_milestone','type_two_word','type_other'];
+const COMM_TYPES = ['comm_verbal','comm_gesture','comm_pecs','comm_aac','comm_sign'];
+let msForm = { type: '', detail: '', date: '', commType: '' };
+
+function openMilestoneForm() {
+  msForm = { type: '', detail: '', date: new Date().toISOString().split('T')[0], commType: '' };
+  document.getElementById('milestone-form').classList.remove('hidden');
+  document.getElementById('ms-date').value = msForm.date;
+  renderMSForm();
+}
+
+function closeMilestoneForm() {
+  document.getElementById('milestone-form').classList.add('hidden');
+}
+
+function renderMSForm() {
+  document.getElementById('ms-type-chips').innerHTML = MS_TYPES.map(mt =>
+    `<span class="chip ${msForm.type === mt ? 'selected' : ''}" onclick="msForm.type='${mt}';renderMSForm()">${t(mt)}</span>`
+  ).join('');
+  document.getElementById('ms-comm-chips').innerHTML = COMM_TYPES.map(ct =>
+    `<span class="chip ${ct} ${msForm.commType === ct ? 'selected' : ''}" onclick="msForm.commType='${ct}';renderMSForm()">${t(ct)}</span>`
+  ).join('');
+}
+
+function saveMilestone() {
+  const detail = document.getElementById('ms-detail').value.trim();
+  const date = document.getElementById('ms-date').value;
+  if (!msForm.type || !detail) return;
+  data.milestones.unshift({
+    id: Date.now(), type: msForm.type, detail, date, commType: msForm.commType
+  });
+  save();
+  closeMilestoneForm();
+  renderMilestones();
+}
+
+function deleteMilestone(id) {
+  if (!confirm(t('delete_confirm'))) return;
+  data.milestones = data.milestones.filter(m => m.id !== id);
+  save();
+  renderMilestones();
+}
+
+function renderMilestones() {
+  // Vocab count
+  document.getElementById('vocab-count').textContent = data.wordBank.length;
+
+  const c = document.getElementById('milestone-list');
+  if (!data.milestones.length) {
+    c.innerHTML = `<div class="empty-state"><div class="empty-icon">💬</div>${t('no_milestones')}</div>`;
+    return;
+  }
+  c.innerHTML = data.milestones.map(m => {
+    const typeColors = { comm_verbal: 'var(--green-bg);color:var(--sage-dark)', comm_gesture: 'var(--blue-pale);color:var(--blue)', comm_pecs: 'var(--coral-pale);color:var(--coral)', comm_aac: 'var(--yellow-bg);color:var(--yellow)', comm_sign: '#EDE8F5;color:#9B8EC5' };
+    const bgStyle = typeColors[m.commType] || 'var(--cream);color:var(--warm-text-light)';
+    return `<div class="milestone-item">
+      <div class="milestone-dot"></div>
+      <div class="milestone-content">
+        <div class="milestone-date">${m.date} <span style="float:right;cursor:pointer;color:var(--red);font-size:0.78rem;" onclick="deleteMilestone(${m.id})">x</span></div>
+        <div class="milestone-text">${m.detail}</div>
+        <span class="milestone-type" style="background:${bgStyle}">${t(m.type)}</span>
+        ${m.commType ? `<span class="milestone-type" style="background:${bgStyle};margin-left:4px;">${t(m.commType)}</span>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===================================================================
+//  REGRESSION TRACKER
+// ===================================================================
+function openRegressionForm() {
+  document.getElementById('regression-form').classList.remove('hidden');
+  document.getElementById('reg-date').value = new Date().toISOString().split('T')[0];
+}
+function closeRegressionForm() {
+  document.getElementById('regression-form').classList.add('hidden');
+}
+
+function saveRegression() {
+  const words = document.getElementById('reg-words').value.trim();
+  const date = document.getElementById('reg-date').value;
+  const notes = document.getElementById('reg-notes').value.trim();
+  if (!words) return;
+  data.regressions.unshift({ id: Date.now(), words, date, notes });
+  save();
+  closeRegressionForm();
+  renderRegressions();
+}
+
+function deleteRegression(id) {
+  if (!confirm(t('delete_confirm'))) return;
+  data.regressions = data.regressions.filter(r => r.id !== id);
+  save();
+  renderRegressions();
+}
+
+function renderRegressions() {
+  const c = document.getElementById('regression-area');
+  if (!data.regressions.length) { c.innerHTML = ''; return; }
+  c.innerHTML = data.regressions.map(r =>
+    `<div class="regression-flag">
+      <div class="flag-title">${t('regression_title')} <span style="float:right;cursor:pointer;font-size:0.82rem;" onclick="deleteRegression(${r.id})">x</span></div>
+      <div style="font-size:0.85rem;margin-bottom:4px;"><strong>${r.date}</strong> - ${r.words}</div>
+      ${r.notes ? `<div style="font-size:0.82rem;color:var(--warm-text-light);">${r.notes}</div>` : ''}
+      <div style="font-size:0.82rem;margin-top:8px;font-weight:500;color:var(--red);">${t('regression_alert')}</div>
+    </div>`
+  ).join('');
+}
+
+// ===================================================================
+//  AAC GUIDE
+// ===================================================================
+function renderAAC() {
+  const items = [
+    { level: 'low_tech', name: 'pecs_name', desc: 'pecs_desc' },
+    { level: 'low_tech', name: 'board_name', desc: 'board_desc' },
+    { level: 'mid_tech', name: 'bigmack_name', desc: 'bigmack_desc' },
+    { level: 'mid_tech', name: 'gotalk_name', desc: 'gotalk_desc' },
+    { level: 'high_tech', name: 'proloquo_name', desc: 'proloquo_desc' },
+    { level: 'high_tech', name: 'touchchat_name', desc: 'touchchat_desc' }
+  ];
+  document.getElementById('aac-list').innerHTML = items.map(item =>
+    `<div class="aac-card">
+      <div class="aac-level">${t(item.level)}</div>
+      <div class="aac-name">${t(item.name)}</div>
+      <div class="aac-desc">${t(item.desc)}</div>
+    </div>`
+  ).join('');
+}
+
+// ===================================================================
+//  DAILY LOG
+// ===================================================================
+function openLogForm() {
+  document.getElementById('log-form').classList.remove('hidden');
+  document.getElementById('log-date').value = new Date().toISOString().split('T')[0];
+}
+function closeLogForm() {
+  document.getElementById('log-form').classList.add('hidden');
+}
+
+function saveLog() {
+  const date = document.getElementById('log-date').value;
+  const newWords = document.getElementById('log-new-words').value.trim();
+  const attempts = parseInt(document.getElementById('log-attempts').value) || 0;
+  const best = document.getElementById('log-best').value.trim();
+  const challenges = document.getElementById('log-challenges').value.trim();
+  if (!date) return;
+
+  data.logs.unshift({ id: Date.now(), date, newWords, attempts, best, challenges });
+
+  // Auto-add new words to word bank
+  if (newWords) {
+    newWords.split(/[,，、\s]+/).filter(w => w).forEach(w => {
+      if (!data.wordBank.find(wb => wb.word === w)) {
+        data.wordBank.push({ word: w, type: 'verbal', date, id: Date.now() + Math.random() });
+      }
+    });
+  }
+
+  save();
+  closeLogForm();
+  document.getElementById('log-new-words').value = '';
+  document.getElementById('log-attempts').value = '0';
+  document.getElementById('log-best').value = '';
+  document.getElementById('log-challenges').value = '';
+  renderLogs();
+}
+
+function deleteLog(id) {
+  if (!confirm(t('delete_confirm'))) return;
+  data.logs = data.logs.filter(l => l.id !== id);
+  save();
+  renderLogs();
+}
+
+function renderLogs() {
+  const c = document.getElementById('log-list');
+  if (!data.logs.length) {
+    c.innerHTML = `<div class="empty-state"><div class="empty-icon">📝</div>${t('no_logs')}</div>`;
+    return;
+  }
+  c.innerHTML = data.logs.map(l =>
+    `<div class="log-entry">
+      <div class="log-date">${l.date} <span style="float:right;cursor:pointer;color:var(--red);font-size:0.78rem;" onclick="deleteLog(${l.id})">x</span></div>
+      ${l.newWords ? `<div style="font-size:0.88rem;"><strong>${lang === 'zh' ? '新词' : 'New'}:</strong> ${l.newWords}</div>` : ''}
+      <div style="font-size:0.82rem;color:var(--warm-text-light);">${l.attempts}${t('attempts_label')}</div>
+      ${l.best ? `<div class="log-highlight">${t('best_label')}${l.best}</div>` : ''}
+      ${l.challenges ? `<div style="font-size:0.82rem;color:var(--coral);">${t('challenge_label')}${l.challenges}</div>` : ''}
+    </div>`
+  ).join('');
+}
+
+// ===================================================================
+//  WORD BANK
+// ===================================================================
+let wordSort = 'date';
+
+function sortWords(mode) {
+  wordSort = mode;
+  document.querySelectorAll('.sort-controls .btn').forEach((b, i) => {
+    b.classList.toggle('selected', ['alpha','date','type'][i] === mode);
+    if (['alpha','date','type'][i] === mode) {
+      b.style.background = 'var(--sage-pale)';
+      b.style.borderColor = 'var(--sage)';
+    } else {
+      b.style.background = '';
+      b.style.borderColor = '';
+    }
+  });
+  renderWordBank();
+}
+
+function addWord() {
+  const word = document.getElementById('wb-word').value.trim();
+  const type = document.getElementById('wb-type').value;
+  if (!word) return;
+  if (data.wordBank.find(w => w.word === word)) return;
+  data.wordBank.push({ word, type, date: new Date().toISOString().split('T')[0], id: Date.now() });
+  save();
+  document.getElementById('wb-word').value = '';
+  renderWordBank();
+  renderMilestones(); // update count
+}
+
+function deleteWord(id) {
+  data.wordBank = data.wordBank.filter(w => w.id !== id);
+  save();
+  renderWordBank();
+  renderMilestones();
+}
+
+function renderWordBank() {
+  const search = (document.getElementById('wb-search')?.value || '').toLowerCase();
+  let words = [...data.wordBank];
+  if (search) words = words.filter(w => w.word.toLowerCase().includes(search));
+
+  if (wordSort === 'alpha') words.sort((a, b) => a.word.localeCompare(b.word));
+  else if (wordSort === 'date') words.sort((a, b) => b.date.localeCompare(a.date));
+  else if (wordSort === 'type') words.sort((a, b) => a.type.localeCompare(b.type));
+
+  const c = document.getElementById('word-bank-list');
+  if (!words.length) {
+    c.innerHTML = `<div class="empty-state"><div class="empty-icon">📚</div>${t('no_words')}</div>`;
+    return;
+  }
+
+  const typeColors = { verbal: 'var(--green-bg);color:var(--sage-dark)', gesture: 'var(--blue-pale);color:var(--blue)', sign: '#EDE8F5;color:#9B8EC5', pecs: 'var(--coral-pale);color:var(--coral)', aac: 'var(--yellow-bg);color:var(--yellow)' };
+
+  c.innerHTML = words.map(w =>
+    `<div class="word-item">
+      <div>
+        <span class="word-text">${w.word}</span>
+        <span class="word-type-badge" style="background:${typeColors[w.type] || 'var(--cream)'};margin-left:8px;">${t('type_' + w.type)}</span>
+      </div>
+      <div>
+        <span class="word-date">${w.date}</span>
+        <span style="cursor:pointer;color:var(--red);margin-left:8px;font-size:0.78rem;" onclick="deleteWord(${w.id})">x</span>
+      </div>
+    </div>`
+  ).join('');
+}
+
+// ===================================================================
+//  RENDER ALL
+// ===================================================================
+function renderAll() {
+  applyLang();
+  renderMilestones();
+  renderRegressions();
+  renderAAC();
+  renderLogs();
+  renderWordBank();
+}
+
+// ===================================================================
+//  INIT
+// ===================================================================
+load();
+renderAll();
+</script>
+</body>
+</html>

@@ -1,0 +1,938 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>照护者健康 — 同路 WithYou</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --lavender: #9B8EC5;
+  --lavender-light: #B8AED6;
+  --lavender-pale: #EDE8F5;
+  --lavender-dark: #7B6EA5;
+  --sage: #8FB09D;
+  --sage-light: #A8C4B3;
+  --sage-pale: #E8F0EB;
+  --sage-dark: #6B8F7B;
+  --cream: #FAF7F4;
+  --cream-dark: #F0EBDF;
+  --warm-text: #3D3D3D;
+  --warm-text-light: #6B6B6B;
+  --coral: #D4917B;
+  --coral-pale: #F5E0D8;
+  --blue: #7BA7BC;
+  --blue-pale: #E4EFF4;
+  --yellow: #C9A84C;
+  --yellow-bg: #FDF6E3;
+  --red: #C47A6E;
+  --red-bg: #F8E8E5;
+  --shadow: 0 2px 16px rgba(155,142,197,0.12);
+  --shadow-lg: 0 6px 28px rgba(155,142,197,0.16);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+  background: var(--cream);
+  color: var(--warm-text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.hidden { display: none !important; }
+
+/* ===== Top Bar ===== */
+.topbar {
+  background: #fff;
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 12px 20px;
+  display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.topbar-back { color: var(--lavender); text-decoration: none; font-size: 0.88rem; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+.topbar-title { font-size: 0.95rem; font-weight: 600; color: var(--lavender); }
+.lang-toggle {
+  background: var(--lavender-pale); border: none; border-radius: 20px; padding: 4px 12px;
+  font-size: 0.78rem; font-weight: 500; color: var(--lavender); cursor: pointer; transition: background 0.2s;
+}
+.lang-toggle:hover { background: var(--lavender-light); color: #fff; }
+
+/* ===== Tabs ===== */
+.tabs {
+  display: flex; gap: 4px; padding: 16px 20px 0; max-width: 680px; margin: 0 auto;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.tab {
+  padding: 10px 14px; border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  font-size: 0.78rem; font-weight: 500; background: var(--cream-dark);
+  color: var(--warm-text-light); border: none; cursor: pointer; white-space: nowrap; transition: all 0.2s;
+}
+.tab.active { background: #fff; color: var(--lavender); font-weight: 600; }
+
+/* ===== Panel ===== */
+.panel {
+  background: #fff; border-radius: 0 0 var(--radius) var(--radius);
+  padding: 24px 20px; margin: 0 auto; max-width: 680px; min-height: 400px; box-shadow: var(--shadow);
+}
+
+/* ===== Card ===== */
+.card {
+  background: #fff; border: 1px solid var(--cream-dark); border-radius: var(--radius-sm);
+  padding: 16px; margin-bottom: 12px;
+}
+.card-title { font-size: 0.92rem; font-weight: 600; color: var(--lavender-dark); margin-bottom: 8px; }
+
+/* ===== Buttons ===== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 24px; border-radius: var(--radius-sm); font-size: 0.92rem;
+  font-weight: 600; font-family: inherit; border: none; cursor: pointer; transition: all 0.2s;
+}
+.btn-primary { background: var(--lavender); color: #fff; width: 100%; }
+.btn-primary:hover { background: var(--lavender-dark); }
+.btn-secondary { background: #fff; color: var(--lavender); border: 2px solid var(--lavender-pale); }
+.btn-secondary:hover { background: var(--lavender-pale); }
+.btn-small { padding: 8px 16px; font-size: 0.82rem; }
+
+/* ===== Form ===== */
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 6px; color: var(--warm-text); }
+.form-input, .form-textarea {
+  width: 100%; padding: 12px 14px; border: 2px solid var(--cream-dark);
+  border-radius: var(--radius-sm); font-size: 0.92rem; font-family: inherit;
+  color: var(--warm-text); background: #fff; outline: none; transition: border-color 0.2s;
+}
+.form-input:focus, .form-textarea:focus { border-color: var(--lavender-light); }
+.form-textarea { resize: vertical; min-height: 60px; }
+
+/* ===== Section ===== */
+.section-title { font-size: 1.05rem; font-weight: 600; color: var(--lavender-dark); margin-bottom: 8px; }
+.section-sub { font-size: 0.82rem; color: var(--warm-text-light); margin-bottom: 16px; }
+
+/* ===== Daily Check-in ===== */
+.mood-row {
+  display: flex; justify-content: space-around; margin: 16px 0; gap: 8px;
+}
+.mood-face {
+  font-size: 2.2rem; cursor: pointer; transition: transform 0.2s; opacity: 0.5;
+  padding: 8px; border-radius: 50%;
+}
+.mood-face.selected { opacity: 1; transform: scale(1.3); background: var(--lavender-pale); }
+.mood-face:hover { transform: scale(1.2); }
+
+.energy-row {
+  display: flex; justify-content: center; gap: 10px; margin: 16px 0;
+}
+.energy-bar {
+  width: 36px; height: 50px; border-radius: 6px; background: var(--cream-dark);
+  cursor: pointer; transition: all 0.2s; display: flex; align-items: flex-end; justify-content: center;
+  overflow: hidden; position: relative;
+}
+.energy-bar .fill {
+  width: 100%; background: var(--sage); border-radius: 0 0 6px 6px; transition: height 0.3s;
+}
+.energy-bar.selected .fill { background: var(--lavender); }
+.energy-label { font-size: 0.72rem; text-align: center; margin-top: 4px; color: var(--warm-text-light); }
+
+.need-chips {
+  display: flex; flex-wrap: wrap; gap: 8px; margin: 12px 0;
+}
+.need-chip {
+  padding: 8px 16px; border-radius: 20px; font-size: 0.82rem; font-weight: 500;
+  border: 2px solid var(--cream-dark); background: #fff; color: var(--warm-text);
+  cursor: pointer; transition: all 0.2s;
+}
+.need-chip.selected { background: var(--lavender-pale); border-color: var(--lavender); color: var(--lavender-dark); }
+
+/* ===== Permission slips ===== */
+.permission-card {
+  background: linear-gradient(135deg, var(--lavender-pale), var(--sage-pale));
+  border-radius: var(--radius);
+  padding: 32px 24px;
+  text-align: center;
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 16px;
+  position: relative;
+  overflow: hidden;
+}
+.permission-text {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--lavender-dark);
+  line-height: 1.6;
+  max-width: 400px;
+}
+.permission-nav {
+  display: flex; justify-content: center; gap: 16px; margin-top: 16px;
+}
+.permission-nav button {
+  background: var(--lavender); color: #fff; border: none; border-radius: 50%;
+  width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; transition: all 0.2s;
+}
+.permission-nav button:hover { background: var(--lavender-dark); }
+.permission-share {
+  margin-top: 12px; font-size: 0.78rem; color: var(--lavender); cursor: pointer;
+}
+
+/* ===== Self-care ===== */
+.time-tabs {
+  display: flex; gap: 6px; margin-bottom: 16px; flex-wrap: wrap;
+}
+.time-tab {
+  padding: 8px 16px; border-radius: 20px; font-size: 0.82rem; font-weight: 500;
+  border: 2px solid var(--cream-dark); background: #fff; color: var(--warm-text-light);
+  cursor: pointer; transition: all 0.2s;
+}
+.time-tab.active { background: var(--sage-pale); border-color: var(--sage); color: var(--sage-dark); }
+
+.care-item {
+  padding: 12px 16px; background: var(--cream); border-radius: var(--radius-sm);
+  margin-bottom: 8px; font-size: 0.88rem; display: flex; align-items: center; gap: 10px;
+}
+.care-icon { font-size: 1.2rem; }
+
+.daily-suggestion {
+  background: linear-gradient(135deg, var(--sage-pale), var(--lavender-pale));
+  border-radius: var(--radius); padding: 20px; text-align: center; margin-bottom: 16px;
+}
+.daily-suggestion .label { font-size: 0.78rem; color: var(--warm-text-light); margin-bottom: 8px; }
+.daily-suggestion .suggestion { font-size: 1rem; font-weight: 600; color: var(--sage-dark); }
+
+/* ===== Mood Chart ===== */
+.chart-toggle {
+  display: flex; gap: 8px; margin-bottom: 16px;
+}
+.chart-btn {
+  padding: 6px 14px; border-radius: 20px; font-size: 0.78rem; font-weight: 500;
+  border: 2px solid var(--cream-dark); background: #fff; color: var(--warm-text-light);
+  cursor: pointer; transition: all 0.2s;
+}
+.chart-btn.active { background: var(--lavender-pale); border-color: var(--lavender); color: var(--lavender); }
+
+.chart-container { margin: 16px 0; text-align: center; }
+.chart-container svg { max-width: 100%; }
+
+.pattern-box {
+  background: var(--lavender-pale); border-radius: var(--radius-sm);
+  padding: 14px 16px; margin-top: 16px; font-size: 0.85rem; line-height: 1.55;
+}
+.pattern-box strong { color: var(--lavender-dark); }
+
+/* ===== Crisis ===== */
+.crisis-banner {
+  background: var(--red-bg); border: 2px solid var(--red); border-radius: var(--radius);
+  padding: 16px; margin-bottom: 16px; position: sticky; top: 56px; z-index: 50;
+}
+.crisis-title { font-weight: 700; color: var(--red); margin-bottom: 8px; font-size: 0.92rem; }
+.crisis-numbers {
+  display: flex; flex-wrap: wrap; gap: 8px;
+}
+.crisis-num {
+  background: #fff; padding: 6px 14px; border-radius: 20px; font-size: 0.82rem;
+  font-weight: 600; color: var(--red); display: inline-flex; align-items: center; gap: 4px;
+}
+.crisis-num a { color: var(--red); text-decoration: none; }
+
+.help-checklist {
+  background: var(--yellow-bg); border-radius: var(--radius-sm);
+  padding: 16px; margin-top: 16px;
+}
+.help-checklist .title { font-weight: 600; color: #8B7A2B; margin-bottom: 8px; font-size: 0.88rem; }
+.help-item { font-size: 0.85rem; padding: 4px 0; display: flex; align-items: flex-start; gap: 8px; }
+
+/* ===== Connection ===== */
+.resource-group { margin-bottom: 20px; }
+.resource-group-title { font-weight: 600; color: var(--lavender-dark); font-size: 0.92rem; margin-bottom: 10px; }
+.resource-link {
+  display: block; padding: 10px 14px; background: var(--cream); border-radius: var(--radius-sm);
+  margin-bottom: 6px; font-size: 0.85rem; color: var(--warm-text); text-decoration: none;
+  transition: background 0.2s;
+}
+.resource-link:hover { background: var(--lavender-pale); }
+.resource-tag {
+  font-size: 0.72rem; padding: 2px 8px; border-radius: 10px; background: var(--lavender-pale);
+  color: var(--lavender); font-weight: 500; margin-left: 8px;
+}
+
+.empty-state { text-align: center; padding: 40px 20px; color: var(--warm-text-light); font-size: 0.92rem; }
+
+@media print {
+  .topbar, .tabs, .btn, .crisis-banner { display: none !important; }
+  .panel { box-shadow: none; border: 1px solid #ddd; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="../index.html" class="topbar-back">&#8592; <span data-i18n="back">返回</span></a>
+    <span class="topbar-title" data-i18n="title">照护者健康</span>
+  </div>
+  <button class="lang-toggle" onclick="toggleLang()">EN / 中</button>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('checkin')" data-i18n="tab_checkin">每日签到</button>
+  <button class="tab" onclick="showTab('permission')" data-i18n="tab_permission">许可条</button>
+  <button class="tab" onclick="showTab('selfcare')" data-i18n="tab_selfcare">微自护</button>
+  <button class="tab" onclick="showTab('trends')" data-i18n="tab_trends">心情趋势</button>
+  <button class="tab" onclick="showTab('crisis')" data-i18n="tab_crisis">危机资源</button>
+  <button class="tab" onclick="showTab('connect')" data-i18n="tab_connect">连接</button>
+</div>
+
+<!-- ==================== DAILY CHECK-IN ==================== -->
+<div class="panel" id="panel-checkin">
+  <div class="section-title" data-i18n="checkin_title">每日签到</div>
+  <p class="section-sub" data-i18n="checkin_sub">只需1分钟，关注自己</p>
+
+  <div class="card">
+    <div class="card-title" data-i18n="mood_label">今天心情如何？</div>
+    <div class="mood-row" id="mood-row"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" data-i18n="energy_label">能量水平</div>
+    <div class="energy-row" id="energy-row"></div>
+  </div>
+
+  <div class="card">
+    <div class="card-title" data-i18n="good_thing">今天的一件好事</div>
+    <textarea class="form-textarea" id="good-thing" rows="2" placeholder=""></textarea>
+  </div>
+
+  <div class="card">
+    <div class="card-title" data-i18n="what_need">你现在需要什么？</div>
+    <div class="need-chips" id="need-chips"></div>
+  </div>
+
+  <button class="btn btn-primary" onclick="saveCheckin()" data-i18n="save_checkin">保存今日签到</button>
+  <div id="checkin-saved" class="hidden" style="text-align:center;padding:12px;color:var(--sage-dark);font-weight:500;margin-top:8px;"></div>
+</div>
+
+<!-- ==================== PERMISSION SLIPS ==================== -->
+<div class="panel hidden" id="panel-permission">
+  <div class="section-title" data-i18n="perm_title">许可条</div>
+  <p class="section-sub" data-i18n="perm_sub">你值得被提醒的话</p>
+  <div class="permission-card" id="permission-card">
+    <div class="permission-text" id="permission-text"></div>
+  </div>
+  <div class="permission-nav">
+    <button onclick="prevPermission()">&#8592;</button>
+    <button onclick="nextPermission()">&#8594;</button>
+  </div>
+  <div class="permission-share" onclick="sharePermission()" data-i18n="share_card">分享这张卡片</div>
+  <div style="text-align:center;margin-top:8px;font-size:0.78rem;color:var(--warm-text-light);" id="perm-counter"></div>
+</div>
+
+<!-- ==================== MICRO SELF-CARE ==================== -->
+<div class="panel hidden" id="panel-selfcare">
+  <div class="section-title" data-i18n="care_title">微自护</div>
+  <p class="section-sub" data-i18n="care_sub">现实可行的自我关怀建议</p>
+
+  <div class="daily-suggestion" id="daily-suggestion"></div>
+
+  <div class="time-tabs" id="time-tabs"></div>
+  <div id="care-list"></div>
+</div>
+
+<!-- ==================== MOOD TRENDS ==================== -->
+<div class="panel hidden" id="panel-trends">
+  <div class="section-title" data-i18n="trend_title">心情趋势</div>
+  <p class="section-sub" data-i18n="trend_sub">从签到数据中发现模式</p>
+
+  <div class="chart-toggle" id="chart-toggle"></div>
+  <div class="chart-container" id="mood-chart"></div>
+  <div id="pattern-analysis"></div>
+</div>
+
+<!-- ==================== CRISIS RESOURCES ==================== -->
+<div class="panel hidden" id="panel-crisis">
+  <div class="crisis-banner">
+    <div class="crisis-title" data-i18n="crisis_title">紧急求助热线</div>
+    <div class="crisis-numbers">
+      <span class="crisis-num"><a href="tel:988">988</a> (US)</span>
+      <span class="crisis-num"><a href="tel:113">113</a> (NL)</span>
+      <span class="crisis-num"><a href="tel:08001110111">0800-1110111</a> (DE)</span>
+      <span class="crisis-num"><a href="tel:4001619995">400-161-9995</a> (CN)</span>
+      <span class="crisis-num"><a href="tel:01011523175">010-82951332</a> (CN)</span>
+    </div>
+  </div>
+
+  <div class="section-title" data-i18n="when_help_title">何时寻求专业帮助</div>
+  <div class="help-checklist" id="help-checklist"></div>
+</div>
+
+<!-- ==================== CONNECTION ==================== -->
+<div class="panel hidden" id="panel-connect">
+  <div class="section-title" data-i18n="connect_title">连接与资源</div>
+  <p class="section-sub" data-i18n="connect_sub">你不是一个人在战斗</p>
+  <div id="connect-list"></div>
+</div>
+
+<div style="height:40px;"></div>
+
+<script>
+// ===================================================================
+//  I18N
+// ===================================================================
+let lang = 'zh';
+const I18N = {
+  zh: {
+    back: '返回', title: '照护者健康',
+    tab_checkin: '每日签到', tab_permission: '许可条', tab_selfcare: '微自护',
+    tab_trends: '心情趋势', tab_crisis: '危机资源', tab_connect: '连接',
+    checkin_title: '每日签到', checkin_sub: '只需1分钟，关注自己',
+    mood_label: '今天心情如何？', energy_label: '能量水平',
+    good_thing: '今天的一件好事', what_need: '你现在需要什么？',
+    save_checkin: '保存今日签到', saved_msg: '已保存! 记得照顾自己。',
+    need_rest: '休息', need_connect: '连接', need_move: '运动', need_alone: '独处', need_help: '帮助',
+    good_placeholder: '写下今天让你感到温暖的事...',
+    perm_title: '许可条', perm_sub: '你值得被提醒的话',
+    share_card: '分享这张卡片',
+    care_title: '微自护', care_sub: '现实可行的自我关怀建议',
+    daily_label: '今日建议',
+    time_2: '2分钟', time_5: '5分钟', time_15: '15分钟', time_30: '30分钟',
+    trend_title: '心情趋势', trend_sub: '从签到数据中发现模式',
+    view_week: '本周', view_month: '本月',
+    crisis_title: '紧急求助热线',
+    when_help_title: '何时寻求专业帮助',
+    connect_title: '连接与资源', connect_sub: '你不是一个人在战斗',
+    pattern_hardest: '最难的日子: ', pattern_best: '最好的日子: ',
+    pattern_avg_mood: '平均心情: ', pattern_avg_energy: '平均能量: ',
+    pattern_none: '需要更多数据来分析模式。继续签到吧!',
+    groups: '支持社群', books: '推荐阅读', podcasts: '播客', local: '本地资源',
+    mood_names: ['很差','不好','一般','不错','很好'],
+    days: ['周日','周一','周二','周三','周四','周五','周六']
+  },
+  en: {
+    back: 'Back', title: 'Caregiver Wellness',
+    tab_checkin: 'Check-in', tab_permission: 'Permission', tab_selfcare: 'Self-Care',
+    tab_trends: 'Trends', tab_crisis: 'Crisis', tab_connect: 'Connect',
+    checkin_title: 'Daily Check-in', checkin_sub: 'Just 1 minute — focus on you',
+    mood_label: 'How are you feeling today?', energy_label: 'Energy Level',
+    good_thing: 'One Good Thing Today', what_need: 'What do you need right now?',
+    save_checkin: 'Save Check-in', saved_msg: 'Saved! Remember to take care of yourself.',
+    need_rest: 'Rest', need_connect: 'Connection', need_move: 'Movement', need_alone: 'Alone Time', need_help: 'Help',
+    good_placeholder: 'Write something that warmed your heart today...',
+    perm_title: 'Permission Slips', perm_sub: 'Reminders you deserve to hear',
+    share_card: 'Share this card',
+    care_title: 'Micro Self-Care', care_sub: 'Realistic self-care suggestions',
+    daily_label: "Today's Suggestion",
+    time_2: '2 min', time_5: '5 min', time_15: '15 min', time_30: '30 min',
+    trend_title: 'Mood Trends', trend_sub: 'Discover patterns from your check-in data',
+    view_week: 'This Week', view_month: 'This Month',
+    crisis_title: 'Crisis Hotlines',
+    when_help_title: 'When to Seek Professional Help',
+    connect_title: 'Connection & Resources', connect_sub: "You're not alone in this",
+    pattern_hardest: 'Hardest day: ', pattern_best: 'Best day: ',
+    pattern_avg_mood: 'Avg mood: ', pattern_avg_energy: 'Avg energy: ',
+    pattern_none: 'Need more data to analyze patterns. Keep checking in!',
+    groups: 'Support Groups', books: 'Recommended Reading', podcasts: 'Podcasts', local: 'Local Resources',
+    mood_names: ['Awful','Bad','Okay','Good','Great'],
+    days: ['Sun','Mon','Tue','Wed','Thu','Fri','Sat']
+  }
+};
+
+function t(key) { return I18N[lang][key] || key; }
+function applyLang() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (I18N[lang][k]) el.textContent = I18N[lang][k];
+  });
+  const gt = document.getElementById('good-thing');
+  if (gt) gt.placeholder = t('good_placeholder');
+}
+function toggleLang() { lang = lang === 'zh' ? 'en' : 'zh'; applyLang(); renderAll(); }
+
+// ===================================================================
+//  DATA
+// ===================================================================
+const STORAGE_KEY = 'withyou_caregiver';
+let data = { checkins: [] };
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+function load() { const s = localStorage.getItem(STORAGE_KEY); if (s) { try { data = JSON.parse(s); } catch(e) {} } }
+
+// ===================================================================
+//  TABS
+// ===================================================================
+const TABS = ['checkin','permission','selfcare','trends','crisis','connect'];
+let activeTab = 'checkin';
+function showTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab').forEach((el, i) => el.classList.toggle('active', TABS[i] === tab));
+  TABS.forEach(p => document.getElementById('panel-' + p).classList.toggle('hidden', p !== tab));
+  renderAll();
+}
+
+// ===================================================================
+//  DAILY CHECK-IN
+// ===================================================================
+const MOODS = ['😟','😔','😐','🙂','😊'];
+const NEEDS = ['need_rest','need_connect','need_move','need_alone','need_help'];
+let checkinState = { mood: -1, energy: 0, goodThing: '', needs: [] };
+
+function renderCheckin() {
+  // Mood faces
+  document.getElementById('mood-row').innerHTML = MOODS.map((face, i) =>
+    `<span class="mood-face ${checkinState.mood === i ? 'selected' : ''}" onclick="setMood(${i})">${face}</span>`
+  ).join('');
+
+  // Energy bars
+  document.getElementById('energy-row').innerHTML = [1,2,3,4,5].map(i => {
+    const h = i * 20;
+    const sel = checkinState.energy >= i ? 'selected' : '';
+    return `<div style="text-align:center;">
+      <div class="energy-bar ${sel}" onclick="setEnergy(${i})" style="height:50px;">
+        <div class="fill" style="height:${h}%;"></div>
+      </div>
+      <div class="energy-label">${i}</div>
+    </div>`;
+  }).join('');
+
+  // Need chips
+  document.getElementById('need-chips').innerHTML = NEEDS.map(n =>
+    `<span class="need-chip ${checkinState.needs.includes(n) ? 'selected' : ''}" onclick="toggleNeed('${n}')">${t(n)}</span>`
+  ).join('');
+}
+
+function setMood(i) { checkinState.mood = i; renderCheckin(); }
+function setEnergy(i) { checkinState.energy = i; renderCheckin(); }
+function toggleNeed(n) {
+  const idx = checkinState.needs.indexOf(n);
+  if (idx >= 0) checkinState.needs.splice(idx, 1);
+  else checkinState.needs.push(n);
+  renderCheckin();
+}
+
+function saveCheckin() {
+  if (checkinState.mood < 0) return;
+  const goodThing = document.getElementById('good-thing').value.trim();
+  const today = new Date().toISOString().split('T')[0];
+
+  // Remove existing checkin for today
+  data.checkins = data.checkins.filter(c => c.date !== today);
+
+  data.checkins.push({
+    date: today,
+    day: new Date().getDay(),
+    mood: checkinState.mood,
+    energy: checkinState.energy,
+    goodThing,
+    needs: [...checkinState.needs]
+  });
+  save();
+
+  const el = document.getElementById('checkin-saved');
+  el.textContent = t('saved_msg');
+  el.classList.remove('hidden');
+  setTimeout(() => el.classList.add('hidden'), 3000);
+}
+
+// ===================================================================
+//  PERMISSION SLIPS
+// ===================================================================
+const PERMISSIONS = {
+  zh: [
+    '你可以感到沮丧。这不意味着你不爱你的孩子。',
+    '你的需求同样重要。',
+    '今天做得够好就是够好。',
+    '你可以请求帮助。这是力量，不是软弱。',
+    '你可以为自己哭泣，而不只是为孩子。',
+    '你可以暂时放下，世界不会因此崩塌。',
+    '你不需要时刻保持积极。',
+    '你可以对"再多做一点"说不。',
+    '你可以为失去的期望而悲伤。',
+    '你已经在做一件非常了不起的事情了。',
+    '你可以在孩子睡着后做一些只属于自己的事。',
+    '你的感受是真实的，也是正当的。',
+    '不完美的一天也是有价值的一天。',
+    '你可以同时爱你的孩子和觉得这很难。',
+    '你不需要证明自己值得休息。',
+    '你可以对治疗计划有疑问。',
+    '今天如果只完成了最基本的事情，那也很好。',
+    '你可以享受与孩子无关的快乐。',
+    '你可以承认自己也需要支持。',
+    '你比你以为的更坚强，也比你感觉的更被爱。',
+    '你可以改变主意。成长不是背叛。',
+    '有些日子只是活着就够了。'
+  ],
+  en: [
+    'You are allowed to feel frustrated. It doesn\'t mean you love your child any less.',
+    'Your needs matter too.',
+    'Good enough today IS good enough.',
+    'You are allowed to ask for help. It\'s strength, not weakness.',
+    'You are allowed to cry for yourself, not just for your child.',
+    'You can step away for a moment. The world won\'t fall apart.',
+    'You don\'t have to be positive all the time.',
+    'You are allowed to say no to "just one more thing."',
+    'You are allowed to grieve the expectations you had.',
+    'You are already doing something extraordinary.',
+    'You are allowed to do something just for yourself after bedtime.',
+    'Your feelings are real and valid.',
+    'An imperfect day is still a worthwhile day.',
+    'You can love your child AND find this hard. Both are true.',
+    'You don\'t need to earn the right to rest.',
+    'You are allowed to question the treatment plan.',
+    'If all you managed today was the bare minimum, that\'s okay.',
+    'You are allowed to enjoy things that have nothing to do with your child.',
+    'You are allowed to admit you need support too.',
+    'You are stronger than you think and more loved than you feel.',
+    'You are allowed to change your mind. Growth is not betrayal.',
+    'Some days, just surviving is enough.'
+  ]
+};
+
+let permIdx = Math.floor(Math.random() * PERMISSIONS.zh.length);
+
+function renderPermission() {
+  const perms = PERMISSIONS[lang] || PERMISSIONS.en;
+  document.getElementById('permission-text').textContent = perms[permIdx % perms.length];
+  document.getElementById('perm-counter').textContent = `${(permIdx % perms.length) + 1} / ${perms.length}`;
+}
+
+function nextPermission() { permIdx++; renderPermission(); }
+function prevPermission() { permIdx = permIdx > 0 ? permIdx - 1 : PERMISSIONS[lang].length - 1; renderPermission(); }
+
+function sharePermission() {
+  const text = PERMISSIONS[lang][permIdx % PERMISSIONS[lang].length];
+  if (navigator.share) {
+    navigator.share({ title: lang === 'zh' ? '同路 WithYou - 许可条' : 'WithYou - Permission Slip', text });
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text);
+    alert(lang === 'zh' ? '已复制到剪贴板' : 'Copied to clipboard');
+  }
+}
+
+// ===================================================================
+//  MICRO SELF-CARE
+// ===================================================================
+const CARE = {
+  zh: {
+    '2': [
+      { icon: '🫁', text: '做3次深呼吸: 吸4秒，屏4秒，呼6秒' },
+      { icon: '💧', text: '喝一杯水，慢慢喝' },
+      { icon: '🪟', text: '站到窗前，看看外面的天空' },
+      { icon: '🤲', text: '搓热双手，轻轻捂住眼睛30秒' }
+    ],
+    '5': [
+      { icon: '🎵', text: '听一首你喜欢的歌' },
+      { icon: '🧘', text: '做5分钟简单拉伸' },
+      { icon: '📝', text: '写下3件你感恩的事' },
+      { icon: '☕', text: '泡一杯茶，专注品味' }
+    ],
+    '15': [
+      { icon: '🚶', text: '出去走走，即使只绕小区一圈' },
+      { icon: '📱', text: '给一个朋友打电话聊聊天' },
+      { icon: '📖', text: '读几页喜欢的书' },
+      { icon: '🎧', text: '听一集喜欢的播客' }
+    ],
+    '30': [
+      { icon: '🏋️', text: '做一次简单运动(瑜伽、快走、跳绳)' },
+      { icon: '🛁', text: '泡个热水澡' },
+      { icon: '🎨', text: '做你喜欢的事(画画、烘焙、园艺...)' },
+      { icon: '💤', text: '小睡一会儿(设好闹钟!)' }
+    ]
+  },
+  en: {
+    '2': [
+      { icon: '🫁', text: 'Take 3 deep breaths: inhale 4s, hold 4s, exhale 6s' },
+      { icon: '💧', text: 'Drink a glass of water, slowly' },
+      { icon: '🪟', text: 'Stand by a window, look at the sky' },
+      { icon: '🤲', text: 'Rub hands warm, place over eyes for 30 seconds' }
+    ],
+    '5': [
+      { icon: '🎵', text: 'Listen to a song you love' },
+      { icon: '🧘', text: '5 minutes of simple stretching' },
+      { icon: '📝', text: 'Write down 3 things you\'re grateful for' },
+      { icon: '☕', text: 'Make a cup of tea, savor every sip' }
+    ],
+    '15': [
+      { icon: '🚶', text: 'Go for a walk, even just around the block' },
+      { icon: '📱', text: 'Call a friend for a chat' },
+      { icon: '📖', text: 'Read a few pages of a book you enjoy' },
+      { icon: '🎧', text: 'Listen to a podcast episode' }
+    ],
+    '30': [
+      { icon: '🏋️', text: 'Do a simple workout (yoga, brisk walk, jump rope)' },
+      { icon: '🛁', text: 'Take a hot bath' },
+      { icon: '🎨', text: 'Do something you enjoy (draw, bake, garden...)' },
+      { icon: '💤', text: 'Take a power nap (set an alarm!)' }
+    ]
+  }
+};
+
+let activeTime = '2';
+
+function renderSelfCare() {
+  const times = ['2','5','15','30'];
+  document.getElementById('time-tabs').innerHTML = times.map(t_ =>
+    `<span class="time-tab ${activeTime === t_ ? 'active' : ''}" onclick="activeTime='${t_}';renderSelfCare()">${t('time_' + t_)}</span>`
+  ).join('');
+
+  const items = CARE[lang]?.[activeTime] || CARE.en[activeTime] || [];
+  document.getElementById('care-list').innerHTML = items.map(item =>
+    `<div class="care-item"><span class="care-icon">${item.icon}</span><span>${item.text}</span></div>`
+  ).join('');
+
+  // Daily random suggestion
+  const allItems = Object.values(CARE[lang] || CARE.en).flat();
+  const dayIdx = Math.floor(Date.now() / 86400000) % allItems.length;
+  const sug = allItems[dayIdx];
+  document.getElementById('daily-suggestion').innerHTML =
+    `<div class="label">${t('daily_label')}</div><div class="suggestion">${sug.icon} ${sug.text}</div>`;
+}
+
+// ===================================================================
+//  MOOD TRENDS
+// ===================================================================
+let chartView = 'week';
+
+function renderTrends() {
+  document.getElementById('chart-toggle').innerHTML =
+    `<span class="chart-btn ${chartView==='week'?'active':''}" onclick="chartView='week';renderTrends()">${t('view_week')}</span>
+     <span class="chart-btn ${chartView==='month'?'active':''}" onclick="chartView='month';renderTrends()">${t('view_month')}</span>`;
+
+  const now = new Date();
+  const days = chartView === 'week' ? 7 : 30;
+  const entries = [];
+
+  for (let i = days - 1; i >= 0; i--) {
+    const d = new Date(now);
+    d.setDate(d.getDate() - i);
+    const dateStr = d.toISOString().split('T')[0];
+    const entry = data.checkins.find(c => c.date === dateStr);
+    entries.push({
+      date: dateStr,
+      label: chartView === 'week' ? t('days')[d.getDay()] : `${d.getMonth()+1}/${d.getDate()}`,
+      mood: entry ? entry.mood : -1,
+      energy: entry ? entry.energy : -1
+    });
+  }
+
+  // Draw SVG chart
+  const w = 600, h = 200, pad = 40;
+  const step = (w - pad * 2) / (entries.length - 1 || 1);
+  let svg = `<svg viewBox="0 0 ${w} ${h + 30}">`;
+
+  // Grid
+  for (let i = 0; i <= 4; i++) {
+    const y = pad + (h - pad * 2) * (1 - i / 4);
+    svg += `<line x1="${pad}" y1="${y}" x2="${w-pad}" y2="${y}" stroke="#F0EBDF" stroke-width="1"/>`;
+    svg += `<text x="${pad-8}" y="${y+4}" text-anchor="end" fill="#6B6B6B" font-size="10">${i+1}</text>`;
+  }
+
+  // Mood line
+  let moodPts = [], energyPts = [];
+  entries.forEach((e, i) => {
+    const x = pad + i * step;
+    if (e.mood >= 0) moodPts.push(`${x},${pad + (h - pad * 2) * (1 - e.mood / 4)}`);
+    if (e.energy >= 0) energyPts.push(`${x},${pad + (h - pad * 2) * (1 - (e.energy - 1) / 4)}`);
+
+    // X labels
+    if (chartView === 'week' || i % Math.ceil(entries.length / 10) === 0) {
+      svg += `<text x="${x}" y="${h + 10}" text-anchor="middle" fill="#6B6B6B" font-size="9">${e.label}</text>`;
+    }
+  });
+
+  if (moodPts.length > 1) {
+    svg += `<polyline points="${moodPts.join(' ')}" fill="none" stroke="#9B8EC5" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>`;
+  }
+  moodPts.length && entries.forEach((e, i) => {
+    if (e.mood >= 0) {
+      const x = pad + i * step;
+      const y = pad + (h - pad * 2) * (1 - e.mood / 4);
+      svg += `<circle cx="${x}" cy="${y}" r="4" fill="#9B8EC5"/>`;
+    }
+  });
+
+  if (energyPts.length > 1) {
+    svg += `<polyline points="${energyPts.join(' ')}" fill="none" stroke="#8FB09D" stroke-width="2" stroke-dasharray="6,3" stroke-linecap="round"/>`;
+  }
+
+  // Legend
+  svg += `<circle cx="${pad}" cy="${h+24}" r="4" fill="#9B8EC5"/>`;
+  svg += `<text x="${pad+10}" y="${h+28}" fill="#6B6B6B" font-size="10">${lang==='zh'?'心情':'Mood'}</text>`;
+  svg += `<line x1="${pad+60}" y1="${h+24}" x2="${pad+80}" y2="${h+24}" stroke="#8FB09D" stroke-width="2" stroke-dasharray="4,2"/>`;
+  svg += `<text x="${pad+86}" y="${h+28}" fill="#6B6B6B" font-size="10">${lang==='zh'?'能量':'Energy'}</text>`;
+
+  svg += '</svg>';
+  document.getElementById('mood-chart').innerHTML = svg;
+
+  // Pattern analysis
+  const valid = data.checkins.filter(c => {
+    const d = new Date(c.date);
+    const diff = (now - d) / 86400000;
+    return diff <= days;
+  });
+
+  if (valid.length < 3) {
+    document.getElementById('pattern-analysis').innerHTML =
+      `<div class="pattern-box">${t('pattern_none')}</div>`;
+    return;
+  }
+
+  const byDay = [0,0,0,0,0,0,0].map(() => ({ sum: 0, count: 0 }));
+  let totalMood = 0, totalEnergy = 0;
+  valid.forEach(c => {
+    byDay[c.day].sum += c.mood;
+    byDay[c.day].count++;
+    totalMood += c.mood;
+    totalEnergy += c.energy;
+  });
+
+  let hardest = -1, hardestAvg = 5, best = -1, bestAvg = -1;
+  byDay.forEach((d, i) => {
+    if (d.count > 0) {
+      const avg = d.sum / d.count;
+      if (avg < hardestAvg) { hardestAvg = avg; hardest = i; }
+      if (avg > bestAvg) { bestAvg = avg; best = i; }
+    }
+  });
+
+  const avgMood = (totalMood / valid.length).toFixed(1);
+  const avgEnergy = (totalEnergy / valid.length).toFixed(1);
+  const dayNames = t('days');
+  const moodNames = t('mood_names');
+
+  let analysis = `<div class="pattern-box">`;
+  if (hardest >= 0) analysis += `<div><strong>${t('pattern_hardest')}</strong>${dayNames[hardest]}</div>`;
+  if (best >= 0) analysis += `<div><strong>${t('pattern_best')}</strong>${dayNames[best]}</div>`;
+  analysis += `<div><strong>${t('pattern_avg_mood')}</strong>${avgMood}/4 (${moodNames[Math.round(avgMood)]})</div>`;
+  analysis += `<div><strong>${t('pattern_avg_energy')}</strong>${avgEnergy}/5</div>`;
+  analysis += '</div>';
+  document.getElementById('pattern-analysis').innerHTML = analysis;
+}
+
+// ===================================================================
+//  CRISIS RESOURCES
+// ===================================================================
+function renderCrisis() {
+  const items = lang === 'zh' ? [
+    '持续2周以上感到绝望或无助',
+    '对以前喜欢的事情完全失去兴趣',
+    '睡眠严重困难(失眠或嗜睡)',
+    '食欲显著变化(暴食或厌食)',
+    '反复出现伤害自己或孩子的想法',
+    '无法完成基本日常活动',
+    '使用酒精或药物来应对压力',
+    '与家人、朋友越来越隔离',
+    '频繁的惊恐发作或严重焦虑',
+    '感觉自己无法再继续下去'
+  ] : [
+    'Feeling hopeless or helpless for 2+ weeks',
+    'Complete loss of interest in things you used to enjoy',
+    'Severe sleep problems (insomnia or oversleeping)',
+    'Significant appetite changes (overeating or loss of appetite)',
+    'Recurring thoughts of harming yourself or your child',
+    'Unable to complete basic daily activities',
+    'Using alcohol or substances to cope',
+    'Increasing isolation from family and friends',
+    'Frequent panic attacks or severe anxiety',
+    'Feeling like you cannot go on'
+  ];
+
+  document.getElementById('help-checklist').innerHTML =
+    `<div class="title">${t('when_help_title')}</div>` +
+    items.map(item => `<div class="help-item"><span>&#9679;</span><span>${item}</span></div>`).join('');
+}
+
+// ===================================================================
+//  CONNECTION RESOURCES
+// ===================================================================
+function renderConnect() {
+  const resources = lang === 'zh' ? {
+    groups: [
+      { name: 'Reddit r/Autism_Parenting', url: 'https://reddit.com/r/Autism_Parenting', tag: 'EN' },
+      { name: 'Reddit r/AutismTranslated', url: 'https://reddit.com/r/AutismTranslated', tag: 'EN' },
+      { name: '星星的孩子 (微信群)', url: '#', tag: 'WeChat' },
+      { name: '自闭症互助联盟', url: '#', tag: 'CN' },
+      { name: 'Facebook: Autism Parents Support', url: 'https://facebook.com/groups/autismparents', tag: 'Global' }
+    ],
+    books: [
+      { name: '《不同的孩子》', url: '#', tag: '中文' },
+      { name: 'Uniquely Human - Barry Prizant', url: '#', tag: 'EN' },
+      { name: 'The Reason I Jump - Naoki Higashida', url: '#', tag: 'EN/中' },
+      { name: '《与自闭症孩子同行》', url: '#', tag: '中文' }
+    ],
+    podcasts: [
+      { name: 'Autism Stories', url: '#', tag: 'EN' },
+      { name: 'The Autism Helper Podcast', url: '#', tag: 'EN' },
+      { name: 'Two Sides of the Spectrum', url: '#', tag: 'EN' }
+    ],
+    local: [
+      { name: 'Autism Speaks (US)', url: 'https://autismspeaks.org', tag: 'US' },
+      { name: 'NVA (荷兰自闭症协会)', url: 'https://www.autisme.nl', tag: 'NL' },
+      { name: 'Autismus Deutschland', url: 'https://www.autismus.de', tag: 'DE' },
+      { name: '中国精神残疾人及亲友协会', url: '#', tag: 'CN' },
+      { name: 'National Autistic Society (UK)', url: 'https://www.autism.org.uk', tag: 'UK' }
+    ]
+  } : {
+    groups: [
+      { name: 'Reddit r/Autism_Parenting', url: 'https://reddit.com/r/Autism_Parenting', tag: 'EN' },
+      { name: 'Reddit r/AutismTranslated', url: 'https://reddit.com/r/AutismTranslated', tag: 'EN' },
+      { name: 'WeChat Support Groups (China)', url: '#', tag: 'WeChat' },
+      { name: 'Facebook: Autism Parents Support', url: 'https://facebook.com/groups/autismparents', tag: 'Global' }
+    ],
+    books: [
+      { name: 'Uniquely Human - Barry Prizant', url: '#', tag: 'EN' },
+      { name: 'The Reason I Jump - Naoki Higashida', url: '#', tag: 'EN' },
+      { name: 'An Early Start for Your Child with Autism', url: '#', tag: 'EN' },
+      { name: 'Neurotribes - Steve Silberman', url: '#', tag: 'EN' }
+    ],
+    podcasts: [
+      { name: 'Autism Stories', url: '#', tag: 'EN' },
+      { name: 'The Autism Helper Podcast', url: '#', tag: 'EN' },
+      { name: 'Two Sides of the Spectrum', url: '#', tag: 'EN' }
+    ],
+    local: [
+      { name: 'Autism Speaks (US)', url: 'https://autismspeaks.org', tag: 'US' },
+      { name: 'NVA (Dutch Autism Association)', url: 'https://www.autisme.nl', tag: 'NL' },
+      { name: 'Autismus Deutschland', url: 'https://www.autismus.de', tag: 'DE' },
+      { name: 'National Autistic Society (UK)', url: 'https://www.autism.org.uk', tag: 'UK' },
+      { name: 'CDPF (China)', url: '#', tag: 'CN' }
+    ]
+  };
+
+  const sections = ['groups','books','podcasts','local'];
+  document.getElementById('connect-list').innerHTML = sections.map(sec =>
+    `<div class="resource-group">
+      <div class="resource-group-title">${t(sec)}</div>
+      ${resources[sec].map(r =>
+        `<a class="resource-link" href="${r.url}" target="_blank">${r.name}<span class="resource-tag">${r.tag}</span></a>`
+      ).join('')}
+    </div>`
+  ).join('');
+}
+
+// ===================================================================
+//  RENDER ALL
+// ===================================================================
+function renderAll() {
+  applyLang();
+  renderCheckin();
+  renderPermission();
+  renderSelfCare();
+  renderTrends();
+  renderCrisis();
+  renderConnect();
+}
+
+// ===================================================================
+//  INIT
+// ===================================================================
+load();
+renderAll();
+</script>
+</body>
+</html>

@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>随身工具包 — 同路 WithYou</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --sage: #6B8F7B;
+  --sage-light: #8FB09D;
+  --sage-pale: #E8F0EB;
+  --sage-dark: #4A6B56;
+  --cream: #FAF7F0;
+  --cream-dark: #F0EBDF;
+  --blue: #7BA7BC;
+  --blue-light: #A5C7D6;
+  --blue-pale: #E4EFF4;
+  --warm-text: #3D3D3D;
+  --warm-text-light: #6B6B6B;
+  --coral: #D4917B;
+  --coral-pale: #F5E0D8;
+  --yellow: #C9A84C;
+  --yellow-bg: #FDF6E3;
+  --red: #C47A6E;
+  --red-bg: #F8E8E5;
+  --green-bg: #E8F0EB;
+  --shadow: 0 2px 16px rgba(107,143,123,0.10);
+  --shadow-lg: 0 6px 28px rgba(107,143,123,0.14);
+  --radius: 16px;
+  --radius-sm: 10px;
+}
+
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+  background: var(--cream);
+  color: var(--warm-text);
+  line-height: 1.6;
+  min-height: 100vh;
+}
+.hidden { display: none !important; }
+
+/* ===== Top Bar ===== */
+.topbar {
+  background: #fff; border-bottom: 1px solid var(--cream-dark);
+  padding: 12px 20px; display: flex; align-items: center; justify-content: space-between;
+  position: sticky; top: 0; z-index: 100;
+}
+.topbar-left { display: flex; align-items: center; gap: 10px; }
+.topbar-back { color: var(--sage); text-decoration: none; font-size: 0.88rem; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+.topbar-title { font-size: 0.95rem; font-weight: 600; color: var(--sage); }
+.lang-toggle {
+  background: var(--sage-pale); border: none; border-radius: 20px; padding: 4px 12px;
+  font-size: 0.78rem; font-weight: 500; color: var(--sage); cursor: pointer; transition: background 0.2s;
+}
+.lang-toggle:hover { background: var(--sage-light); color: #fff; }
+
+/* ===== Tabs ===== */
+.tabs {
+  display: flex; gap: 4px; padding: 16px 20px 0; max-width: 680px; margin: 0 auto;
+  overflow-x: auto; -webkit-overflow-scrolling: touch;
+}
+.tab {
+  padding: 10px 14px; border-radius: var(--radius-sm) var(--radius-sm) 0 0;
+  font-size: 0.78rem; font-weight: 500; background: var(--cream-dark);
+  color: var(--warm-text-light); border: none; cursor: pointer; white-space: nowrap; transition: all 0.2s;
+}
+.tab.active { background: #fff; color: var(--sage); font-weight: 600; }
+
+/* ===== Panel ===== */
+.panel {
+  background: #fff; border-radius: 0 0 var(--radius) var(--radius);
+  padding: 24px 20px; margin: 0 auto; max-width: 680px; min-height: 400px; box-shadow: var(--shadow);
+}
+
+/* ===== Card ===== */
+.card {
+  background: #fff; border: 1px solid var(--cream-dark); border-radius: var(--radius-sm);
+  padding: 16px; margin-bottom: 12px;
+}
+.card-title { font-size: 0.92rem; font-weight: 600; color: var(--sage-dark); margin-bottom: 8px; }
+
+/* ===== Buttons ===== */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 24px; border-radius: var(--radius-sm); font-size: 0.92rem;
+  font-weight: 600; font-family: inherit; border: none; cursor: pointer; transition: all 0.2s;
+}
+.btn-primary { background: var(--sage); color: #fff; width: 100%; }
+.btn-primary:hover { background: var(--sage-dark); }
+.btn-secondary { background: #fff; color: var(--sage); border: 2px solid var(--sage-pale); }
+.btn-secondary:hover { background: var(--sage-pale); }
+.btn-small { padding: 8px 16px; font-size: 0.82rem; }
+.btn-danger { background: var(--red-bg); color: var(--red); border: none; }
+
+/* ===== Form ===== */
+.form-group { margin-bottom: 16px; }
+.form-label { display: block; font-size: 0.85rem; font-weight: 500; margin-bottom: 6px; color: var(--warm-text); }
+.form-input, .form-select, .form-textarea {
+  width: 100%; padding: 12px 14px; border: 2px solid var(--cream-dark);
+  border-radius: var(--radius-sm); font-size: 0.92rem; font-family: inherit;
+  color: var(--warm-text); background: #fff; outline: none; transition: border-color 0.2s;
+}
+.form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--sage-light); }
+.form-textarea { resize: vertical; min-height: 60px; }
+
+.section-title { font-size: 1.05rem; font-weight: 600; color: var(--sage-dark); margin-bottom: 8px; }
+.section-sub { font-size: 0.82rem; color: var(--warm-text-light); margin-bottom: 16px; }
+
+/* ===== Explain Card ===== */
+.explain-card-preview {
+  border: 2px solid var(--sage); border-radius: var(--radius-sm);
+  padding: 16px; max-width: 340px; margin: 0 auto 16px; font-size: 0.82rem;
+  line-height: 1.5; background: #fff;
+}
+.explain-card-preview .ec-title {
+  font-weight: 700; color: var(--sage-dark); margin-bottom: 8px; text-align: center;
+  font-size: 0.88rem;
+}
+.explain-card-preview .ec-body { color: var(--warm-text); }
+.explain-card-preview .ec-custom { font-style: italic; color: var(--sage); margin-top: 8px; }
+
+.lang-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.lang-chip {
+  padding: 6px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 500;
+  border: 2px solid var(--cream-dark); background: #fff; color: var(--warm-text-light);
+  cursor: pointer; transition: all 0.2s;
+}
+.lang-chip.active { background: var(--sage-pale); border-color: var(--sage); color: var(--sage-dark); }
+
+.template-chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.tpl-chip {
+  padding: 6px 12px; border-radius: 20px; font-size: 0.78rem; font-weight: 500;
+  border: 2px solid var(--cream-dark); background: #fff; color: var(--warm-text-light);
+  cursor: pointer; transition: all 0.2s;
+}
+.tpl-chip.active { background: var(--blue-pale); border-color: var(--blue); color: var(--blue); }
+
+/* ===== Emergency Info Card ===== */
+.emergency-card {
+  border: 3px solid var(--red); border-radius: var(--radius); padding: 20px;
+  max-width: 400px; margin: 0 auto; background: #fff;
+}
+.ec-header { text-align: center; background: var(--red); color: #fff; padding: 10px; border-radius: var(--radius-sm); margin: -20px -20px 16px; font-weight: 700; }
+.ec-row { display: flex; gap: 12px; margin-bottom: 10px; }
+.ec-row .form-group { flex: 1; margin-bottom: 0; }
+.ec-label { font-size: 0.78rem; font-weight: 600; color: var(--red); text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+
+/* ===== Sensory Bag ===== */
+.bag-item {
+  display: flex; align-items: center; gap: 10px; padding: 10px 14px;
+  border-bottom: 1px solid var(--cream-dark); font-size: 0.88rem;
+}
+.bag-item:last-child { border-bottom: none; }
+.bag-item input[type="checkbox"] { width: 20px; height: 20px; accent-color: var(--sage); flex-shrink: 0; }
+.bag-item .item-text { flex: 1; }
+.bag-item .remove-btn { color: var(--red); cursor: pointer; font-size: 0.78rem; }
+
+/* ===== Calming Cards ===== */
+.calming-card {
+  background: linear-gradient(135deg, var(--sage-pale), var(--blue-pale));
+  border-radius: var(--radius); padding: 28px 20px; text-align: center;
+  min-height: 180px; display: flex; flex-direction: column; justify-content: center;
+  margin-bottom: 16px;
+}
+.calming-icon { font-size: 3rem; margin-bottom: 12px; }
+.calming-title { font-size: 1.1rem; font-weight: 700; color: var(--sage-dark); margin-bottom: 8px; }
+.calming-desc { font-size: 0.88rem; color: var(--warm-text); max-width: 360px; margin: 0 auto; }
+.calming-nav { display: flex; justify-content: center; gap: 16px; }
+.calming-nav button {
+  background: var(--sage); color: #fff; border: none; border-radius: 50%;
+  width: 40px; height: 40px; font-size: 1.2rem; cursor: pointer; transition: all 0.2s;
+}
+.calming-nav button:hover { background: var(--sage-dark); }
+
+/* ===== Contacts ===== */
+.contact-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 14px; border-bottom: 1px solid var(--cream-dark);
+}
+.contact-item:last-child { border-bottom: none; }
+.contact-role { font-size: 0.78rem; color: var(--warm-text-light); }
+.contact-name { font-weight: 500; font-size: 0.88rem; }
+.contact-phone { font-size: 0.85rem; color: var(--sage); }
+
+/* ===== Timer ===== */
+.timer-container { text-align: center; padding: 20px; }
+.timer-circle {
+  width: 200px; height: 200px; margin: 0 auto 20px; position: relative;
+}
+.timer-circle svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.timer-circle .bg { fill: none; stroke: var(--cream-dark); stroke-width: 8; }
+.timer-circle .progress { fill: none; stroke: var(--sage); stroke-width: 8; stroke-linecap: round; transition: stroke-dashoffset 1s linear; }
+.timer-display {
+  position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+  font-size: 2.5rem; font-weight: 700; color: var(--sage-dark);
+}
+.timer-controls { display: flex; justify-content: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.timer-preset {
+  padding: 8px 16px; border-radius: 20px; font-size: 0.82rem; font-weight: 500;
+  border: 2px solid var(--cream-dark); background: #fff; color: var(--warm-text);
+  cursor: pointer; transition: all 0.2s;
+}
+.timer-preset.active { background: var(--sage-pale); border-color: var(--sage); color: var(--sage-dark); }
+
+@media print {
+  .topbar, .tabs, .btn, .timer-controls, .calming-nav, .lang-chips, .template-chips { display: none !important; }
+  .panel { box-shadow: none; border: 1px solid #ddd; }
+  .explain-card-preview, .emergency-card { page-break-inside: avoid; border: 2px solid #333; }
+}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <a href="../index.html" class="topbar-back">&#8592; <span data-i18n="back">返回</span></a>
+    <span class="topbar-title" data-i18n="title">随身工具包</span>
+  </div>
+  <button class="lang-toggle" onclick="toggleLang()">EN / 中</button>
+</div>
+
+<div class="tabs">
+  <button class="tab active" onclick="showTab('explain')" data-i18n="tab_explain">解释卡</button>
+  <button class="tab" onclick="showTab('emergency')" data-i18n="tab_emergency">紧急卡</button>
+  <button class="tab" onclick="showTab('bag')" data-i18n="tab_bag">感觉包</button>
+  <button class="tab" onclick="showTab('calming')" data-i18n="tab_calming">安抚策略</button>
+  <button class="tab" onclick="showTab('contacts')" data-i18n="tab_contacts">重要号码</button>
+  <button class="tab" onclick="showTab('timer')" data-i18n="tab_timer">计时器</button>
+</div>
+
+<!-- ==================== EXPLAIN CARDS ==================== -->
+<div class="panel" id="panel-explain">
+  <div class="section-title" data-i18n="explain_title">解释卡</div>
+  <p class="section-sub" data-i18n="explain_sub">帮助他人理解的卡片，钱包大小可打印</p>
+
+  <div class="form-group">
+    <div class="form-label" data-i18n="card_template">选择模板</div>
+    <div class="template-chips" id="explain-tpl-chips"></div>
+  </div>
+
+  <div class="form-group">
+    <div class="form-label" data-i18n="card_lang">卡片语言</div>
+    <div class="lang-chips" id="explain-lang-chips"></div>
+  </div>
+
+  <div class="form-group">
+    <div class="form-label" data-i18n="child_name">孩子的名字</div>
+    <input class="form-input" id="explain-name" oninput="renderExplainCard()" placeholder="">
+  </div>
+  <div class="form-group">
+    <div class="form-label" data-i18n="custom_line">自定义说明</div>
+    <input class="form-input" id="explain-custom" oninput="renderExplainCard()" placeholder="">
+  </div>
+
+  <div class="explain-card-preview" id="explain-preview"></div>
+
+  <button class="btn btn-primary" onclick="window.print()" data-i18n="print_card">打印卡片</button>
+</div>
+
+<!-- ==================== EMERGENCY INFO CARD ==================== -->
+<div class="panel hidden" id="panel-emergency">
+  <div class="section-title" data-i18n="emg_title">紧急信息卡</div>
+  <p class="section-sub" data-i18n="emg_sub">可打印的层压卡片大小</p>
+
+  <div class="emergency-card" id="emergency-card-form">
+    <div class="ec-header" data-i18n="emg_header">紧急信息 EMERGENCY INFO</div>
+    <div class="form-group"><div class="ec-label" data-i18n="emg_name">姓名</div><input class="form-input" id="emg-name" oninput="saveEmergencyCard()"></div>
+    <div class="form-group"><div class="ec-label" data-i18n="emg_diagnosis">诊断</div><input class="form-input" id="emg-diagnosis" oninput="saveEmergencyCard()"></div>
+    <div class="ec-row">
+      <div class="form-group"><div class="ec-label" data-i18n="emg_meds">药物</div><input class="form-input" id="emg-meds" oninput="saveEmergencyCard()"></div>
+      <div class="form-group"><div class="ec-label" data-i18n="emg_allergies">过敏</div><input class="form-input" id="emg-allergies" oninput="saveEmergencyCard()"></div>
+    </div>
+    <div class="ec-row">
+      <div class="form-group"><div class="ec-label" data-i18n="emg_contact1">紧急联系人1</div><input class="form-input" id="emg-c1" oninput="saveEmergencyCard()"></div>
+      <div class="form-group"><div class="ec-label" data-i18n="emg_contact2">紧急联系人2</div><input class="form-input" id="emg-c2" oninput="saveEmergencyCard()"></div>
+    </div>
+    <div class="form-group"><div class="ec-label" data-i18n="emg_doctor">医生/医院</div><input class="form-input" id="emg-doctor" oninput="saveEmergencyCard()"></div>
+    <div class="form-group"><div class="ec-label" data-i18n="emg_found">如果发现孩子独处</div><textarea class="form-textarea" id="emg-found" rows="3" oninput="saveEmergencyCard()"></textarea></div>
+  </div>
+  <div style="height:16px;"></div>
+  <button class="btn btn-primary" onclick="window.print()" data-i18n="print_card">打印卡片</button>
+</div>
+
+<!-- ==================== SENSORY BAG ==================== -->
+<div class="panel hidden" id="panel-bag">
+  <div class="section-title" data-i18n="bag_title">感觉包清单</div>
+  <p class="section-sub" data-i18n="bag_sub">出门前检查感觉包是否打包完成</p>
+
+  <div id="bag-list"></div>
+
+  <div style="display:flex;gap:8px;margin-top:12px;">
+    <input class="form-input" id="bag-custom" placeholder="">
+    <button class="btn btn-secondary btn-small" onclick="addBagItem()" data-i18n="add_btn">添加</button>
+  </div>
+</div>
+
+<!-- ==================== CALMING STRATEGIES ==================== -->
+<div class="panel hidden" id="panel-calming">
+  <div class="section-title" data-i18n="calm_title">安抚策略快速参考</div>
+  <p class="section-sub" data-i18n="calm_sub">翻转卡片查看不同策略</p>
+
+  <div class="calming-card" id="calming-card"></div>
+  <div class="calming-nav">
+    <button onclick="prevCalm()">&#8592;</button>
+    <button onclick="nextCalm()">&#8594;</button>
+  </div>
+  <div style="text-align:center;margin-top:8px;font-size:0.78rem;color:var(--warm-text-light);" id="calm-counter"></div>
+</div>
+
+<!-- ==================== IMPORTANT NUMBERS ==================== -->
+<div class="panel hidden" id="panel-contacts">
+  <div class="section-title" data-i18n="contacts_title">重要联系号码</div>
+  <p class="section-sub" data-i18n="contacts_sub">可编辑的联系人列表</p>
+
+  <div id="contacts-list"></div>
+
+  <div class="card" style="margin-top:12px;">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;">
+      <input class="form-input" id="contact-role" style="flex:1;min-width:80px" placeholder="">
+      <input class="form-input" id="contact-name" style="flex:1;min-width:80px" placeholder="">
+      <input class="form-input" id="contact-phone" style="flex:1;min-width:100px" placeholder="" type="tel">
+      <button class="btn btn-primary btn-small" onclick="addContact()" data-i18n="add_btn">添加</button>
+    </div>
+  </div>
+</div>
+
+<!-- ==================== QUICK TIMER ==================== -->
+<div class="panel hidden" id="panel-timer">
+  <div class="section-title" data-i18n="timer_title">视觉倒计时</div>
+  <p class="section-sub" data-i18n="timer_sub">简单的圆形动画倒计时，温和提示音</p>
+
+  <div class="timer-controls" id="timer-presets"></div>
+
+  <div class="timer-container">
+    <div class="timer-circle">
+      <svg viewBox="0 0 200 200">
+        <circle class="bg" cx="100" cy="100" r="90"/>
+        <circle class="progress" id="timer-progress" cx="100" cy="100" r="90"
+          stroke-dasharray="565.48" stroke-dashoffset="0"/>
+      </svg>
+      <div class="timer-display" id="timer-display">0:00</div>
+    </div>
+  </div>
+
+  <div style="display:flex;gap:8px;justify-content:center;">
+    <button class="btn btn-primary" style="width:auto;padding:12px 32px;" onclick="startTimer()" id="timer-start-btn" data-i18n="start">开始</button>
+    <button class="btn btn-secondary" style="padding:12px 32px;" onclick="resetTimer()" data-i18n="reset">重置</button>
+  </div>
+</div>
+
+<div style="height:40px;"></div>
+
+<script>
+// ===================================================================
+//  I18N
+// ===================================================================
+let lang = 'zh';
+const I18N = {
+  zh: {
+    back: '返回', title: '随身工具包',
+    tab_explain: '解释卡', tab_emergency: '紧急卡', tab_bag: '感觉包',
+    tab_calming: '安抚策略', tab_contacts: '重要号码', tab_timer: '计时器',
+    explain_title: '解释卡', explain_sub: '帮助他人理解的卡片，钱包大小可打印',
+    card_template: '选择模板', card_lang: '卡片语言',
+    child_name: '孩子的名字', custom_line: '自定义说明',
+    name_placeholder: '输入孩子的名字', custom_placeholder: '添加自定义说明(可选)',
+    print_card: '打印卡片',
+    emg_title: '紧急信息卡', emg_sub: '可打印的层压卡片大小',
+    emg_header: '紧急信息 EMERGENCY INFO',
+    emg_name: '姓名', emg_diagnosis: '诊断', emg_meds: '药物', emg_allergies: '过敏',
+    emg_contact1: '紧急联系人1', emg_contact2: '紧急联系人2', emg_doctor: '医生/医院',
+    emg_found: '如果发现孩子独处',
+    bag_title: '感觉包清单', bag_sub: '出门前检查感觉包是否打包完成',
+    bag_placeholder: '添加自定义物品',
+    calm_title: '安抚策略快速参考', calm_sub: '翻转卡片查看不同策略',
+    contacts_title: '重要联系号码', contacts_sub: '可编辑的联系人列表',
+    role_placeholder: '角色', name_placeholder2: '姓名', phone_placeholder: '电话',
+    timer_title: '视觉倒计时', timer_sub: '简单的圆形动画倒计时，温和提示音',
+    save: '保存', add_btn: '添加', start: '开始', pause: '暂停', reset: '重置',
+    delete_confirm: '确定删除？',
+    tpl_general: '自闭症概述', tpl_meltdown: '情绪崩溃', tpl_nonverbal: '非语言',
+    tpl_sensory: '感觉过载', tpl_food: '食物过敏+自闭症', tpl_medical: '就医',
+    default_bag: ['降噪耳机','太阳镜','减压玩具','安慰物品','加重垫','零食','水壶','解释卡','换洗衣物','平板电脑']
+  },
+  en: {
+    back: 'Back', title: 'Portable Toolkit',
+    tab_explain: 'Explain', tab_emergency: 'Emergency', tab_bag: 'Sensory Bag',
+    tab_calming: 'Calming', tab_contacts: 'Numbers', tab_timer: 'Timer',
+    explain_title: 'Explain Cards', explain_sub: 'Help others understand — wallet-size, printable',
+    card_template: 'Select Template', card_lang: 'Card Language',
+    child_name: "Child's Name", custom_line: 'Custom Note',
+    name_placeholder: "Enter child's name", custom_placeholder: 'Add custom note (optional)',
+    print_card: 'Print Card',
+    emg_title: 'Emergency Info Card', emg_sub: 'Printable laminated-card size',
+    emg_header: 'EMERGENCY INFO',
+    emg_name: 'Name', emg_diagnosis: 'Diagnosis', emg_meds: 'Medications', emg_allergies: 'Allergies',
+    emg_contact1: 'Emergency Contact 1', emg_contact2: 'Emergency Contact 2', emg_doctor: 'Doctor/Hospital',
+    emg_found: 'If Found Alone',
+    bag_title: 'Sensory Bag Checklist', bag_sub: 'Check off items when packed before going out',
+    bag_placeholder: 'Add custom item',
+    calm_title: 'Calming Strategies Quick Reference', calm_sub: 'Flip through strategy cards',
+    contacts_title: 'Important Numbers', contacts_sub: 'Editable contact list',
+    role_placeholder: 'Role', name_placeholder2: 'Name', phone_placeholder: 'Phone',
+    timer_title: 'Visual Countdown Timer', timer_sub: 'Simple circle animation with gentle chime',
+    save: 'Save', add_btn: 'Add', start: 'Start', pause: 'Pause', reset: 'Reset',
+    delete_confirm: 'Delete this?',
+    tpl_general: 'General Autism', tpl_meltdown: 'Meltdown', tpl_nonverbal: 'Non-Verbal',
+    tpl_sensory: 'Sensory Overload', tpl_food: 'Food Allergy+Autism', tpl_medical: 'Medical Appt',
+    default_bag: ['Noise-canceling headphones','Sunglasses','Fidget toy','Comfort item','Weighted lap pad','Snacks','Water bottle','Explain cards','Change of clothes','Tablet/device']
+  }
+};
+
+function t(key) { return I18N[lang][key] || key; }
+function applyLang() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const k = el.getAttribute('data-i18n');
+    if (I18N[lang][k]) el.textContent = I18N[lang][k];
+  });
+  const en = document.getElementById('explain-name');
+  if (en) en.placeholder = t('name_placeholder');
+  const ec = document.getElementById('explain-custom');
+  if (ec) ec.placeholder = t('custom_placeholder');
+  const bc = document.getElementById('bag-custom');
+  if (bc) bc.placeholder = t('bag_placeholder');
+  const cr = document.getElementById('contact-role');
+  if (cr) cr.placeholder = t('role_placeholder');
+  const cn = document.getElementById('contact-name');
+  if (cn) cn.placeholder = t('name_placeholder2');
+  const cp = document.getElementById('contact-phone');
+  if (cp) cp.placeholder = t('phone_placeholder');
+}
+function toggleLang() { lang = lang === 'zh' ? 'en' : 'zh'; applyLang(); renderAll(); }
+
+// ===================================================================
+//  DATA
+// ===================================================================
+const STORAGE_KEY = 'withyou_toolkit';
+let data = { emergencyCard: {}, bagItems: null, bagChecked: {}, contacts: [], calmingCustom: [] };
+function save() { localStorage.setItem(STORAGE_KEY, JSON.stringify(data)); }
+function load() { const s = localStorage.getItem(STORAGE_KEY); if (s) { try { data = JSON.parse(s); } catch(e) {} } }
+
+// ===================================================================
+//  TABS
+// ===================================================================
+const TABS = ['explain','emergency','bag','calming','contacts','timer'];
+let activeTab = 'explain';
+function showTab(tab) {
+  activeTab = tab;
+  document.querySelectorAll('.tab').forEach((el, i) => el.classList.toggle('active', TABS[i] === tab));
+  TABS.forEach(p => document.getElementById('panel-' + p).classList.toggle('hidden', p !== tab));
+  renderAll();
+}
+
+// ===================================================================
+//  EXPLAIN CARDS
+// ===================================================================
+const EXPLAIN_LANGS = ['EN','ZH','NL','DE','FR','PT','ES','IT'];
+const EXPLAIN_TPLS = ['tpl_general','tpl_meltdown','tpl_nonverbal','tpl_sensory','tpl_food','tpl_medical'];
+let explainLang = 'EN';
+let explainTpl = 'tpl_general';
+
+const EXPLAIN_CONTENT = {
+  tpl_general: {
+    EN: { title: 'Understanding Autism', body: '{name} has autism spectrum disorder. They may communicate, behave, or interact differently. This is neurological, not a choice. They may need extra time, patience, and understanding. Please speak calmly and directly.' },
+    ZH: { title: '了解自闭症', body: '{name}患有自闭症谱系障碍。他/她可能在沟通、行为或互动方面有所不同。这是神经发育差异，而非选择。他/她可能需要更多的时间、耐心和理解。请平静、直接地说话。' },
+    NL: { title: 'Autisme Begrijpen', body: '{name} heeft een autismespectrumstoornis. Hij/zij kan anders communiceren, zich anders gedragen of anders omgaan met mensen. Dit is neurologisch, geen keuze. Hij/zij heeft mogelijk extra tijd, geduld en begrip nodig.' },
+    DE: { title: 'Autismus Verstehen', body: '{name} hat eine Autismus-Spektrum-Storung. Er/sie kommuniziert, verhalt sich oder interagiert moglicherweise anders. Dies ist neurologisch bedingt, keine Wahl. Er/sie braucht moglicherweise mehr Zeit, Geduld und Verstandnis.' },
+    FR: { title: "Comprendre l'Autisme", body: "{name} a un trouble du spectre de l'autisme. Il/elle peut communiquer, se comporter ou interagir differemment. C'est neurologique, pas un choix. Il/elle peut avoir besoin de plus de temps, de patience et de comprehension." },
+    PT: { title: 'Compreender o Autismo', body: '{name} tem transtorno do espectro autista. Ele/ela pode se comunicar, comportar ou interagir de forma diferente. Isso e neurologico, nao uma escolha. Ele/ela pode precisar de mais tempo, paciencia e compreensao.' },
+    ES: { title: 'Comprender el Autismo', body: '{name} tiene trastorno del espectro autista. Puede comunicarse, comportarse o interactuar de manera diferente. Esto es neurologico, no una eleccion. Puede necesitar mas tiempo, paciencia y comprension.' },
+    IT: { title: "Capire l'Autismo", body: "{name} ha un disturbo dello spettro autistico. Potrebbe comunicare, comportarsi o interagire in modo diverso. Questo e neurologico, non una scelta. Potrebbe aver bisogno di piu tempo, pazienza e comprensione." }
+  },
+  tpl_meltdown: {
+    EN: { title: 'This Is a Meltdown, Not a Tantrum', body: '{name} is experiencing a meltdown — an involuntary response to overwhelming sensory or emotional input. This is NOT a tantrum or bad behavior. Please: stay calm, reduce noise/light, give space, do not touch without permission, do not stare.' },
+    ZH: { title: '这是情绪崩溃，不是发脾气', body: '{name}正在经历情绪崩溃——这是对过度感觉或情绪刺激的不自主反应。这不是发脾气或不良行为。请：保持冷静，减少噪音/光线，给予空间，未经允许不要触碰，不要盯着看。' },
+    NL: { title: 'Dit Is een Meltdown, Geen Driftbui', body: '{name} heeft een meltdown — een onvrijwillige reactie op overweldigende sensorische of emotionele input. Dit is GEEN driftbui. Blijf alstublieft kalm, verminder geluid/licht, geef ruimte, raak niet aan zonder toestemming.' },
+    DE: { title: 'Das Ist ein Meltdown, Kein Wutanfall', body: '{name} erlebt einen Meltdown — eine unwillkurliche Reaktion auf uberweltigende sensorische oder emotionale Reize. Dies ist KEIN Wutanfall. Bitte: bleiben Sie ruhig, reduzieren Sie Larm/Licht, geben Sie Raum.' },
+    FR: { title: "C'est une Crise, Pas un Caprice", body: "{name} fait une crise — une reponse involontaire a une surcharge sensorielle ou emotionnelle. Ce n'est PAS un caprice. S'il vous plait: restez calme, reduisez le bruit/la lumiere, donnez de l'espace." },
+    PT: { title: 'Isso e uma Crise, Nao uma Birra', body: '{name} esta tendo uma crise — uma resposta involuntaria a uma sobrecarga sensorial ou emocional. Isso NAO e uma birra. Por favor: mantenha a calma, reduza ruido/luz, de espaco.' },
+    ES: { title: 'Es una Crisis, No un Berrinche', body: '{name} esta experimentando una crisis — una respuesta involuntaria a una sobrecarga sensorial o emocional. NO es un berrinche. Por favor: mantenga la calma, reduzca ruido/luz, de espacio.' },
+    IT: { title: 'Questo e un Meltdown, Non un Capriccio', body: "{name} sta avendo un meltdown — una risposta involontaria a un sovraccarico sensoriale o emotivo. NON e un capriccio. Per favore: restate calmi, riducete rumore/luce, date spazio." }
+  },
+  tpl_nonverbal: {
+    EN: { title: 'Non-Speaking Does Not Mean Non-Thinking', body: '{name} communicates without spoken words. They may use gestures, pictures, a device, or sign language. Please be patient, speak to them directly (not over them), and allow time for response. They understand more than you might expect.' },
+    ZH: { title: '不说话不代表不会思考', body: '{name}不使用口语沟通。他/她可能使用手势、图片、设备或手语。请保持耐心，直接和他/她说话（而不是越过他/她），并给予回应时间。他/她的理解力可能超出你的预期。' },
+    NL: { title: 'Niet Spreken Betekent Niet Niet Denken', body: '{name} communiceert zonder gesproken woorden. Hij/zij kan gebaren, afbeeldingen, een apparaat of gebarentaal gebruiken. Wees geduldig en spreek direct tegen hem/haar.' },
+    DE: { title: 'Nicht Sprechen Bedeutet Nicht Nicht Denken', body: '{name} kommuniziert ohne gesprochene Worte. Er/sie kann Gesten, Bilder, ein Gerat oder Gebardensprache verwenden. Bitte seien Sie geduldig und sprechen Sie direkt mit ihm/ihr.' },
+    FR: { title: 'Ne Pas Parler Ne Signifie Pas Ne Pas Penser', body: "{name} communique sans mots parles. Il/elle peut utiliser des gestes, des images, un appareil ou la langue des signes. Soyez patient et parlez-lui directement." },
+    PT: { title: 'Nao Falar Nao Significa Nao Pensar', body: '{name} se comunica sem palavras faladas. Ele/ela pode usar gestos, imagens, um dispositivo ou lingua de sinais. Seja paciente e fale diretamente com ele/ela.' },
+    ES: { title: 'No Hablar No Significa No Pensar', body: '{name} se comunica sin palabras habladas. Puede usar gestos, imagenes, un dispositivo o lengua de senas. Sea paciente y hablele directamente.' },
+    IT: { title: 'Non Parlare Non Significa Non Pensare', body: "{name} comunica senza parole parlate. Puo usare gesti, immagini, un dispositivo o la lingua dei segni. Siate pazienti e parlategli/le direttamente." }
+  },
+  tpl_sensory: {
+    EN: { title: 'Sensory Overload', body: '{name} is experiencing sensory overload. Sounds, lights, textures, or crowds that seem normal to you may be overwhelming. Please help by: reducing noise, dimming lights, offering a quiet space, not forcing interaction.' },
+    ZH: { title: '感觉过载', body: '{name}正在经历感觉过载。对你来说正常的声音、灯光、质感或人群可能让他/她难以承受。请帮助：降低噪音，调暗灯光，提供安静的空间，不要强迫互动。' },
+    NL: { title: 'Sensorische Overbelasting', body: '{name} ervaart sensorische overbelasting. Geluiden, lichten of menigten die normaal lijken, kunnen overweldigend zijn. Help alstublieft door: geluid te verminderen, lichten te dimmen, een rustige ruimte aan te bieden.' },
+    DE: { title: 'Sensorische Uberlastung', body: '{name} erlebt eine sensorische Uberlastung. Gerausche, Lichter oder Menschenmengen konnen uberweltigend sein. Bitte helfen Sie: Larm reduzieren, Licht dimmen, einen ruhigen Raum anbieten.' },
+    FR: { title: 'Surcharge Sensorielle', body: "{name} subit une surcharge sensorielle. Les sons, lumieres ou foules peuvent etre accablants. Aidez en: reduisant le bruit, baissant les lumieres, offrant un espace calme." },
+    PT: { title: 'Sobrecarga Sensorial', body: '{name} esta sofrendo sobrecarga sensorial. Sons, luzes ou multidoes podem ser avassaladores. Ajude: reduzindo ruido, diminuindo luzes, oferecendo um espaco tranquilo.' },
+    ES: { title: 'Sobrecarga Sensorial', body: '{name} esta experimentando sobrecarga sensorial. Sonidos, luces o multitudes pueden ser abrumadores. Ayude: reduciendo ruido, atenuando luces, ofreciendo un espacio tranquilo.' },
+    IT: { title: 'Sovraccarico Sensoriale', body: "{name} sta sperimentando un sovraccarico sensoriale. Suoni, luci o folle possono essere travolgenti. Aiutate: riducendo il rumore, abbassando le luci, offrendo uno spazio tranquillo." }
+  },
+  tpl_food: {
+    EN: { title: 'Food Allergy + Autism', body: '{name} has autism AND food allergies/restrictions. Their limited diet is not pickiness — sensory processing differences make certain textures/tastes intolerable. ALLERGIES: please check all ingredients. Do NOT offer food without parent permission.' },
+    ZH: { title: '食物过敏+自闭症', body: '{name}同时有自闭症和食物过敏/限制。他/她的有限饮食不是挑食——感觉处理差异使某些质地/味道无法忍受。过敏：请检查所有成分。未经家长许可不要提供食物。' },
+    NL: { title: 'Voedselallergie + Autisme', body: '{name} heeft autisme EN voedselallergien. Het beperkte dieet is geen kieskeurigheid. ALLERGIEN: controleer alle ingredienten. Geef GEEN eten zonder toestemming van ouders.' },
+    DE: { title: 'Lebensmittelallergie + Autismus', body: '{name} hat Autismus UND Lebensmittelallergien. Die eingeschrankte Ernahrung ist keine Wahlerischkeit. ALLERGIEN: bitte alle Zutaten prufen. Kein Essen ohne Erlaubnis der Eltern geben.' },
+    FR: { title: 'Allergie Alimentaire + Autisme', body: "{name} a de l'autisme ET des allergies alimentaires. Le regime limite n'est pas de la difficulte. ALLERGIES: verifiez tous les ingredients. Ne donnez PAS de nourriture sans permission parentale." },
+    PT: { title: 'Alergia Alimentar + Autismo', body: '{name} tem autismo E alergias alimentares. A dieta limitada nao e frescura. ALERGIAS: verifique todos os ingredientes. NAO oferecea comida sem permissao dos pais.' },
+    ES: { title: 'Alergia Alimentaria + Autismo', body: '{name} tiene autismo Y alergias alimentarias. La dieta limitada no es ser quisquilloso. ALERGIAS: verifique todos los ingredientes. NO ofrezca comida sin permiso de los padres.' },
+    IT: { title: 'Allergia Alimentare + Autismo', body: "{name} ha l'autismo E allergie alimentari. La dieta limitata non e capriccio. ALLERGIE: controllare tutti gli ingredienti. NON offrire cibo senza permesso dei genitori." }
+  },
+  tpl_medical: {
+    EN: { title: 'Medical Appointment', body: "{name} has autism. For this appointment: speak slowly and clearly, explain each step before doing it, allow extra time, minimize waiting in crowded areas, dim lights if possible, the parent/caregiver can help with communication." },
+    ZH: { title: '就医说明', body: '{name}患有自闭症。本次就诊请注意：说话慢而清晰，每一步操作前先解释，留出额外时间，尽量减少在拥挤区域等待，如可能调暗灯光，家长/照护者可协助沟通。' },
+    NL: { title: 'Medische Afspraak', body: '{name} heeft autisme. Voor deze afspraak: spreek langzaam en duidelijk, leg elke stap uit, neem extra tijd, minimaliseer wachten in drukke ruimtes.' },
+    DE: { title: 'Arzttermin', body: '{name} hat Autismus. Fur diesen Termin: sprechen Sie langsam und deutlich, erklaren Sie jeden Schritt, nehmen Sie sich extra Zeit, minimieren Sie das Warten in uberfullten Bereichen.' },
+    FR: { title: 'Rendez-vous Medical', body: "{name} a de l'autisme. Pour ce rendez-vous: parlez lentement et clairement, expliquez chaque etape, prenez du temps supplementaire, minimisez l'attente dans les zones bondees." },
+    PT: { title: 'Consulta Medica', body: '{name} tem autismo. Para esta consulta: fale devagar e claramente, explique cada passo, reserve tempo extra, minimize espera em areas lotadas.' },
+    ES: { title: 'Cita Medica', body: '{name} tiene autismo. Para esta cita: hable despacio y claro, explique cada paso, permita tiempo extra, minimice la espera en areas concurridas.' },
+    IT: { title: 'Appuntamento Medico', body: "{name} ha l'autismo. Per questo appuntamento: parlate lentamente e chiaramente, spiegate ogni passaggio, concedete tempo extra, minimizzate l'attesa in aree affollate." }
+  }
+};
+
+function renderExplainCard() {
+  // Template chips
+  document.getElementById('explain-tpl-chips').innerHTML = EXPLAIN_TPLS.map(k =>
+    `<span class="tpl-chip ${explainTpl===k?'active':''}" onclick="explainTpl='${k}';renderExplainCard()">${t(k)}</span>`
+  ).join('');
+
+  // Lang chips
+  document.getElementById('explain-lang-chips').innerHTML = EXPLAIN_LANGS.map(l =>
+    `<span class="lang-chip ${explainLang===l?'active':''}" onclick="explainLang='${l}';renderExplainCard()">${l}</span>`
+  ).join('');
+
+  const name = document.getElementById('explain-name')?.value || '____';
+  const custom = document.getElementById('explain-custom')?.value || '';
+  const content = EXPLAIN_CONTENT[explainTpl]?.[explainLang] || EXPLAIN_CONTENT[explainTpl]?.EN;
+  if (!content) return;
+
+  const body = content.body.replace(/\{name\}/g, name || '____');
+  document.getElementById('explain-preview').innerHTML =
+    `<div class="ec-title">${content.title}</div>
+     <div class="ec-body">${body}</div>
+     ${custom ? `<div class="ec-custom">${custom}</div>` : ''}`;
+}
+
+// ===================================================================
+//  EMERGENCY INFO CARD
+// ===================================================================
+function loadEmergencyCard() {
+  const ec = data.emergencyCard || {};
+  document.getElementById('emg-name').value = ec.name || '';
+  document.getElementById('emg-diagnosis').value = ec.diagnosis || '';
+  document.getElementById('emg-meds').value = ec.meds || '';
+  document.getElementById('emg-allergies').value = ec.allergies || '';
+  document.getElementById('emg-c1').value = ec.c1 || '';
+  document.getElementById('emg-c2').value = ec.c2 || '';
+  document.getElementById('emg-doctor').value = ec.doctor || '';
+  document.getElementById('emg-found').value = ec.found || '';
+}
+
+function saveEmergencyCard() {
+  data.emergencyCard = {
+    name: document.getElementById('emg-name').value,
+    diagnosis: document.getElementById('emg-diagnosis').value,
+    meds: document.getElementById('emg-meds').value,
+    allergies: document.getElementById('emg-allergies').value,
+    c1: document.getElementById('emg-c1').value,
+    c2: document.getElementById('emg-c2').value,
+    doctor: document.getElementById('emg-doctor').value,
+    found: document.getElementById('emg-found').value
+  };
+  save();
+}
+
+// ===================================================================
+//  SENSORY BAG CHECKLIST
+// ===================================================================
+function getBagItems() {
+  if (data.bagItems === null || data.bagItems === undefined) {
+    data.bagItems = [...(t('default_bag'))];
+    save();
+  }
+  return data.bagItems;
+}
+
+function renderBag() {
+  const items = getBagItems();
+  document.getElementById('bag-list').innerHTML = items.map((item, i) => {
+    const checked = data.bagChecked[item] ? 'checked' : '';
+    return `<div class="bag-item">
+      <input type="checkbox" ${checked} onchange="toggleBagItem('${item.replace(/'/g,"\\'")}',this.checked)">
+      <span class="item-text">${item}</span>
+      <span class="remove-btn" onclick="removeBagItem(${i})">x</span>
+    </div>`;
+  }).join('');
+}
+
+function toggleBagItem(item, checked) {
+  data.bagChecked[item] = checked;
+  save();
+}
+
+function addBagItem() {
+  const inp = document.getElementById('bag-custom');
+  const v = inp.value.trim();
+  if (!v) return;
+  getBagItems().push(v);
+  save();
+  inp.value = '';
+  renderBag();
+}
+
+function removeBagItem(i) {
+  const items = getBagItems();
+  const removed = items.splice(i, 1)[0];
+  delete data.bagChecked[removed];
+  save();
+  renderBag();
+}
+
+// ===================================================================
+//  CALMING STRATEGIES
+// ===================================================================
+const CALMING = {
+  zh: [
+    { icon: '🤗', title: '深压觉', desc: '紧紧拥抱、裹毯子、加重背心。深压觉帮助调节感觉系统，带来安全感。' },
+    { icon: '🫁', title: '呼吸练习', desc: '吹泡泡、吹风车、方块呼吸(吸4-屏4-呼4-停4)。视觉化的呼吸更容易跟随。' },
+    { icon: '🔢', title: '数数/倒数', desc: '从10倒数到1，或数周围的某种颜色的物品。转移注意力到可控的认知任务。' },
+    { icon: '🏡', title: '安全空间', desc: '去一个安静的角落、帐篷或指定的安全区域。减少感觉输入，给予恢复时间。' },
+    { icon: '🧸', title: '安慰物品', desc: '最喜欢的毛绒玩具、毯子或特定物品。熟悉的物品提供情感安全和可预测性。' },
+    { icon: '🏃', title: '运动', desc: '跳、跑、推墙、弹跳。大肌肉运动帮助释放积累的紧张感和能量。' },
+    { icon: '🌀', title: '感觉工具', desc: '减压球、咀嚼项链、沙漏、水珠珠。为感觉系统提供有组织的输入。' }
+  ],
+  en: [
+    { icon: '🤗', title: 'Deep Pressure', desc: 'Firm hugs, weighted blanket/vest, compression clothing. Deep pressure helps regulate the sensory system and provides a sense of security.' },
+    { icon: '🫁', title: 'Breathing Exercises', desc: 'Blow bubbles, pinwheels, box breathing (in 4 - hold 4 - out 4 - pause 4). Visual breathing cues are easier to follow.' },
+    { icon: '🔢', title: 'Counting', desc: 'Count down from 10 to 1, or count objects of a certain color nearby. Shifts attention to a controllable cognitive task.' },
+    { icon: '🏡', title: 'Safe Space', desc: 'Go to a quiet corner, tent, or designated calm-down area. Reduces sensory input, provides recovery time.' },
+    { icon: '🧸', title: 'Comfort Item', desc: 'Favorite stuffed animal, blanket, or specific object. Familiar items provide emotional security and predictability.' },
+    { icon: '🏃', title: 'Movement', desc: 'Jump, run, wall pushes, bouncing. Gross motor movement helps release accumulated tension and energy.' },
+    { icon: '🌀', title: 'Sensory Tools', desc: 'Stress ball, chew necklace, hourglass, water beads. Provides organized input for the sensory system.' }
+  ]
+};
+
+let calmIdx = 0;
+
+function renderCalming() {
+  const items = CALMING[lang] || CALMING.en;
+  const item = items[calmIdx % items.length];
+  document.getElementById('calming-card').innerHTML =
+    `<div class="calming-icon">${item.icon}</div>
+     <div class="calming-title">${item.title}</div>
+     <div class="calming-desc">${item.desc}</div>`;
+  document.getElementById('calm-counter').textContent = `${(calmIdx % items.length) + 1} / ${items.length}`;
+}
+
+function nextCalm() { calmIdx++; renderCalming(); }
+function prevCalm() { calmIdx = calmIdx > 0 ? calmIdx - 1 : (CALMING[lang] || CALMING.en).length - 1; renderCalming(); }
+
+// ===================================================================
+//  IMPORTANT NUMBERS
+// ===================================================================
+const DEFAULT_CONTACTS = {
+  zh: [
+    { role: '儿科医生', name: '', phone: '' },
+    { role: 'ABA治疗师', name: '', phone: '' },
+    { role: '言语治疗师', name: '', phone: '' },
+    { role: 'OT治疗师', name: '', phone: '' },
+    { role: '学校', name: '', phone: '' },
+    { role: '保险', name: '', phone: '' },
+    { role: '紧急联系人', name: '', phone: '' },
+    { role: '支持人', name: '', phone: '' }
+  ],
+  en: [
+    { role: 'Pediatrician', name: '', phone: '' },
+    { role: 'ABA Therapist', name: '', phone: '' },
+    { role: 'Speech Therapist', name: '', phone: '' },
+    { role: 'OT Therapist', name: '', phone: '' },
+    { role: 'School', name: '', phone: '' },
+    { role: 'Insurance', name: '', phone: '' },
+    { role: 'Emergency Contact', name: '', phone: '' },
+    { role: 'Support Person', name: '', phone: '' }
+  ]
+};
+
+function getContacts() {
+  if (!data.contacts || !data.contacts.length) {
+    data.contacts = DEFAULT_CONTACTS[lang].map(c => ({...c, id: Date.now() + Math.random()}));
+    save();
+  }
+  return data.contacts;
+}
+
+function renderContacts() {
+  const contacts = getContacts();
+  document.getElementById('contacts-list').innerHTML = contacts.map(c =>
+    `<div class="contact-item">
+      <div>
+        <div class="contact-role">${c.role}</div>
+        <div class="contact-name">${c.name || (lang === 'zh' ? '(未填写)' : '(not set)')}</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="contact-phone">${c.phone ? `<a href="tel:${c.phone}" style="color:var(--sage);text-decoration:none;">${c.phone}</a>` : '—'}</div>
+        <span style="font-size:0.72rem;color:var(--blue);cursor:pointer;" onclick="editContact(${c.id})">${lang==='zh'?'编辑':'edit'}</span>
+        <span style="font-size:0.72rem;color:var(--red);cursor:pointer;margin-left:8px;" onclick="deleteContact(${c.id})">x</span>
+      </div>
+    </div>`
+  ).join('');
+}
+
+function addContact() {
+  const role = document.getElementById('contact-role').value.trim();
+  const name = document.getElementById('contact-name').value.trim();
+  const phone = document.getElementById('contact-phone').value.trim();
+  if (!role) return;
+  getContacts().push({ role, name, phone, id: Date.now() });
+  save();
+  document.getElementById('contact-role').value = '';
+  document.getElementById('contact-name').value = '';
+  document.getElementById('contact-phone').value = '';
+  renderContacts();
+}
+
+function editContact(id) {
+  const contacts = getContacts();
+  const c = contacts.find(c => c.id === id);
+  if (!c) return;
+  const name = prompt(lang === 'zh' ? '姓名:' : 'Name:', c.name);
+  if (name !== null) c.name = name;
+  const phone = prompt(lang === 'zh' ? '电话:' : 'Phone:', c.phone);
+  if (phone !== null) c.phone = phone;
+  save();
+  renderContacts();
+}
+
+function deleteContact(id) {
+  if (!confirm(t('delete_confirm'))) return;
+  data.contacts = data.contacts.filter(c => c.id !== id);
+  save();
+  renderContacts();
+}
+
+// ===================================================================
+//  QUICK TIMER
+// ===================================================================
+const PRESETS = [1,2,3,5,10,15,20,30];
+let timerTotal = 5 * 60;
+let timerRemaining = 0;
+let timerInterval = null;
+let timerRunning = false;
+
+function renderTimerPresets() {
+  document.getElementById('timer-presets').innerHTML = PRESETS.map(m =>
+    `<span class="timer-preset ${timerTotal === m*60 ? 'active' : ''}" onclick="setTimerPreset(${m})">${m}${lang==='zh'?'分':'m'}</span>`
+  ).join('');
+}
+
+function setTimerPreset(min) {
+  if (timerRunning) return;
+  timerTotal = min * 60;
+  timerRemaining = timerTotal;
+  updateTimerDisplay();
+  renderTimerPresets();
+}
+
+function updateTimerDisplay() {
+  const m = Math.floor(timerRemaining / 60);
+  const s = timerRemaining % 60;
+  document.getElementById('timer-display').textContent = `${m}:${s.toString().padStart(2,'0')}`;
+
+  const circumference = 2 * Math.PI * 90;
+  const offset = circumference * (1 - timerRemaining / timerTotal);
+  document.getElementById('timer-progress').style.strokeDashoffset = offset;
+}
+
+function startTimer() {
+  if (timerRunning) {
+    // Pause
+    clearInterval(timerInterval);
+    timerRunning = false;
+    document.getElementById('timer-start-btn').textContent = t('start');
+    return;
+  }
+
+  if (timerRemaining <= 0) timerRemaining = timerTotal;
+  timerRunning = true;
+  document.getElementById('timer-start-btn').textContent = t('pause');
+
+  timerInterval = setInterval(() => {
+    timerRemaining--;
+    updateTimerDisplay();
+    if (timerRemaining <= 0) {
+      clearInterval(timerInterval);
+      timerRunning = false;
+      document.getElementById('timer-start-btn').textContent = t('start');
+      playChime();
+    }
+  }, 1000);
+}
+
+function resetTimer() {
+  clearInterval(timerInterval);
+  timerRunning = false;
+  timerRemaining = timerTotal;
+  updateTimerDisplay();
+  document.getElementById('timer-start-btn').textContent = t('start');
+}
+
+function playChime() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const notes = [523.25, 659.25, 783.99]; // C5, E5, G5
+    notes.forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      gain.gain.value = 0.15;
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 1.5 + i * 0.3);
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(ctx.currentTime + i * 0.3);
+      osc.stop(ctx.currentTime + 1.8 + i * 0.3);
+    });
+  } catch(e) {}
+}
+
+// ===================================================================
+//  RENDER ALL
+// ===================================================================
+function renderAll() {
+  applyLang();
+  renderExplainCard();
+  loadEmergencyCard();
+  renderBag();
+  renderCalming();
+  renderContacts();
+  renderTimerPresets();
+  if (!timerRunning) { timerRemaining = timerTotal; updateTimerDisplay(); }
+}
+
+// ===================================================================
+//  INIT
+// ===================================================================
+load();
+timerRemaining = timerTotal;
+renderAll();
+</script>
+</body>
+</html>
