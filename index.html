@@ -2,8 +2,8 @@
 <html lang="zh-CN">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>同路 WithYou — 一路同行，不孤单</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>同路 WithYou — 每日陪伴</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -13,6 +13,7 @@
   --sage: #6B8F7B;
   --sage-light: #8FB09D;
   --sage-pale: #E8F0EB;
+  --sage-dark: #4A6B56;
   --cream: #FAF7F0;
   --cream-dark: #F0EBDF;
   --blue: #7BA7BC;
@@ -21,10 +22,31 @@
   --warm-text: #3D3D3D;
   --warm-text-light: #6B6B6B;
   --coral: #D4917B;
+  --coral-pale: #F5E0D8;
+  --yellow: #C9A84C;
+  --yellow-bg: #FDF6E3;
   --shadow: 0 2px 16px rgba(107,143,123,0.10);
   --shadow-hover: 0 6px 28px rgba(107,143,123,0.18);
   --radius: 20px;
+  --radius-sm: 12px;
 }
+
+:root.dark {
+  --cream: #1a1f1c;
+  --cream-dark: #252b27;
+  --sage-pale: #2a3a30;
+  --blue-pale: #243038;
+  --warm-text: #e0ddd6;
+  --warm-text-light: #9a9a8e;
+  --shadow: 0 2px 16px rgba(0,0,0,0.25);
+  --shadow-hover: 0 6px 28px rgba(0,0,0,0.35);
+}
+
+.dark .card, .dark .tool-group, .dark .quick-btn { background: #222822 !important; }
+.dark .topbar { background: #1a1f1c; border-color: #2a3a30; }
+.dark .mood-btn { background: #2a3a30; }
+.dark .mood-btn.selected { background: var(--sage); }
+.dark input[type="text"] { background: #2a3a30; color: var(--warm-text); border-color: #3a4a40; }
 
 html { scroll-behavior: smooth; }
 
@@ -34,355 +56,1195 @@ body {
   color: var(--warm-text);
   line-height: 1.6;
   min-height: 100vh;
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+  transition: background 0.3s, color 0.3s;
 }
 
-/* ---- Hero ---- */
-.hero {
-  text-align: center;
-  padding: 80px 24px 60px;
-  background: linear-gradient(170deg, var(--sage-pale) 0%, var(--cream) 60%, var(--blue-pale) 100%);
-  position: relative;
-  overflow: hidden;
-}
+.hidden { display: none !important; }
+.container { max-width: 560px; margin: 0 auto; padding: 0 16px; }
 
-.hero::before {
-  content: '';
-  position: absolute;
-  top: -80px; right: -80px;
-  width: 300px; height: 300px;
-  background: radial-gradient(circle, rgba(123,167,188,0.12) 0%, transparent 70%);
-  border-radius: 50%;
+/* ===== Top Bar ===== */
+.topbar {
+  background: rgba(250,247,240,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
 }
-
-.hero::after {
-  content: '';
-  position: absolute;
-  bottom: -60px; left: -60px;
-  width: 250px; height: 250px;
-  background: radial-gradient(circle, rgba(107,143,123,0.10) 0%, transparent 70%);
-  border-radius: 50%;
-}
-
-.logo {
-  position: relative;
-  z-index: 1;
-  margin-bottom: 12px;
-}
-
-.logo-text {
-  font-size: 3.2rem;
+.topbar-brand {
+  font-size: 1rem;
   font-weight: 700;
   color: var(--sage);
-  letter-spacing: 2px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+.topbar-brand svg { width: 24px; height: 24px; }
+.topbar-actions { display: flex; gap: 6px; }
+.topbar-btn {
+  background: var(--sage-pale);
+  border: none;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--sage);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.topbar-btn:hover { background: var(--sage-light); color: #fff; }
+
+/* ===== Greeting Section ===== */
+.greeting {
+  text-align: center;
+  padding: 32px 16px 20px;
+}
+.greeting-text {
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--sage-dark);
+  line-height: 1.3;
+}
+.greeting-sub {
+  font-size: 0.9rem;
+  color: var(--warm-text-light);
+  margin-top: 2px;
+}
+.streak-badge {
   display: inline-flex;
   align-items: center;
-  gap: 12px;
+  gap: 6px;
+  background: linear-gradient(135deg, #FFF3E0 0%, #FFE0B2 100%);
+  border-radius: 20px;
+  padding: 6px 16px;
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: #E65100;
+  margin-top: 12px;
 }
-
-.logo-path {
-  display: inline-block;
-  width: 48px;
-  height: 48px;
-}
-
-.logo-sub {
-  font-size: 1.1rem;
+.dark .streak-badge { background: linear-gradient(135deg, #3a2e1a 0%, #4a3a20 100%); color: #FFB74D; }
+.affirmation {
+  margin-top: 14px;
+  font-size: 0.92rem;
+  color: var(--sage);
   font-weight: 400;
-  color: var(--blue);
-  letter-spacing: 4px;
-  margin-top: -4px;
+  font-style: italic;
+  line-height: 1.5;
 }
 
-.tagline {
-  position: relative;
-  z-index: 1;
-  margin-top: 20px;
-  font-size: 1.25rem;
-  font-weight: 300;
-  color: var(--warm-text-light);
-  line-height: 1.8;
-}
-
-.tagline .cn { font-size: 1.35rem; font-weight: 400; color: var(--sage); }
-.tagline .en { font-size: 1rem; color: var(--blue); }
-
-/* ---- Intro ---- */
-.intro {
-  max-width: 640px;
-  margin: 0 auto;
-  padding: 40px 24px 20px;
-  text-align: center;
-  font-size: 1rem;
-  color: var(--warm-text-light);
-  line-height: 1.8;
-}
-
-/* ---- Tools Grid ---- */
-.tools {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px 24px 80px;
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 24px;
-}
-
-.tool-card {
+/* ===== Cards ===== */
+.card {
   background: #fff;
   border-radius: var(--radius);
-  padding: 36px 28px 32px;
+  padding: 20px;
+  margin-bottom: 16px;
   box-shadow: var(--shadow);
-  transition: transform 0.25s ease, box-shadow 0.25s ease;
-  text-decoration: none;
-  color: inherit;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.card-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--warm-text-light);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 14px;
   display: flex;
-  flex-direction: column;
-  position: relative;
-  overflow: hidden;
+  align-items: center;
+  gap: 6px;
 }
 
-.tool-card:hover {
-  transform: translateY(-4px);
-  box-shadow: var(--shadow-hover);
+/* ===== Quick Record ===== */
+.mood-row {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
 }
-
-.tool-card.active { cursor: pointer; }
-.tool-card.coming-soon { opacity: 0.7; }
-
-.tool-icon {
-  width: 56px;
-  height: 56px;
-  border-radius: 16px;
+.mood-label {
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--warm-text-light);
+  margin-bottom: 6px;
+}
+.mood-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  border: 2px solid transparent;
+  background: var(--sage-pale);
+  font-size: 1.5rem;
+  cursor: pointer;
+  transition: all 0.2s;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 1.6rem;
-  margin-bottom: 18px;
+}
+.mood-btn:hover { transform: scale(1.1); }
+.mood-btn.selected {
+  border-color: var(--sage);
+  background: var(--sage-pale);
+  transform: scale(1.12);
+  box-shadow: 0 0 0 3px rgba(107,143,123,0.2);
+}
+.record-input {
+  width: 100%;
+  border: 1px solid var(--cream-dark);
+  border-radius: var(--radius-sm);
+  padding: 10px 14px;
+  font-size: 0.88rem;
+  font-family: inherit;
+  margin-bottom: 10px;
+  outline: none;
+  transition: border 0.2s;
+}
+.record-input:focus { border-color: var(--sage-light); }
+.record-input::placeholder { color: #bbb; }
+.save-btn {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--sage);
+  color: #fff;
+  font-size: 0.92rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+.save-btn:hover { background: var(--sage-dark); }
+.save-btn:active { transform: scale(0.98); }
+.save-btn:disabled { opacity: 0.5; cursor: default; }
+.save-success {
+  text-align: center;
+  padding: 16px;
+  color: var(--sage);
+  font-weight: 500;
+  font-size: 0.92rem;
 }
 
-.tool-card:nth-child(1) .tool-icon { background: var(--sage-pale); }
-.tool-card:nth-child(2) .tool-icon { background: var(--blue-pale); }
-
-.tool-title {
+/* ===== Activity Suggestion ===== */
+.activity-card {
+  background: linear-gradient(135deg, var(--sage) 0%, var(--sage-light) 100%);
+  color: #fff;
+  border-radius: var(--radius);
+  padding: 22px 20px;
+  margin-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+.activity-card .card-title { color: rgba(255,255,255,0.75); }
+.activity-meta {
+  font-size: 0.78rem;
+  opacity: 0.8;
+  margin-bottom: 8px;
+}
+.activity-name {
   font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+  line-height: 1.3;
+}
+.activity-steps {
+  list-style: none;
+  margin-bottom: 16px;
+}
+.activity-steps li {
+  font-size: 0.88rem;
+  padding: 4px 0;
+  padding-left: 20px;
+  position: relative;
+  line-height: 1.5;
+}
+.activity-steps li::before {
+  content: attr(data-step);
+  position: absolute;
+  left: 0;
   font-weight: 600;
+  opacity: 0.7;
+}
+.activity-actions {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.activity-btn {
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: none;
+  font-size: 0.82rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.activity-btn.primary {
+  background: #fff;
+  color: var(--sage);
+}
+.activity-btn.primary:hover { background: var(--sage-pale); }
+.activity-btn.secondary {
+  background: rgba(255,255,255,0.2);
+  color: #fff;
+}
+.activity-btn.secondary:hover { background: rgba(255,255,255,0.3); }
+.activity-feedback {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  margin-top: 12px;
+  font-size: 0.82rem;
+  opacity: 0.9;
+}
+.feedback-btn {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(255,255,255,0.2);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.feedback-btn:hover { background: rgba(255,255,255,0.35); transform: scale(1.1); }
+.feedback-btn.chosen { background: rgba(255,255,255,0.5); transform: scale(1.15); }
+
+/* ===== Tool Groups ===== */
+.tool-group {
+  background: #fff;
+  border-radius: var(--radius);
+  margin-bottom: 12px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+.tool-group-header {
+  padding: 16px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+  user-select: none;
+}
+.tool-group-header:hover { background: var(--sage-pale); }
+.tool-group-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.tool-group-icon { font-size: 1.3rem; }
+.tool-group-name { font-size: 0.95rem; font-weight: 600; }
+.tool-group-name-en { font-size: 0.75rem; color: var(--warm-text-light); font-weight: 400; }
+.tool-group-chevron {
+  font-size: 0.9rem;
+  color: var(--warm-text-light);
+  transition: transform 0.25s;
+}
+.tool-group.open .tool-group-chevron { transform: rotate(180deg); }
+.tool-group-body {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.tool-group.open .tool-group-body { max-height: 500px; }
+.tool-link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 20px 12px 48px;
+  text-decoration: none;
+  color: var(--warm-text);
+  font-size: 0.88rem;
+  border-top: 1px solid var(--cream-dark);
+  transition: background 0.15s;
+}
+.tool-link:hover { background: var(--sage-pale); }
+.tool-link-icon { font-size: 0.9rem; opacity: 0.7; }
+.tool-link-name { font-weight: 500; }
+.tool-link-name-en { font-size: 0.75rem; color: var(--warm-text-light); margin-left: 6px; }
+
+/* ===== Insights ===== */
+.insight-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+  align-items: center;
+  font-size: 0.88rem;
+}
+.insight-icon { font-size: 1.1rem; }
+.insight-text { flex: 1; }
+.insight-value { font-weight: 600; color: var(--sage); }
+
+/* ===== Quick Access ===== */
+.quick-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 16px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 4px;
+}
+.quick-btn {
+  flex-shrink: 0;
+  background: #fff;
+  border: none;
+  border-radius: var(--radius-sm);
+  padding: 12px 16px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--warm-text);
+  cursor: pointer;
+  text-decoration: none;
+  text-align: center;
+  box-shadow: var(--shadow);
+  transition: all 0.2s;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  min-width: 72px;
+}
+.quick-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+.quick-btn .icon { font-size: 1.3rem; }
+.quick-btn .label { font-size: 0.72rem; white-space: nowrap; }
+
+/* ===== Streak Calendar ===== */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
+}
+.cal-day {
+  aspect-ratio: 1;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.65rem;
+  color: var(--warm-text-light);
+  background: var(--cream-dark);
+  transition: background 0.2s;
+}
+.cal-day.checked { background: var(--sage-light); color: #fff; font-weight: 600; }
+.cal-day.today { box-shadow: inset 0 0 0 2px var(--sage); }
+.cal-day.empty { background: transparent; }
+.cal-labels {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 4px;
   margin-bottom: 4px;
 }
-
-.tool-title-en {
-  font-size: 0.85rem;
-  font-weight: 400;
+.cal-label {
+  text-align: center;
+  font-size: 0.6rem;
   color: var(--warm-text-light);
-  margin-bottom: 12px;
-}
-
-.tool-desc {
-  font-size: 0.92rem;
-  color: var(--warm-text-light);
-  line-height: 1.7;
-  flex: 1;
-}
-
-.badge {
-  display: inline-block;
-  margin-top: 16px;
-  padding: 4px 14px;
-  border-radius: 20px;
-  font-size: 0.78rem;
   font-weight: 500;
-  width: fit-content;
 }
 
-.badge-ready { background: var(--sage-pale); color: var(--sage); }
-.badge-soon { background: var(--cream-dark); color: var(--warm-text-light); }
+/* ===== Setup Overlay ===== */
+.overlay {
+  position: fixed;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: rgba(0,0,0,0.4);
+  backdrop-filter: blur(4px);
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.setup-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 32px 24px;
+  max-width: 400px;
+  width: 100%;
+  box-shadow: var(--shadow-hover);
+}
+.dark .setup-card { background: #222822; }
+.setup-card h2 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--sage-dark);
+  margin-bottom: 4px;
+  text-align: center;
+}
+.setup-card .sub {
+  text-align: center;
+  font-size: 0.85rem;
+  color: var(--warm-text-light);
+  margin-bottom: 20px;
+}
+.setup-field {
+  margin-bottom: 14px;
+}
+.setup-field label {
+  display: block;
+  font-size: 0.82rem;
+  font-weight: 500;
+  color: var(--warm-text-light);
+  margin-bottom: 4px;
+}
+.setup-field input, .setup-field select {
+  width: 100%;
+  padding: 10px 14px;
+  border: 1px solid var(--cream-dark);
+  border-radius: var(--radius-sm);
+  font-size: 0.92rem;
+  font-family: inherit;
+  outline: none;
+}
+.setup-field input:focus, .setup-field select:focus { border-color: var(--sage-light); }
+.setup-btn {
+  width: 100%;
+  padding: 14px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--sage);
+  color: #fff;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  margin-top: 8px;
+}
+.setup-btn:hover { background: var(--sage-dark); }
 
-/* ---- Footer ---- */
+/* ===== Footer ===== */
 .footer {
   text-align: center;
-  padding: 40px 24px;
-  font-size: 0.82rem;
+  padding: 32px 16px 40px;
+  font-size: 0.75rem;
   color: var(--warm-text-light);
-  line-height: 1.8;
-  border-top: 1px solid var(--cream-dark);
-  max-width: 640px;
-  margin: 0 auto;
+  line-height: 1.7;
 }
 
-.footer a {
-  color: var(--sage);
-  text-decoration: none;
-}
-
-/* ---- Responsive ---- */
+/* ===== Responsive ===== */
 @media (max-width: 480px) {
-  .hero { padding: 56px 20px 40px; }
-  .logo-text { font-size: 2.4rem; }
-  .tools { grid-template-columns: 1fr; padding: 20px 16px 60px; }
+  .greeting-text { font-size: 1.35rem; }
+  .mood-btn { width: 44px; height: 44px; font-size: 1.3rem; }
 }
 </style>
 </head>
 <body>
 
-<section class="hero">
-  <div class="logo">
-    <div class="logo-text">
-      <svg class="logo-path" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M8 38C12 30 18 24 24 20C30 16 36 14 42 10" stroke="#6B8F7B" stroke-width="3" stroke-linecap="round" opacity="0.4"/>
-        <path d="M6 40C10 32 16 26 22 22C28 18 34 16 40 12" stroke="#6B8F7B" stroke-width="3" stroke-linecap="round"/>
-        <circle cx="14" cy="32" r="3.5" fill="#7BA7BC"/>
-        <circle cx="34" cy="16" r="3.5" fill="#6B8F7B"/>
-      </svg>
-      同路
+<!-- ===== Setup Overlay ===== -->
+<div id="setupOverlay" class="overlay hidden">
+  <div class="setup-card">
+    <h2>欢迎来到同路</h2>
+    <div class="sub">Welcome to WithYou</div>
+    <div class="setup-field">
+      <label>你的称呼 Your name</label>
+      <input type="text" id="setupParentName" placeholder="例如: 妈妈 / Mama">
     </div>
-    <div class="logo-sub">W I T H Y O U</div>
+    <div class="setup-field">
+      <label>孩子的名字 Child's name</label>
+      <input type="text" id="setupChildName" placeholder="例如: 小明 / Milo">
+    </div>
+    <div class="setup-field">
+      <label>孩子的月龄 Child's age (months)</label>
+      <input type="number" id="setupChildAge" min="6" max="120" placeholder="36">
+    </div>
+    <button class="setup-btn" onclick="saveSetup()">开始旅程 Start Journey</button>
   </div>
-  <div class="tagline">
-    <div class="cn">一路同行，不孤单</div>
-    <div class="en">Walk together, never alone</div>
+</div>
+
+<!-- ===== Top Bar ===== -->
+<nav class="topbar">
+  <div class="topbar-brand">
+    <svg viewBox="0 0 48 48" fill="none"><path d="M8 38C12 30 18 24 24 20C30 16 36 14 42 10" stroke="#6B8F7B" stroke-width="3" stroke-linecap="round" opacity="0.4"/><path d="M6 40C10 32 16 26 22 22C28 18 34 16 40 12" stroke="#6B8F7B" stroke-width="3" stroke-linecap="round"/><circle cx="14" cy="32" r="3.5" fill="#7BA7BC"/><circle cx="34" cy="16" r="3.5" fill="#6B8F7B"/></svg>
+    同路 WithYou
   </div>
-</section>
+  <div class="topbar-actions">
+    <button class="topbar-btn" onclick="toggleDark()" id="darkBtn">🌙</button>
+    <button class="topbar-btn" onclick="showSetup()">⚙️</button>
+  </div>
+</nav>
 
-<section class="intro">
-  <p>为等待评估诊断的家庭设计的温暖工具箱。<br>
-  记录、理解、赋能 — 用爱与科学陪伴每一步。</p>
-  <p style="margin-top:8px; font-size:0.88rem;">
-    A warm toolkit for families on the assessment journey.<br>
-    Observe, understand, empower — every step of the way.
-  </p>
-</section>
+<div class="container">
 
-<section class="tools">
-
-  <a href="red-flag-tracker/index.html" class="tool-card active">
-    <div class="tool-icon">
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-        <rect x="3" y="4" width="22" height="20" rx="4" stroke="#6B8F7B" stroke-width="2"/>
-        <path d="M8 11h12M8 15h8M8 19h10" stroke="#6B8F7B" stroke-width="1.5" stroke-linecap="round"/>
-        <circle cx="22" cy="6" r="4" fill="#D4917B" opacity="0.8"/>
-      </svg>
+  <!-- ===== Greeting ===== -->
+  <section class="greeting">
+    <div class="greeting-text" id="greetingText">早上好</div>
+    <div class="greeting-sub" id="greetingSub">Good morning</div>
+    <div class="streak-badge" id="streakBadge">
+      <span>🔥</span>
+      <span id="streakText">第1天 Day 1</span>
     </div>
-    <div class="tool-title">发展观察记录</div>
-    <div class="tool-title-en">Red Flag Tracker</div>
-    <div class="tool-desc">
-      按月龄跟踪孩子的发展情况，记录社交沟通、语言、行为和日常生活四个领域的观察。生成可带给医生的专业报告。
+    <div class="affirmation" id="affirmation"></div>
+  </section>
+
+  <!-- ===== Quick Daily Record ===== -->
+  <div class="card" id="recordCard">
+    <div class="card-title">📝 30秒记录 Quick Record</div>
+    <div id="recordForm">
+      <div class="mood-label">孩子的一天 Child's day</div>
+      <div class="mood-row" id="childMoods">
+        <button class="mood-btn" data-val="happy" onclick="pickMood(this,'child')">😊</button>
+        <button class="mood-btn" data-val="neutral" onclick="pickMood(this,'child')">😐</button>
+        <button class="mood-btn" data-val="sad" onclick="pickMood(this,'child')">😢</button>
+        <button class="mood-btn" data-val="angry" onclick="pickMood(this,'child')">😤</button>
+        <button class="mood-btn" data-val="overwhelmed" onclick="pickMood(this,'child')">🤯</button>
+      </div>
+      <div class="mood-label">你的一天 Your day</div>
+      <div class="mood-row" id="parentMoods">
+        <button class="mood-btn" data-val="happy" onclick="pickMood(this,'parent')">😊</button>
+        <button class="mood-btn" data-val="neutral" onclick="pickMood(this,'parent')">😐</button>
+        <button class="mood-btn" data-val="sad" onclick="pickMood(this,'parent')">😢</button>
+        <button class="mood-btn" data-val="angry" onclick="pickMood(this,'parent')">😤</button>
+        <button class="mood-btn" data-val="tired" onclick="pickMood(this,'parent')">😴</button>
+      </div>
+      <input type="text" class="record-input" id="bestMoment" placeholder="今日最好的瞬间 Best moment today (optional)">
+      <input type="text" class="record-input" id="challenge" placeholder="今天的挑战 Today's challenge (optional)">
+      <button class="save-btn" id="saveRecordBtn" onclick="saveRecord()">保存 Save</button>
     </div>
-    <span class="badge badge-ready">可用 Available</span>
-  </a>
-
-  <a href="meltdown-navigator/index.html" class="tool-card">
-    <div class="tool-icon">
-      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-        <circle cx="14" cy="14" r="10" stroke="#7BA7BC" stroke-width="2"/>
-        <path d="M14 8v6l4 3" stroke="#7BA7BC" stroke-width="2" stroke-linecap="round"/>
-        <path d="M8 22l-2 3M20 22l2 3" stroke="#7BA7BC" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
+    <div class="save-success hidden" id="recordSuccess">
+      ✅ 已记录！今天辛苦了。<br>Saved! You're doing great today.
     </div>
-    <div class="tool-title">崩溃应对导航</div>
-    <div class="tool-title-en">Meltdown Navigator</div>
-    <div class="tool-desc">
-      当孩子情绪崩溃时的实时指导工具。帮助你保持冷静，提供分步骤的应对策略，并在事后记录触发因素以发现模式。
+  </div>
+
+  <!-- ===== Today's Activity ===== -->
+  <div class="activity-card" id="activityCard">
+    <div class="card-title">✨ 今日推荐 Today's Activity</div>
+    <div class="activity-meta" id="activityMeta"></div>
+    <div class="activity-name" id="activityName"></div>
+    <ol class="activity-steps" id="activitySteps"></ol>
+    <div class="activity-actions">
+      <a class="activity-btn primary" id="activityLink" href="early-activities/index.html">去试试 Try this →</a>
+      <button class="activity-btn secondary" onclick="nextActivity()">换一个 Next →</button>
     </div>
-    <span class="badge badge-ready">可用 Available</span>
-  </a>
+    <div class="activity-feedback hidden" id="activityFeedback">
+      <span>感觉怎样？How did it go?</span>
+      <button class="feedback-btn" onclick="rateActivity(1)">👍</button>
+      <button class="feedback-btn" onclick="rateActivity(-1)">👎</button>
+    </div>
+  </div>
 
-  <a href="appointment-prep/index.html" class="tool-card">
-    <div class="tool-icon">📋</div>
-    <div class="tool-title">就诊准备包</div>
-    <div class="tool-title-en">Appointment Prep Kit</div>
-    <div class="tool-desc">6国诊断路径指南、就诊清单、行为摘要模板、常见问题。</div>
-    <span class="badge badge-ready">可用 Available</span>
-  </a>
+  <!-- ===== Tool Groups ===== -->
+  <div class="card" style="padding:12px 0; background: transparent; box-shadow: none;">
+    <div class="card-title" style="padding: 0 20px;">🧰 工具箱 Tools</div>
+  </div>
 
-  <a href="early-activities/index.html" class="tool-card">
-    <div class="tool-icon">🎯</div>
-    <div class="tool-title">早期干预活动</div>
-    <div class="tool-title-en">Early Intervention Activities</div>
-    <div class="tool-desc">40个基于NDBI的家庭活动：共同注意、模仿、沟通、游戏技能。</div>
-    <span class="badge badge-ready">可用 Available</span>
-  </a>
+  <div class="tool-group" id="tg-observe">
+    <div class="tool-group-header" onclick="toggleGroup('tg-observe')">
+      <div class="tool-group-left">
+        <span class="tool-group-icon">🔍</span>
+        <div>
+          <div class="tool-group-name">观察与追踪</div>
+          <div class="tool-group-name-en">Observe & Track</div>
+        </div>
+      </div>
+      <span class="tool-group-chevron">▼</span>
+    </div>
+    <div class="tool-group-body">
+      <a href="red-flag-tracker/index.html" class="tool-link">
+        <span class="tool-link-icon">🚩</span>
+        <span class="tool-link-name">发展观察记录<span class="tool-link-name-en">Red Flag Tracker</span></span>
+      </a>
+      <a href="communication-log/index.html" class="tool-link">
+        <span class="tool-link-icon">💬</span>
+        <span class="tool-link-name">沟通记录<span class="tool-link-name-en">Communication Log</span></span>
+      </a>
+      <a href="sensory-profile/index.html" class="tool-link">
+        <span class="tool-link-icon">🎨</span>
+        <span class="tool-link-name">感觉档案<span class="tool-link-name-en">Sensory Profile</span></span>
+      </a>
+    </div>
+  </div>
 
-  <a href="knowledge-base/index.html" class="tool-card">
-    <div class="tool-icon">📖</div>
-    <div class="tool-title">家长知识库</div>
-    <div class="tool-title-en">Parent Knowledge Base</div>
-    <div class="tool-desc">什么是自闭症？常见误区辟谣、评估工具解读、循证干预指南。</div>
-    <span class="badge badge-ready">可用 Available</span>
-  </a>
+  <div class="tool-group" id="tg-daily">
+    <div class="tool-group-header" onclick="toggleGroup('tg-daily')">
+      <div class="tool-group-left">
+        <span class="tool-group-icon">📋</span>
+        <div>
+          <div class="tool-group-name">日常管理</div>
+          <div class="tool-group-name-en">Daily Management</div>
+        </div>
+      </div>
+      <span class="tool-group-chevron">▼</span>
+    </div>
+    <div class="tool-group-body">
+      <a href="mealtime/index.html" class="tool-link">
+        <span class="tool-link-icon">🍽️</span>
+        <span class="tool-link-name">吃饭助手<span class="tool-link-name-en">Mealtime Manager</span></span>
+      </a>
+      <a href="sleep-coach/index.html" class="tool-link">
+        <span class="tool-link-icon">🌙</span>
+        <span class="tool-link-name">睡眠教练<span class="tool-link-name-en">Sleep Coach</span></span>
+      </a>
+      <a href="visual-schedule/index.html" class="tool-link">
+        <span class="tool-link-icon">📅</span>
+        <span class="tool-link-name">视觉日程<span class="tool-link-name-en">Visual Schedule</span></span>
+      </a>
+    </div>
+  </div>
 
-  <a href="mealtime/index.html" class="tool-card">
-    <div class="tool-icon">🍽️</div>
-    <div class="tool-title">吃饭助手</div>
-    <div class="tool-title-en">Mealtime Manager</div>
-    <div class="tool-desc">食物日记、感觉档案、SOS食物扩展计划、营养缺口提示。</div>
-    <span class="badge badge-ready">可用 Available</span>
-  </a>
+  <div class="tool-group" id="tg-emergency">
+    <div class="tool-group-header" onclick="toggleGroup('tg-emergency')">
+      <div class="tool-group-left">
+        <span class="tool-group-icon">🆘</span>
+        <div>
+          <div class="tool-group-name">应急与外出</div>
+          <div class="tool-group-name-en">Emergency & On-the-Go</div>
+        </div>
+      </div>
+      <span class="tool-group-chevron">▼</span>
+    </div>
+    <div class="tool-group-body">
+      <a href="meltdown-navigator/index.html" class="tool-link">
+        <span class="tool-link-icon">🌊</span>
+        <span class="tool-link-name">崩溃应对导航<span class="tool-link-name-en">Meltdown Navigator</span></span>
+      </a>
+      <a href="toolkit/index.html" class="tool-link">
+        <span class="tool-link-icon">🎒</span>
+        <span class="tool-link-name">随身工具包<span class="tool-link-name-en">Portable Toolkit</span></span>
+      </a>
+    </div>
+  </div>
 
-  <a href="sleep-coach/index.html" class="tool-card">
-    <div class="tool-icon">🌙</div>
-    <div class="tool-title">睡眠教练</div>
-    <div class="tool-title-en">Sleep Coach</div>
-    <div class="tool-desc">睡眠日记、就寝流程构建器、环境检查清单、褪黑素指南。</div>
-    <span class="badge badge-ready">可用 Available</span>
-  </a>
+  <div class="tool-group" id="tg-pro">
+    <div class="tool-group-header" onclick="toggleGroup('tg-pro')">
+      <div class="tool-group-left">
+        <span class="tool-group-icon">🏫</span>
+        <div>
+          <div class="tool-group-name">专业支持</div>
+          <div class="tool-group-name-en">Professional Support</div>
+        </div>
+      </div>
+      <span class="tool-group-chevron">▼</span>
+    </div>
+    <div class="tool-group-body">
+      <a href="appointment-prep/index.html" class="tool-link">
+        <span class="tool-link-icon">📋</span>
+        <span class="tool-link-name">就诊准备包<span class="tool-link-name-en">Appointment Prep</span></span>
+      </a>
+      <a href="school-toolkit/index.html" class="tool-link">
+        <span class="tool-link-icon">🏫</span>
+        <span class="tool-link-name">学校工具包<span class="tool-link-name-en">School Toolkit</span></span>
+      </a>
+      <a href="knowledge-base/index.html" class="tool-link">
+        <span class="tool-link-icon">📖</span>
+        <span class="tool-link-name">家长知识库<span class="tool-link-name-en">Knowledge Base</span></span>
+      </a>
+    </div>
+  </div>
 
-  <a href="visual-schedule/index.html" class="tool-card">
-    <div class="tool-icon">📅</div>
-    <div class="tool-title">视觉日程</div>
-    <div class="tool-title-en">Visual Schedule Builder</div>
-    <div class="tool-desc">拖拽日程构建、First-Then板、社交故事生成、倒计时器。</div>
-    <span class="badge badge-ready">可用 Available</span>
-  </a>
+  <div class="tool-group" id="tg-care">
+    <div class="tool-group-header" onclick="toggleGroup('tg-care')">
+      <div class="tool-group-left">
+        <span class="tool-group-icon">💚</span>
+        <div>
+          <div class="tool-group-name">家长关怀</div>
+          <div class="tool-group-name-en">Caregiver Care</div>
+        </div>
+      </div>
+      <span class="tool-group-chevron">▼</span>
+    </div>
+    <div class="tool-group-body">
+      <a href="caregiver-wellness/index.html" class="tool-link">
+        <span class="tool-link-icon">💚</span>
+        <span class="tool-link-name">照护者健康<span class="tool-link-name-en">Caregiver Wellness</span></span>
+      </a>
+      <a href="early-activities/index.html" class="tool-link">
+        <span class="tool-link-icon">🎯</span>
+        <span class="tool-link-name">早期干预活动<span class="tool-link-name-en">Early Activities</span></span>
+      </a>
+    </div>
+  </div>
 
-  <a href="sensory-profile/index.html" class="tool-card">
-    <div class="tool-icon">🎨</div>
-    <div class="tool-title">感觉档案</div>
-    <div class="tool-title-en">Sensory Profile Tracker</div>
-    <div class="tool-desc">7感觉通道评估、雷达图、感觉餐建议、策略追踪。</div>
-    <span class="badge badge-ready">可用 Available</span>
-  </a>
+  <!-- ===== Insights ===== -->
+  <div class="card hidden" id="insightsCard">
+    <div class="card-title">📊 本周洞察 This Week</div>
+    <div id="insightsContent"></div>
+  </div>
 
-  <a href="communication-log/index.html" class="tool-card">
-    <div class="tool-icon">💬</div>
-    <div class="tool-title">沟通记录</div>
-    <div class="tool-title-en">Communication Log</div>
-    <div class="tool-desc">语言里程碑、AAC资源指南、每日沟通记录、词汇库。</div>
-    <span class="badge badge-ready">可用 Available</span>
-  </a>
+  <!-- ===== Quick Access ===== -->
+  <div class="card" style="background:transparent; box-shadow:none; padding: 8px 0;">
+    <div class="card-title" style="padding:0;">⚡ 快捷入口 Quick Access</div>
+    <div class="quick-row">
+      <a href="meltdown-navigator/index.html" class="quick-btn">
+        <span class="icon">🆘</span>
+        <span class="label">应急 SOS</span>
+      </a>
+      <a href="red-flag-tracker/index.html" class="quick-btn">
+        <span class="icon">📊</span>
+        <span class="label">报告 Report</span>
+      </a>
+      <a href="visual-schedule/index.html" class="quick-btn">
+        <span class="icon">⏱</span>
+        <span class="label">计时 Timer</span>
+      </a>
+      <a href="toolkit/index.html" class="quick-btn">
+        <span class="icon">📇</span>
+        <span class="label">解释卡 Card</span>
+      </a>
+      <a href="early-activities/index.html" class="quick-btn">
+        <span class="icon">🎯</span>
+        <span class="label">活动 Activity</span>
+      </a>
+    </div>
+  </div>
 
-  <a href="school-toolkit/index.html" class="tool-card">
-    <div class="tool-icon">🏫</div>
-    <div class="tool-title">学校工具包</div>
-    <div class="tool-title-en">School & IEP Toolkit</div>
-    <div class="tool-desc">6国教育权利、65个IEP目标、会议准备、模板信函、教师沟通卡。</div>
-    <span class="badge badge-ready">可用 Available</span>
-  </a>
+  <!-- ===== Streak Calendar ===== -->
+  <div class="card">
+    <div class="card-title">📅 打卡日历 Streak Calendar</div>
+    <div class="cal-labels" id="calLabels"></div>
+    <div class="calendar-grid" id="calGrid"></div>
+  </div>
 
-  <a href="caregiver-wellness/index.html" class="tool-card">
-    <div class="tool-icon">💚</div>
-    <div class="tool-title">照护者健康</div>
-    <div class="tool-title-en">Caregiver Wellness</div>
-    <div class="tool-desc">每日心情记录、许可条、微自我关怀、情绪趋势、危机资源。</div>
-    <span class="badge badge-ready">可用 Available</span>
-  </a>
-
-  <a href="toolkit/index.html" class="tool-card">
-    <div class="tool-icon">🎒</div>
-    <div class="tool-title">随身工具包</div>
-    <div class="tool-title-en">Portable Toolkit</div>
-    <div class="tool-desc">解释卡(8国语言)、紧急信息卡、感觉包清单、冷静策略、倒计时器。</div>
-    <span class="badge badge-ready">可用 Available</span>
-  </a>
-
-</section>
+</div>
 
 <footer class="footer">
-  <p>同路 WithYou 是为家庭设计的开源观察工具，不提供医学诊断。<br>
-  请将您的观察记录分享给孩子的医疗保健提供者。</p>
-  <p style="margin-top:8px;">
-    This is a parent observation toolkit, not a diagnostic tool.<br>
-    Share your observations with your child's healthcare provider.
-  </p>
+  同路 WithYou 是为家庭设计的开源观察工具，不提供医学诊断。<br>
+  This is a parent observation toolkit, not a diagnostic tool.<br>
+  请将观察记录分享给孩子的医疗保健提供者。
 </footer>
 
+<script>
+// ===== DATA =====
+const AFFIRMATIONS = [
+  { zh: '今天也辛苦了', en: "You're doing great" },
+  { zh: '你的坚持，孩子都感受得到', en: 'Your persistence matters more than you know' },
+  { zh: '不完美也没关系', en: "It's okay to not be perfect" },
+  { zh: '你已经在做最好的自己了', en: "You're already doing your best" },
+  { zh: '休息也是一种力量', en: 'Rest is also strength' },
+  { zh: '一步一步来，不着急', en: 'One step at a time, no rush' },
+  { zh: '你不是一个人在战斗', en: "You're not alone in this" },
+  { zh: '每一个小进步都值得庆祝', en: 'Every small step deserves celebration' },
+  { zh: '今天的挑战会成为明天的力量', en: "Today's challenges become tomorrow's strength" },
+  { zh: '你比你想象的更坚强', en: "You're stronger than you think" },
+  { zh: '孩子很幸运有你', en: 'Your child is lucky to have you' },
+  { zh: '给自己一点温柔', en: 'Be gentle with yourself' },
+  { zh: '你做的每一件事都有意义', en: 'Everything you do matters' },
+  { zh: '今天也是新的开始', en: 'Today is a fresh start' },
+  { zh: '爱不需要完美', en: "Love doesn't need to be perfect" },
+  { zh: '你的感受是重要的', en: 'Your feelings are valid' },
+  { zh: '慢慢来，比较快', en: 'Going slow is going steady' },
+  { zh: '深呼吸，你可以的', en: 'Take a deep breath, you got this' },
+  { zh: '小小的努力，大大的改变', en: 'Small efforts, big changes' },
+  { zh: '今天也要好好照顾自己', en: 'Remember to take care of yourself today' },
+  { zh: '你已经是一个了不起的家长', en: "You're already an amazing parent" },
+  { zh: '相信过程，相信自己', en: 'Trust the process, trust yourself' },
+  { zh: '明天又是新的一天', en: 'Tomorrow is another day' },
+  { zh: '每一次陪伴都是礼物', en: 'Every moment together is a gift' },
+  { zh: '你的爱是最好的治愈', en: 'Your love is the best medicine' },
+  { zh: '允许自己偶尔脆弱', en: "It's okay to feel vulnerable sometimes" },
+  { zh: '你正在创造改变', en: "You're making a difference" },
+  { zh: '困难是暂时的，爱是永恒的', en: 'Difficulties are temporary, love is forever' },
+  { zh: '你的耐心是最大的超能力', en: 'Your patience is your superpower' },
+  { zh: '今天也要相信好事会发生', en: 'Believe good things are coming' },
+  { zh: '感谢自己，坚持到了今天', en: 'Thank yourself for making it this far' },
+];
+
+const ACTIVITIES_POOL = [
+  { id: 'bubble-track', nameZh: '追泡泡', nameEn: 'Bubble Tracking', skill: 'Joint Attention', skillZh: '共同注意', dur: 5, indoor: true, outdoor: true, ageMin: 12, ageMax: 60, tags: ['play','social'], mood: ['happy','neutral'], time: ['morning','afternoon'], steps: [{ zh: '吹泡泡，等孩子看向泡泡', en: 'Blow bubbles, wait for child to look' },{ zh: '指向泡泡说"看！泡泡！"', en: 'Point and say "Look! Bubbles!"' },{ zh: '等孩子也指或看向你', en: 'Wait for child to point or look at you' },{ zh: '一起追泡泡，享受互动', en: 'Chase bubbles together, enjoy the interaction' }] },
+  { id: 'mirror-play', nameZh: '镜子游戏', nameEn: 'Mirror Play', skill: 'Imitation', skillZh: '模仿', dur: 5, indoor: true, outdoor: false, ageMin: 10, ageMax: 48, tags: ['play','calming'], mood: ['happy','neutral','sad'], time: ['morning','afternoon','evening'], steps: [{ zh: '坐在镜子前面，和孩子一起看', en: 'Sit with child in front of mirror' },{ zh: '做鬼脸，等孩子模仿', en: 'Make silly faces, wait for imitation' },{ zh: '摸鼻子、拍手，简单动作', en: 'Touch nose, clap hands, simple actions' },{ zh: '表扬孩子的任何模仿尝试', en: 'Praise any imitation attempts' }] },
+  { id: 'ball-roll', nameZh: '滚球互动', nameEn: 'Ball Rolling', skill: 'Turn-Taking', skillZh: '轮流', dur: 5, indoor: true, outdoor: true, ageMin: 12, ageMax: 60, tags: ['play','social'], mood: ['happy','neutral'], time: ['morning','afternoon'], steps: [{ zh: '面对面坐下，中间放一个球', en: 'Sit facing each other with a ball' },{ zh: '说"滚给你！"把球滚过去', en: 'Say "Roll to you!" and roll ball' },{ zh: '等待，给孩子时间滚回来', en: 'Wait, give child time to roll back' },{ zh: '每次轮流都给予鼓励', en: 'Encourage each turn' }] },
+  { id: 'sound-turn', nameZh: '声音轮流', nameEn: 'Sound Turn-Taking', skill: 'Communication', skillZh: '沟通', dur: 5, indoor: true, outdoor: false, ageMin: 8, ageMax: 36, tags: ['social','play'], mood: ['happy','neutral'], time: ['morning','afternoon','evening'], steps: [{ zh: '模仿孩子发出的任何声音', en: 'Copy any sound child makes' },{ zh: '等待，看孩子是否再发声', en: 'Wait, see if child vocalizes again' },{ zh: '加入新声音，看孩子是否模仿', en: 'Add a new sound, see if child copies' },{ zh: '保持节奏，像对话一样轮流', en: 'Keep rhythm, take turns like a conversation' }] },
+  { id: 'book-point', nameZh: '指指点点看绘本', nameEn: 'Book Pointing', skill: 'Joint Attention', skillZh: '共同注意', dur: 10, indoor: true, outdoor: false, ageMin: 12, ageMax: 60, tags: ['calming','social'], mood: ['neutral','sad','happy'], time: ['morning','afternoon','evening'], steps: [{ zh: '选一本有大图片的绘本', en: 'Pick a book with big pictures' },{ zh: '指图片说"看，小狗！"', en: 'Point to pictures: "Look, a dog!"' },{ zh: '等孩子看或指', en: 'Wait for child to look or point' },{ zh: '跟随孩子的兴趣翻页', en: "Follow child's interest, turn pages" }] },
+  { id: 'deep-pressure', nameZh: '深压力拥抱', nameEn: 'Deep Pressure Hug', skill: 'Regulation', skillZh: '调节', dur: 5, indoor: true, outdoor: false, ageMin: 12, ageMax: 120, tags: ['calming'], mood: ['overwhelmed','sad','angry'], time: ['morning','afternoon','evening'], steps: [{ zh: '给孩子一个稳稳的拥抱', en: 'Give child a firm, steady hug' },{ zh: '保持均匀的压力，不要挤太紧', en: 'Keep even pressure, not too tight' },{ zh: '慢慢数到10，配合深呼吸', en: 'Slowly count to 10 with deep breaths' },{ zh: '让孩子决定何时结束', en: 'Let child decide when to stop' }] },
+  { id: 'heavy-work', nameZh: '重活儿运动', nameEn: 'Heavy Work', skill: 'Regulation', skillZh: '调节', dur: 10, indoor: true, outdoor: true, ageMin: 18, ageMax: 120, tags: ['calming','play'], mood: ['overwhelmed','angry','happy'], time: ['morning','afternoon'], steps: [{ zh: '让孩子推/拉重物（枕头、箱子）', en: 'Have child push/pull heavy items (pillows, boxes)' },{ zh: '一起搬运"重要的东西"', en: 'Carry "important things" together' },{ zh: '做动物走路：熊走、螃蟹走', en: 'Animal walks: bear walk, crab walk' },{ zh: '结束后安静休息一会', en: 'Rest quietly after' }] },
+  { id: 'breathing-buddy', nameZh: '呼吸小伙伴', nameEn: 'Breathing Buddy', skill: 'Regulation', skillZh: '调节', dur: 5, indoor: true, outdoor: false, ageMin: 24, ageMax: 120, tags: ['calming'], mood: ['overwhelmed','sad','angry','neutral'], time: ['morning','afternoon','evening'], steps: [{ zh: '让孩子躺下，在肚子上放个小玩具', en: 'Child lies down, place toy on tummy' },{ zh: '"让小熊坐电梯上去" — 吸气', en: '"Teddy goes up" — breathe in' },{ zh: '"小熊慢慢下来" — 呼气', en: '"Teddy goes down" — breathe out' },{ zh: '重复5次，保持平静的节奏', en: 'Repeat 5 times, keep calm pace' }] },
+  { id: 'nature-point', nameZh: '自然指认散步', nameEn: 'Nature Pointing Walk', skill: 'Joint Attention', skillZh: '共同注意', dur: 15, indoor: false, outdoor: true, ageMin: 15, ageMax: 72, tags: ['play','social'], mood: ['happy','neutral'], time: ['morning','afternoon'], steps: [{ zh: '出门散步，走慢一点', en: 'Go outside, walk slowly' },{ zh: '指向有趣的东西："看！小鸟！"', en: 'Point to interesting things: "Look! A bird!"' },{ zh: '等孩子跟随你的目光', en: "Wait for child to follow your gaze" },{ zh: '捡树叶、石头，一起观察', en: 'Collect leaves, rocks, observe together' }] },
+  { id: 'playground-narrate', nameZh: '游乐场解说', nameEn: 'Playground Narration', skill: 'Communication', skillZh: '沟通', dur: 15, indoor: false, outdoor: true, ageMin: 18, ageMax: 72, tags: ['play','social'], mood: ['happy','neutral'], time: ['morning','afternoon'], steps: [{ zh: '在游乐场跟随孩子的兴趣', en: "Follow child's lead at playground" },{ zh: '给孩子的动作配旁白', en: "Narrate child's actions" },{ zh: '"你在滑！好快！" — 简短生动', en: '"You\'re sliding! So fast!" — short and vivid' },{ zh: '等待孩子的任何回应', en: 'Wait for any response from child' }] },
+  { id: 'water-play', nameZh: '水游戏', nameEn: 'Water Play', skill: 'Sensory', skillZh: '感觉', dur: 10, indoor: true, outdoor: true, ageMin: 12, ageMax: 60, tags: ['play','calming'], mood: ['happy','neutral','overwhelmed'], time: ['morning','afternoon'], steps: [{ zh: '准备一盆水和杯子、漏斗', en: 'Prepare water basin with cups, funnels' },{ zh: '示范倒水："看，水流下来了"', en: 'Model pouring: "Look, water flowing down"' },{ zh: '让孩子自由探索', en: 'Let child explore freely' },{ zh: '加入描述和互动', en: 'Add narration and interaction' }] },
+  { id: 'car-ispy', nameZh: '车上找找看', nameEn: 'Car I-Spy', skill: 'Joint Attention', skillZh: '共同注意', dur: 10, indoor: false, outdoor: false, ageMin: 24, ageMax: 72, tags: ['social'], mood: ['neutral','happy'], time: ['morning','afternoon','evening'], car: true, waiting: true, steps: [{ zh: '"我看到...一辆红色的车！"', en: '"I see... a red car!"' },{ zh: '等孩子找到并指向它', en: 'Wait for child to find and point' },{ zh: '轮到孩子选（可以帮忙）', en: "Child's turn to pick (help if needed)" },{ zh: '庆祝每一次找到', en: 'Celebrate each find' }] },
+  { id: 'finger-songs', nameZh: '手指歌谣', nameEn: 'Finger Songs', skill: 'Imitation', skillZh: '模仿', dur: 5, indoor: true, outdoor: false, ageMin: 12, ageMax: 48, tags: ['play','social','calming'], mood: ['happy','neutral','sad'], time: ['morning','afternoon','evening'], car: true, waiting: true, steps: [{ zh: '唱手指歌（小星星、虫虫飞）', en: 'Sing finger songs (Twinkle Twinkle, Itsy Bitsy Spider)' },{ zh: '慢慢做动作，让孩子看清楚', en: 'Do motions slowly so child can see' },{ zh: '暂停在关键动作处，等孩子', en: 'Pause at key moments, wait for child' },{ zh: '接受任何近似的动作', en: 'Accept any approximation of the motion' }] },
+  { id: 'sensory-bottle', nameZh: '感觉瓶', nameEn: 'Sensory Bottle', skill: 'Regulation', skillZh: '调节', dur: 10, indoor: true, outdoor: false, ageMin: 12, ageMax: 72, tags: ['calming'], mood: ['overwhelmed','sad','angry','neutral'], time: ['morning','afternoon','evening'], car: true, waiting: true, steps: [{ zh: '摇一摇感觉瓶（或雪花球）', en: 'Shake sensory bottle (or snow globe)' },{ zh: '"看，亮片在动"', en: '"Look, the glitter is moving"' },{ zh: '安静地一起看，直到沉淀', en: 'Watch quietly together until settled' },{ zh: '配合深呼吸：随着沉淀慢慢呼气', en: 'Pair with breathing: exhale as glitter settles' }] },
+  { id: 'bath-pour', nameZh: '洗澡倒水', nameEn: 'Bath Time Pouring', skill: 'Play', skillZh: '游戏', dur: 10, indoor: true, outdoor: false, ageMin: 12, ageMax: 48, tags: ['play','calming'], mood: ['happy','neutral'], time: ['evening'], steps: [{ zh: '给孩子不同大小的杯子', en: 'Give child cups of different sizes' },{ zh: '示范倒水："倒进去...满了！"', en: 'Model pouring: "Pour in... full!"' },{ zh: '加入数数："1, 2, 3倒！"', en: 'Add counting: "1, 2, 3 pour!"' },{ zh: '让孩子主导，跟随他的兴趣', en: "Let child lead, follow their interest" }] },
+  { id: 'chalk-draw', nameZh: '粉笔画', nameEn: 'Sidewalk Chalk', skill: 'Imitation', skillZh: '模仿', dur: 15, indoor: false, outdoor: true, ageMin: 18, ageMax: 72, tags: ['play'], mood: ['happy','neutral'], time: ['morning','afternoon'], steps: [{ zh: '在地上画简单形状', en: 'Draw simple shapes on ground' },{ zh: '"你来画！" — 递给孩子粉笔', en: '"Your turn!" — hand chalk to child' },{ zh: '画孩子喜欢的东西（车、动物）', en: "Draw things child likes (cars, animals)" },{ zh: '在画上踩跳，增加身体互动', en: 'Stomp and jump on drawings for motor play' }] },
+  { id: 'playdough-press', nameZh: '橡皮泥压压', nameEn: 'Play-Dough Press', skill: 'Sensory', skillZh: '感觉', dur: 10, indoor: true, outdoor: false, ageMin: 18, ageMax: 72, tags: ['play','calming'], mood: ['happy','neutral','overwhelmed'], time: ['morning','afternoon','evening'], steps: [{ zh: '一起揉、压、搓橡皮泥', en: 'Squeeze, press, roll play-dough together' },{ zh: '用模具或手指压出形状', en: 'Use molds or fingers to make shapes' },{ zh: '描述动作："压！扁扁的！"', en: 'Narrate: "Press! So flat!"' },{ zh: '跟随孩子的玩法', en: "Follow child's way of playing" }] },
+  { id: 'music-stop', nameZh: '音乐暂停', nameEn: 'Music Stop & Go', skill: 'Turn-Taking', skillZh: '轮流', dur: 5, indoor: true, outdoor: true, ageMin: 15, ageMax: 60, tags: ['play','social'], mood: ['happy','neutral'], time: ['morning','afternoon'], steps: [{ zh: '播放音乐，一起跳舞或走动', en: 'Play music, dance or move together' },{ zh: '突然暂停！"停！" — 一起定住', en: 'Pause! "Stop!" — freeze together' },{ zh: '再播放 — "走！"', en: 'Play again — "Go!"' },{ zh: '孩子开始预期后让他来控制暂停', en: 'Once child anticipates, let them control pause' }] },
+  { id: 'quiet-space', nameZh: '安静角', nameEn: 'Quiet Space', skill: 'Regulation', skillZh: '调节', dur: 10, indoor: true, outdoor: false, ageMin: 18, ageMax: 120, tags: ['calming'], mood: ['overwhelmed','sad','angry'], time: ['morning','afternoon','evening'], steps: [{ zh: '找一个安静的角落，放毯子和枕头', en: 'Find a quiet corner with blanket and pillows' },{ zh: '关掉灯或拉窗帘', en: 'Dim lights or close curtains' },{ zh: '轻声说"这是安全的地方"', en: 'Softly say "This is a safe place"' },{ zh: '安静陪伴，不强迫说话', en: 'Be present quietly, no pressure to talk' }] },
+  { id: 'swing-push', nameZh: '荡秋千互动', nameEn: 'Swing Interaction', skill: 'Communication', skillZh: '沟通', dur: 10, indoor: false, outdoor: true, ageMin: 12, ageMax: 72, tags: ['play','social'], mood: ['happy','neutral'], time: ['morning','afternoon'], steps: [{ zh: '推秋千时暂停，等孩子示意"还要"', en: 'Push swing, pause, wait for child to signal "more"' },{ zh: '接受任何方式：看、声音、手势、语言', en: 'Accept any form: look, sound, gesture, words' },{ zh: '"还要？好！推！"', en: '"More? OK! Push!"' },{ zh: '每次都等待，增加沟通机会', en: 'Wait each time, create communication opportunities' }] },
+  { id: 'leaf-collect', nameZh: '捡树叶', nameEn: 'Leaf Collecting', skill: 'Joint Attention', skillZh: '共同注意', dur: 15, indoor: false, outdoor: true, ageMin: 15, ageMax: 60, tags: ['play'], mood: ['happy','neutral'], time: ['morning','afternoon'], steps: [{ zh: '一起去捡不同的树叶', en: 'Collect different leaves together' },{ zh: '"看这片！大的！" — 指给孩子看', en: '"Look at this one! Big!" — show child' },{ zh: '让孩子选，"你要哪一片？"', en: '"Which one do you want?"' },{ zh: '回家后一起看、比较', en: 'At home, look at and compare them' }] },
+  { id: 'counting-car', nameZh: '车上数数', nameEn: 'Car Counting', skill: 'Communication', skillZh: '沟通', dur: 5, indoor: false, outdoor: false, ageMin: 24, ageMax: 72, tags: ['social'], mood: ['neutral','happy'], time: ['morning','afternoon','evening'], car: true, waiting: true, steps: [{ zh: '"我们来数红色的车！"', en: '"Let\'s count red cars!"' },{ zh: '看到一辆就竖一个手指', en: 'Hold up one finger for each one spotted' },{ zh: '孩子指出时大声庆祝', en: 'Celebrate when child spots one' },{ zh: '可以换成数公交车、树、狗等', en: 'Switch to counting buses, trees, dogs, etc.' }] },
+  { id: 'bath-measure', nameZh: '洗澡量量', nameEn: 'Bath Measuring', skill: 'Play', skillZh: '游戏', dur: 10, indoor: true, outdoor: false, ageMin: 18, ageMax: 60, tags: ['play'], mood: ['happy','neutral'], time: ['evening'], steps: [{ zh: '准备大小不同的量杯', en: 'Prepare measuring cups of different sizes' },{ zh: '"这个杯子能装几小杯？"', en: '"How many small cups fill the big one?"' },{ zh: '一起倒，一起数', en: 'Pour together, count together' },{ zh: '加泡泡或小玩具增加趣味', en: 'Add bubbles or small toys for fun' }] },
+  { id: 'hide-seek-toy', nameZh: '找玩具', nameEn: 'Hide & Seek Toy', skill: 'Joint Attention', skillZh: '共同注意', dur: 5, indoor: true, outdoor: false, ageMin: 10, ageMax: 48, tags: ['play','social'], mood: ['happy','neutral'], time: ['morning','afternoon','evening'], steps: [{ zh: '在孩子面前把玩具藏在毯子下', en: 'Hide toy under blanket while child watches' },{ zh: '"玩具去哪了？"', en: '"Where did it go?"' },{ zh: '等孩子找，表现惊讶', en: 'Wait for child to find it, act surprised' },{ zh: '轮流藏，让孩子来藏', en: "Take turns, let child hide it" }] },
+];
+
+// ===== PROFILE & STATE =====
+function getProfile() { return JSON.parse(localStorage.getItem('wy_profile') || 'null'); }
+function saveProfile(p) { localStorage.setItem('wy_profile', JSON.stringify(p)); }
+function getRecords() { return JSON.parse(localStorage.getItem('wy_records') || '{}'); }
+function saveRecords(r) { localStorage.setItem('wy_records', JSON.stringify(r)); }
+function todayKey() { return new Date().toISOString().slice(0,10); }
+
+// ===== SETUP =====
+function showSetup() { document.getElementById('setupOverlay').classList.remove('hidden'); }
+function saveSetup() {
+  const p = {
+    parentName: document.getElementById('setupParentName').value.trim() || 'Family',
+    childName: document.getElementById('setupChildName').value.trim() || 'Child',
+    childAge: parseInt(document.getElementById('setupChildAge').value) || 36,
+    createdAt: new Date().toISOString()
+  };
+  saveProfile(p);
+  document.getElementById('setupOverlay').classList.add('hidden');
+  initApp();
+}
+
+// ===== DARK MODE =====
+function toggleDark() {
+  const dark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('wy_dark', dark ? '1' : '0');
+  document.getElementById('darkBtn').textContent = dark ? '☀️' : '🌙';
+}
+
+// ===== GREETING =====
+function updateGreeting() {
+  const profile = getProfile();
+  const hour = new Date().getHours();
+  let zhGreet, enGreet;
+  if (hour < 6) { zhGreet = '夜深了'; enGreet = "It's late"; }
+  else if (hour < 12) { zhGreet = '早上好'; enGreet = 'Good morning'; }
+  else if (hour < 14) { zhGreet = '中午好'; enGreet = 'Good afternoon'; }
+  else if (hour < 18) { zhGreet = '下午好'; enGreet = 'Good afternoon'; }
+  else { zhGreet = '晚上好'; enGreet = 'Good evening'; }
+
+  if (profile) {
+    zhGreet += '，' + profile.parentName;
+    enGreet += ', ' + profile.parentName;
+  }
+
+  document.getElementById('greetingText').textContent = zhGreet;
+  document.getElementById('greetingSub').textContent = enGreet;
+
+  // Affirmation — pick based on day of year so it stays consistent for the day
+  const dayOfYear = Math.floor((Date.now() - new Date(new Date().getFullYear(),0,0)) / 86400000);
+  const aff = AFFIRMATIONS[dayOfYear % AFFIRMATIONS.length];
+  document.getElementById('affirmation').textContent = `"${aff.zh} / ${aff.en}"`;
+}
+
+// ===== STREAK =====
+function updateStreak() {
+  const records = getRecords();
+  const dates = Object.keys(records).sort().reverse();
+  let streak = 0;
+  const today = todayKey();
+  let checkDate = new Date();
+
+  // If today is recorded, include it
+  for (let i = 0; i < 365; i++) {
+    const key = checkDate.toISOString().slice(0,10);
+    if (records[key]) {
+      streak++;
+      checkDate.setDate(checkDate.getDate() - 1);
+    } else if (key === today) {
+      // today not recorded yet, check yesterday
+      checkDate.setDate(checkDate.getDate() - 1);
+    } else {
+      break;
+    }
+  }
+
+  const el = document.getElementById('streakText');
+  if (streak > 0) {
+    el.textContent = `连续第${streak}天 Day ${streak}`;
+    document.getElementById('streakBadge').classList.remove('hidden');
+  } else {
+    el.textContent = '开始你的第一天 Start Day 1';
+    document.getElementById('streakBadge').classList.remove('hidden');
+  }
+}
+
+// ===== MOOD RECORD =====
+let selectedMoods = { child: null, parent: null };
+
+function pickMood(btn, who) {
+  const row = btn.parentElement;
+  row.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  selectedMoods[who] = btn.dataset.val;
+}
+
+function saveRecord() {
+  if (!selectedMoods.child && !selectedMoods.parent) return;
+
+  const records = getRecords();
+  records[todayKey()] = {
+    childMood: selectedMoods.child,
+    parentMood: selectedMoods.parent,
+    bestMoment: document.getElementById('bestMoment').value.trim(),
+    challenge: document.getElementById('challenge').value.trim(),
+    ts: new Date().toISOString()
+  };
+  saveRecords(records);
+
+  document.getElementById('recordForm').classList.add('hidden');
+  document.getElementById('recordSuccess').classList.remove('hidden');
+  updateStreak();
+  updateInsights();
+  updateCalendar();
+  recommendActivity(); // re-recommend based on mood
+}
+
+function checkTodayRecord() {
+  const records = getRecords();
+  const today = records[todayKey()];
+  if (today) {
+    document.getElementById('recordForm').classList.add('hidden');
+    document.getElementById('recordSuccess').classList.remove('hidden');
+    selectedMoods.child = today.childMood;
+    selectedMoods.parent = today.parentMood;
+  }
+}
+
+// ===== ACTIVITY RECOMMENDATION =====
+let currentActivityIndex = 0;
+let filteredActivities = [];
+
+function recommendActivity() {
+  const profile = getProfile();
+  const age = profile ? profile.childAge : 36;
+  const hour = new Date().getHours();
+  let timeOfDay = 'afternoon';
+  if (hour < 12) timeOfDay = 'morning';
+  else if (hour >= 18) timeOfDay = 'evening';
+
+  const childMood = selectedMoods.child;
+  const records = getRecords();
+
+  // Recently tried (last 3 days)
+  const recent = [];
+  for (let i = 0; i < 3; i++) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0,10);
+    if (records[key] && records[key].activityId) recent.push(records[key].activityId);
+  }
+
+  let pool = ACTIVITIES_POOL.filter(a => a.ageMin <= age && age <= a.ageMax);
+
+  // Time of day preference
+  pool = pool.filter(a => a.time.includes(timeOfDay));
+
+  // Mood-based filtering
+  if (childMood === 'overwhelmed' || childMood === 'sad' || childMood === 'angry') {
+    const calming = pool.filter(a => a.tags.includes('calming'));
+    if (calming.length > 0) pool = calming;
+  } else if (childMood === 'happy') {
+    const social = pool.filter(a => a.tags.includes('social') || a.tags.includes('play'));
+    if (social.length > 0) pool = social;
+  }
+
+  // Remove recently tried
+  pool = pool.filter(a => !recent.includes(a.id));
+
+  // Shuffle with seed from today's date
+  const seed = parseInt(todayKey().replace(/-/g, ''));
+  pool.sort((a, b) => {
+    const ha = (seed * a.id.length) % 100;
+    const hb = (seed * b.id.length) % 100;
+    return ha - hb;
+  });
+
+  filteredActivities = pool.length > 0 ? pool : ACTIVITIES_POOL.slice(0, 5);
+  currentActivityIndex = 0;
+  displayActivity();
+}
+
+function displayActivity() {
+  if (filteredActivities.length === 0) return;
+  const a = filteredActivities[currentActivityIndex % filteredActivities.length];
+
+  document.getElementById('activityMeta').textContent = `${a.dur} min · ${a.indoor ? 'Indoor' : 'Outdoor'} · ${a.skillZh} ${a.skill}`;
+  document.getElementById('activityName').textContent = `${a.nameZh} ${a.nameEn}`;
+
+  const stepsEl = document.getElementById('activitySteps');
+  stepsEl.innerHTML = '';
+  a.steps.forEach((s, i) => {
+    const li = document.createElement('li');
+    li.setAttribute('data-step', (i+1) + '.');
+    li.textContent = `${s.zh} ${s.en}`;
+    stepsEl.appendChild(li);
+  });
+
+  document.getElementById('activityFeedback').classList.add('hidden');
+  document.querySelectorAll('.feedback-btn').forEach(b => b.classList.remove('chosen'));
+}
+
+function nextActivity() {
+  currentActivityIndex++;
+  displayActivity();
+}
+
+function rateActivity(rating) {
+  const a = filteredActivities[currentActivityIndex % filteredActivities.length];
+  const records = getRecords();
+  const today = records[todayKey()] || {};
+  today.activityId = a.id;
+  today.activityRating = rating;
+  records[todayKey()] = today;
+  saveRecords(records);
+
+  // Visual feedback
+  document.querySelectorAll('.feedback-btn').forEach(b => b.classList.remove('chosen'));
+  event.target.classList.add('chosen');
+}
+
+// Show feedback after clicking "Try this"
+document.getElementById('activityLink').addEventListener('click', function(e) {
+  // Don't prevent navigation, but show feedback on return
+  const records = getRecords();
+  const today = records[todayKey()] || {};
+  today.triedActivity = true;
+  records[todayKey()] = today;
+  saveRecords(records);
+});
+
+function checkActivityFeedback() {
+  const records = getRecords();
+  const today = records[todayKey()];
+  if (today && today.triedActivity && !today.activityRating) {
+    document.getElementById('activityFeedback').classList.remove('hidden');
+  }
+}
+
+// ===== TOOL GROUPS =====
+function toggleGroup(id) {
+  document.getElementById(id).classList.toggle('open');
+}
+
+// ===== INSIGHTS =====
+function updateInsights() {
+  const records = getRecords();
+  const thisWeek = [];
+  for (let i = 6; i >= 0; i--) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+    const key = d.toISOString().slice(0,10);
+    if (records[key]) thisWeek.push(records[key]);
+  }
+
+  const card = document.getElementById('insightsCard');
+  const content = document.getElementById('insightsContent');
+
+  if (thisWeek.length < 3) {
+    card.classList.add('hidden');
+    return;
+  }
+
+  card.classList.remove('hidden');
+
+  const goodDays = thisWeek.filter(r => r.childMood === 'happy' || r.childMood === 'neutral').length;
+  const toughDays = thisWeek.length - goodDays;
+
+  // Challenge analysis
+  const challenges = thisWeek.map(r => r.challenge).filter(Boolean);
+  let challengeText = '';
+  if (challenges.length > 0) {
+    challengeText = `<div class="insight-row"><span class="insight-icon">💡</span><span class="insight-text">记录了 ${challenges.length} 个挑战 / ${challenges.length} challenges noted</span></div>`;
+  }
+
+  // Mood trend
+  const moodMap = { happy: 2, neutral: 1, sad: -1, angry: -1, overwhelmed: -2 };
+  const scores = thisWeek.map(r => moodMap[r.childMood] || 0);
+  const firstHalf = scores.slice(0, Math.ceil(scores.length/2)).reduce((a,b) => a+b, 0);
+  const secondHalf = scores.slice(Math.ceil(scores.length/2)).reduce((a,b) => a+b, 0);
+  const trend = secondHalf > firstHalf ? '↑ 好转 improving' : secondHalf < firstHalf ? '↓ 有挑战 challenging' : '→ 平稳 stable';
+
+  content.innerHTML = `
+    <div class="insight-row">
+      <span class="insight-icon">📊</span>
+      <span class="insight-text">本周 This week: <span class="insight-value">${goodDays} 好日子 good</span>, ${toughDays} 辛苦 tough</span>
+    </div>
+    ${challengeText}
+    <div class="insight-row">
+      <span class="insight-icon">📈</span>
+      <span class="insight-text">情绪趋势 Mood: <span class="insight-value">${trend}</span></span>
+    </div>
+  `;
+}
+
+// ===== CALENDAR =====
+function updateCalendar() {
+  const records = getRecords();
+  const today = new Date();
+  const year = today.getFullYear();
+  const month = today.getMonth();
+
+  // Day labels
+  const labels = document.getElementById('calLabels');
+  labels.innerHTML = '';
+  ['日','一','二','三','四','五','六'].forEach(d => {
+    const el = document.createElement('div');
+    el.className = 'cal-label';
+    el.textContent = d;
+    labels.appendChild(el);
+  });
+
+  const grid = document.getElementById('calGrid');
+  grid.innerHTML = '';
+
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+  // Empty slots
+  for (let i = 0; i < firstDay; i++) {
+    const el = document.createElement('div');
+    el.className = 'cal-day empty';
+    grid.appendChild(el);
+  }
+
+  for (let d = 1; d <= daysInMonth; d++) {
+    const el = document.createElement('div');
+    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday = d === today.getDate();
+    const isChecked = !!records[dateStr];
+
+    el.className = 'cal-day' + (isChecked ? ' checked' : '') + (isToday ? ' today' : '');
+    el.textContent = d;
+    grid.appendChild(el);
+  }
+}
+
+// ===== WEATHER-BASED ACTIVITY BOOST =====
+async function fetchWeather() {
+  try {
+    // Use Open-Meteo free API — no key needed. Default: Amsterdam
+    const resp = await fetch('https://api.open-meteo.com/v1/forecast?latitude=52.37&longitude=4.90&current=temperature_2m,weather_code&timezone=auto');
+    const data = await resp.json();
+    if (data.current) {
+      const code = data.current.weather_code;
+      // Rain/snow codes: 51-67, 71-77, 80-99
+      window.wyWeather = (code >= 51 && code <= 99) ? 'rainy' : 'sunny';
+    }
+  } catch(e) { /* ignore, default to no weather filter */ }
+}
+
+// ===== INIT =====
+function initApp() {
+  // Dark mode
+  if (localStorage.getItem('wy_dark') === '1') {
+    document.documentElement.classList.add('dark');
+    document.getElementById('darkBtn').textContent = '☀️';
+  }
+
+  // Profile check
+  const profile = getProfile();
+  if (!profile) {
+    showSetup();
+    return;
+  }
+
+  // Fill setup fields for editing
+  document.getElementById('setupParentName').value = profile.parentName || '';
+  document.getElementById('setupChildName').value = profile.childName || '';
+  document.getElementById('setupChildAge').value = profile.childAge || '';
+
+  updateGreeting();
+  updateStreak();
+  checkTodayRecord();
+  recommendActivity();
+  checkActivityFeedback();
+  updateInsights();
+  updateCalendar();
+  fetchWeather();
+}
+
+document.addEventListener('DOMContentLoaded', initApp);
+</script>
 </body>
 </html>
