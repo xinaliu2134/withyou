@@ -571,6 +571,236 @@ const SECTIONS = [
       subtitle: 'Communities, books, podcasts & organizations',
       content: 'SUPPORT'
     }
+  },
+  {
+    id: 'chinese-family',
+    icon: '&#127976;',
+    iconBg: '#FDE2E4',
+    zh: {
+      title: '中国家庭专项',
+      subtitle: '如何与祖辈沟通、文化压力、中医视角',
+      content: `
+        <div class="highlight-card"><p>在中国家庭文化中，ASD诊断往往不只是医学问题，还涉及面子、代际关系、传统信仰。这一节是为中国背景的家庭写的。</p></div>
+
+        <div class="info-card"><h4>如何告诉祖辈：常见质疑与回应脚本</h4>
+          <p style="margin:8px 0;color:var(--sage)"><strong>1. "别人家孩子都会说话了"</strong></p>
+          <p>回应："每个孩子发展速度不同，但医生评估后确认我们家孩子需要专业帮助。早点开始干预，效果最好——这不是和别人比，是给他最好的机会。"</p>
+
+          <p style="margin:8px 0;color:var(--sage)"><strong>2. "男孩子说话晚很正常，爱因斯坦也是"</strong></p>
+          <p>回应："我们也希望是这样。但医生说语言只是表现之一，还有其他方面需要支持。与其赌一把，不如现在就帮他。干预不会害他，但等待可能耽误关键期。"</p>
+
+          <p style="margin:8px 0;color:var(--sage)"><strong>3. "是不是你们教得不好/带得不好"</strong></p>
+          <p>回应："妈/爸，我一开始也这么想，还自责了很久。后来我查了很多资料，科学界在70年代就明确：自闭症是大脑发育差异，和养育方式无关。这不是谁的错。现在我们需要的是一起帮他，不是责怪谁。"</p>
+
+          <p style="margin:8px 0;color:var(--sage)"><strong>4. "带去看中医调调"</strong></p>
+          <p>回应（尊重 + 重定向）："我知道您是真心为孩子好，谢谢您。中医对调养身体可能有帮助，但自闭症的核心干预需要行为治疗、语言治疗这些方法，国内外专家都这么建议。我们会综合考虑，但首先按医生的方案走，可以吗？"</p>
+
+          <p style="margin:8px 0;color:var(--sage)"><strong>5. "这样的孩子带出去多丢脸"</strong></p>
+          <p>回应：（平静但坚定）："妈/爸，我理解您担心别人的眼光。但孩子的成长比面子重要。如果我们因为怕丢脸不带他出门、不让他接触世界，他就更学不会。真正的丢脸是让孩子错过帮助他的机会。"</p>
+        </div>
+
+        <div class="info-card"><h4>中医与自闭症：一个平衡的视角</h4>
+          <p><strong>明确的事实：</strong>目前没有任何证据表明中药、针灸、推拿可以治疗或改善自闭症的核心症状（社交沟通、重复行为）。</p>
+          <p style="margin-top:8px"><strong>但也不必全盘否定：</strong>针灸可能对自闭症儿童的共病（如睡眠障碍、焦虑）有一定辅助作用，但证据有限。Cochrane综述（Cheuk等2011）得出结论：没有足够证据支持或反对针灸用于自闭症的核心症状。</p>
+          <p style="margin-top:8px"><strong>实用建议：</strong></p>
+          <ul>
+            <li>不要用中医替代循证干预（ABA、ESDM、言语治疗等）</li>
+            <li>如果家里老人坚持要尝试，可以作为"辅助"而非"主治"——前提是不伤害孩子、不延误主要治疗</li>
+            <li>警惕任何声称"根治""去根""打通经络治自闭症"的中医机构——这是骗局</li>
+            <li>针对睡眠、消化等共病，正规中医可能有帮助，但务必同时继续主要干预</li>
+          </ul>
+        </div>
+
+        <div class="info-card"><h4>面子文化与特殊教育</h4>
+          <p>在学校/社区面对污名化时的实用策略：</p>
+          <ul>
+            <li><strong>选择性披露：</strong>你不必告诉所有人。只告诉真正需要知道的人（老师、主要照顾者）</li>
+            <li><strong>换个说法：</strong>对不熟的人，可以说"他有一些发育方面的需要"而不必用"自闭症"标签</li>
+            <li><strong>提前沟通老师：</strong>私下和老师沟通，提供简短的"使用说明书"——孩子的触发点、安抚方法</li>
+            <li><strong>不解释策略：</strong>面对陌生人的评判，最有效的回应是微笑+走开，不必每次都解释</li>
+            <li><strong>找到你的"安全圈"：</strong>不是所有人都需要理解你，但你需要至少3-5个真正懂的人</li>
+          </ul>
+        </div>
+
+        <div class="info-card"><h4>中文媒体中的自闭症误读</h4>
+          <p>警惕以下常见的不准确呈现：</p>
+          <ul>
+            <li><strong>"雨人"式刻板印象：</strong>不是所有ASD人士都是天才，大多数是普通人</li>
+            <li><strong>"星星的孩子"过度浪漫化：</strong>温暖但模糊真实需求</li>
+            <li><strong>"被治愈"叙事：</strong>自闭症不会消失，进步是支持和适应的结果</li>
+            <li><strong>"父母奇迹"故事：</strong>给其他家庭不切实际的期望，加重"不够努力"的愧疚</li>
+            <li><strong>偏方"成功案例"：</strong>往往是广告、幸存者偏差或误诊</li>
+          </ul>
+          <p style="margin-top:8px">看到任何"奇迹"故事时，问自己：有多少家庭试了同样的方法没效果？他们的故事被看见了吗？</p>
+        </div>
+      `
+    },
+    en: {
+      title: 'Chinese Family Guide',
+      subtitle: 'Grandparents, cultural pressure, TCM perspective',
+      content: `
+        <div class="highlight-card"><p>In Chinese family culture, an ASD diagnosis is often more than medical — it touches face, generational dynamics, and tradition. This section is written for families with a Chinese background.</p></div>
+
+        <div class="info-card"><h4>Telling Grandparents: Common Pushback & Response Scripts</h4>
+          <p style="margin:8px 0;color:var(--sage)"><strong>1. "Other kids are already talking"</strong></p>
+          <p>Response: "Every child develops at a different pace, but after professional evaluation, the doctor confirmed our child needs support. Starting early gives him the best chance — this isn't about comparing to others, it's about giving him what he needs."</p>
+
+          <p style="margin:8px 0;color:var(--sage)"><strong>2. "Boys just talk late — even Einstein did"</strong></p>
+          <p>Response: "I hoped that too. But the doctor explained that language is just one sign — there are other areas that need support. Rather than gambling and waiting, let's help him now. Intervention won't hurt him; waiting could cost him the critical window."</p>
+
+          <p style="margin:8px 0;color:var(--sage)"><strong>3. "Maybe you didn't raise him right"</strong></p>
+          <p>Response: "Mom/Dad, I thought that too at first, and I blamed myself for a long time. Then I read the research — science clearly established back in the 1970s that autism is a brain development difference, unrelated to parenting. It's nobody's fault. What we need now is to help him together, not blame anyone."</p>
+
+          <p style="margin:8px 0;color:var(--sage)"><strong>4. "Take him to a TCM doctor to regulate his body"</strong></p>
+          <p>Response (respect + redirect): "I know you really want to help him, thank you. TCM may help with general wellness, but the core intervention for autism is behavioral therapy, speech therapy — that's what experts both in and outside China recommend. We'll consider other things, but let's follow the doctor's main plan first, OK?"</p>
+
+          <p style="margin:8px 0;color:var(--sage)"><strong>5. "It's shameful to take a kid like this out in public"</strong></p>
+          <p>Response (calm but firm): "Mom/Dad, I understand you worry about what others think. But my child's growth matters more than face. If we hide him because we fear shame, he'll never learn to be in the world. The real shame would be missing the chance to help him."</p>
+        </div>
+
+        <div class="info-card"><h4>TCM and Autism: A Balanced View</h4>
+          <p><strong>What we know:</strong> There is no evidence that Chinese herbal medicine, acupuncture, or tuina can treat or improve the core features of autism (social communication, repetitive behaviors).</p>
+          <p style="margin-top:8px"><strong>But don't dismiss entirely:</strong> Acupuncture may offer some adjunctive benefit for co-occurring conditions like sleep problems and anxiety, though evidence is limited. The Cochrane review (Cheuk et al., 2011) concluded: there is insufficient evidence to support or refute acupuncture for the core features of autism.</p>
+          <p style="margin-top:8px"><strong>Practical advice:</strong></p>
+          <ul>
+            <li>Do NOT replace evidence-based interventions (ABA, ESDM, speech therapy) with TCM</li>
+            <li>If grandparents insist, it can be "supplementary" not "primary" — as long as it doesn't harm the child or delay real treatment</li>
+            <li>Beware any TCM provider claiming to "cure" or "eliminate" autism — that's a scam</li>
+            <li>For sleep or digestive comorbidities, licensed TCM may help — but continue primary intervention</li>
+          </ul>
+        </div>
+
+        <div class="info-card"><h4>Face Culture and Special Education</h4>
+          <p>Practical strategies for navigating stigma at school/in community:</p>
+          <ul>
+            <li><strong>Selective disclosure:</strong> You don't have to tell everyone. Only tell those who truly need to know (teachers, primary caregivers)</li>
+            <li><strong>Rephrase:</strong> To acquaintances, you can say "he has some developmental needs" without using the "autism" label</li>
+            <li><strong>Brief the teacher privately:</strong> Offer a short "user guide" — triggers, calming strategies</li>
+            <li><strong>The no-explanation strategy:</strong> Against strangers judging you, the most effective reply is a smile + walking away</li>
+            <li><strong>Find your inner circle:</strong> Not everyone needs to understand you, but you need 3-5 people who truly do</li>
+          </ul>
+        </div>
+
+        <div class="info-card"><h4>Autism in Chinese Media</h4>
+          <p>Common misrepresentations to watch for:</p>
+          <ul>
+            <li><strong>"Rain Man" stereotype:</strong> Not all ASD individuals are savants. Most are just ordinary people</li>
+            <li><strong>"Children of the stars" over-romanticization:</strong> Warm but blurs real needs</li>
+            <li><strong>"Cured" narratives:</strong> Autism doesn't disappear — progress is the result of support and adaptation</li>
+            <li><strong>"Miracle parent" stories:</strong> Create unrealistic expectations, amplifying guilt for "not trying hard enough"</li>
+            <li><strong>Folk remedy "success stories":</strong> Usually advertising, survivorship bias, or misdiagnosis</li>
+          </ul>
+          <p style="margin-top:8px">When you see a "miracle" story, ask: how many families tried the same thing with no result? Did their stories get heard?</p>
+        </div>
+      `
+    }
+  },
+  {
+    id: 'provider-red-flags',
+    icon: '&#128681;',
+    iconBg: '#FFE5E5',
+    zh: {
+      title: '治疗师红旗清单',
+      subtitle: '如何识别糟糕的治疗师或骗子疗法',
+      content: `
+        <div class="highlight-card"><p>绝望会让人容易相信承诺。这份清单帮你在查看机构、选择治疗师时，及时识别危险信号。</p></div>
+
+        <div class="info-card" style="border-color:#FF6B6B"><h4>&#128681; 立即走人的10个红旗</h4>
+          <ol>
+            <li><strong>承诺"治愈"或"根治"自闭症</strong> — 自闭症无法治愈，任何承诺都是谎言</li>
+            <li><strong>使用惩罚、体罚或身体限制</strong> — 现代循证干预不使用这些手段</li>
+            <li><strong>不让家长观察课程</strong> — 正规机构都允许甚至鼓励家长观察</li>
+            <li><strong>没有明确资质或资质模糊</strong> — 询问具体证书、学历、注册编号，得不到清楚回答就是警讯</li>
+            <li><strong>"千人一方"的课程</strong> — 不根据孩子评估定制方案的机构是批量生产，不是专业干预</li>
+            <li><strong>昂贵的"神奇"产品或仪器</strong> — 声称有"特殊频率""量子""能量"的设备99%是骗局</li>
+            <li><strong>伪科学用语</strong> — "排毒""肠脑轴""神经重置""细胞修复"用在自闭症上都是红旗</li>
+            <li><strong>要求立即大额预付</strong> — 让你"今天就交5万否则错过黄金期"的是在利用你的焦虑</li>
+            <li><strong>诋毁主流医学</strong> — "医生不告诉你""西医解决不了"的说辞是推销话术</li>
+            <li><strong>利用家长愧疚</strong> — "你不给孩子用就是不爱他"是情感勒索</li>
+          </ol>
+        </div>
+
+        <div class="info-card"><h4>正规机构的标志</h4>
+          <ul>
+            <li>有明确的评估流程，不是一来就开始"治疗"</li>
+            <li>治疗师有可验证的资质（BCBA、执业言语治疗师、职业治疗师等）</li>
+            <li>目标具体、可衡量、有时间表</li>
+            <li>定期与家长复盘进展</li>
+            <li>愿意和其他医疗团队合作</li>
+            <li>承认自己的局限——"这个问题不在我的专长范围内"</li>
+            <li>收费清晰，合同透明</li>
+            <li>不贬低其他疗法或机构</li>
+          </ul>
+        </div>
+
+        <div class="info-card"><h4>家长必问的10个问题</h4>
+          <ol>
+            <li>你们的治疗师有什么资质？能看一下证书吗？</li>
+            <li>你们使用什么干预方法？有研究支持吗？</li>
+            <li>我可以观察一次课吗？</li>
+            <li>如何评估孩子的进展？多久复盘一次？</li>
+            <li>如果没有效果，你们怎么调整？</li>
+            <li>合同包含什么？有没有终止条款？</li>
+            <li>你们有多少像我家孩子情况的案例？</li>
+            <li>治疗师和其他医疗团队（医生、学校）怎么沟通？</li>
+            <li>如果孩子抗拒或哭闹，你们怎么处理？</li>
+            <li>你们最不擅长什么？什么情况会建议转诊？</li>
+          </ol>
+          <p style="margin-top:8px;color:var(--sage)"><strong>提示：</strong>第10个问题是"照妖镜"——好机构会诚实回答，骗子会含糊其辞或说"我们什么都能做"。</p>
+        </div>
+      `
+    },
+    en: {
+      title: 'Provider Red Flags',
+      subtitle: 'How to spot bad therapists or quack treatments',
+      content: `
+        <div class="highlight-card"><p>Desperation makes us vulnerable to promises. This checklist helps you spot warning signs when evaluating providers and therapists.</p></div>
+
+        <div class="info-card" style="border-color:#FF6B6B"><h4>&#128681; 10 Red Flags — Walk Away Immediately</h4>
+          <ol>
+            <li><strong>Promises to "cure" or "reverse" autism</strong> — Autism cannot be cured. Any such promise is a lie</li>
+            <li><strong>Uses punishment, physical discipline, or restraint</strong> — Modern evidence-based intervention does not use these</li>
+            <li><strong>Won't let parents observe sessions</strong> — Legitimate providers allow and even encourage parent observation</li>
+            <li><strong>No clear credentials or vague credentials</strong> — Ask for specific certifications, degrees, license numbers. No clear answer = warning</li>
+            <li><strong>One-size-fits-all programs</strong> — Providers who don't customize based on assessment are mass-producing, not delivering professional intervention</li>
+            <li><strong>Expensive "miracle" products or devices</strong> — Anything claiming "special frequencies," "quantum," or "energy" is 99% a scam</li>
+            <li><strong>Pseudoscience language</strong> — "Detox," "gut-brain axis cure," "neural reset," "cellular repair" applied to autism are red flags</li>
+            <li><strong>Demands large upfront payments</strong> — "Pay ¥50k today or miss the golden window" is exploiting your anxiety</li>
+            <li><strong>Disparages mainstream medicine</strong> — "Doctors won't tell you" or "Western medicine can't solve this" are sales tactics</li>
+            <li><strong>Exploits parent guilt</strong> — "If you don't buy this, you don't love your child" is emotional blackmail</li>
+          </ol>
+        </div>
+
+        <div class="info-card"><h4>Signs of a Legitimate Provider</h4>
+          <ul>
+            <li>Has a clear assessment process — doesn't just start "treating" on day one</li>
+            <li>Therapists have verifiable credentials (BCBA, licensed SLP, OT, etc.)</li>
+            <li>Goals are specific, measurable, time-bound</li>
+            <li>Regular progress reviews with parents</li>
+            <li>Willing to collaborate with other medical teams</li>
+            <li>Admits their limitations — "This isn't in my area of expertise"</li>
+            <li>Transparent fees and contracts</li>
+            <li>Doesn't trash-talk other approaches or providers</li>
+          </ul>
+        </div>
+
+        <div class="info-card"><h4>10 Questions Every Parent Should Ask</h4>
+          <ol>
+            <li>What credentials do your therapists hold? May I see certifications?</li>
+            <li>What interventions do you use? Is there research support?</li>
+            <li>May I observe a session?</li>
+            <li>How do you measure my child's progress? How often do we review?</li>
+            <li>If there's no progress, how do you adjust?</li>
+            <li>What does the contract include? Is there a termination clause?</li>
+            <li>How many cases similar to my child have you worked with?</li>
+            <li>How do therapists communicate with our doctor and school?</li>
+            <li>If my child resists or cries, how do you handle it?</li>
+            <li>What are you NOT good at? When would you refer out?</li>
+          </ol>
+          <p style="margin-top:8px;color:var(--sage)"><strong>Tip:</strong> Question 10 is the real test — good providers answer honestly; scammers either dodge or claim "we can do everything."</p>
+        </div>
+      `
+    }
   }
 ];
 
@@ -586,7 +816,13 @@ const MYTHS = {
     { myth: '自闭症的人都是天才', truth: '虽然有些自闭症人士在特定领域有超常能力，但大多数和普通人一样——各有长处和短处。每个人都是独特的。' },
     { myth: '孩子长大就好了', truth: '自闭症是终身的神经差异，但随着适当的支持和干预，很多人能够过上充实、幸福的生活。关键是尽早开始支持。' },
     { myth: '自闭症只有男孩才会得', truth: '女孩也会有自闭症，但由于表现方式不同（更善于"伪装"），女孩往往更晚被诊断。男女比例约为3-4:1，部分原因是诊断偏差。' },
-    { myth: '屏幕时间过多导致了自闭症', truth: '过多的屏幕时间可能影响所有孩子的发育，但不会导致自闭症。自闭症在屏幕普及前就存在了。不过，减少屏幕时间、增加互动对所有孩子都有益。' }
+    { myth: '屏幕时间过多导致了自闭症', truth: '过多的屏幕时间可能影响所有孩子的发育，但不会导致自闭症。自闭症在屏幕普及前就存在了。不过，减少屏幕时间、增加互动对所有孩子都有益。' },
+    { myth: '自闭症 = 智力障碍', truth: '自闭症和智力障碍是两回事。约1/3的ASD人士同时有智力障碍，但也有大量ASD人士智力正常甚至超常。不能根据一个人不说话就判断他"不懂"。' },
+    { myth: '自闭症的人不会爱', truth: '他们爱得很深，只是表达方式不同。一个孩子不爱拥抱，不代表他不爱你——他可能通过分享兴趣、默默靠近、或记住你说过的每一个细节来表达爱。' },
+    { myth: 'ABA就是虐待', truth: '这是有细节的：早期的Lovaas式ABA因使用惩罚而被批评，但现代高质量的ABA强调尊重、正向强化、以孩子的主动性为中心。关键不是"ABA还是不ABA"，而是"是哪种ABA、谁在做"。选择机构时务必观察课堂。' },
+    { myth: '只有男孩才会自闭症', truth: '女孩同样会，只是她们更擅长"伪装"（masking）——模仿同龄人以融入环境，导致诊断延迟甚至漏诊。现在研究发现男女比例远比过去认为的更接近。' },
+    { myth: '疫苗导致自闭症（已被彻底推翻）', truth: 'Madsen等人2002年的丹麦研究追踪了53万名儿童，明确证明MMR疫苗与自闭症无关联。后续数十项大规模研究均得出相同结论。原始"研究"的作者Wakefield因数据造假被吊销医师执照。' },
+    { myth: '"冰箱妈妈"理论', truth: '1940年代Bruno Bettelheim提出自闭症是"冷漠母亲"造成的，这一理论在1960-70年代就被科学界彻底否定，但至今仍在民间流传。请明确告诉家人：这不是你的养育方式造成的。' }
   ],
   en: [
     { myth: 'Autism is caused by cold, unloving parents', truth: 'Autism is a neurodevelopmental difference unrelated to parenting. The "refrigerator mother" theory was debunked by science in the 1970s.' },
@@ -598,7 +834,13 @@ const MYTHS = {
     { myth: 'All autistic people are geniuses', truth: 'While some autistic individuals have exceptional abilities in specific areas, most are like everyone else — with unique strengths and challenges. Each person is unique.' },
     { myth: 'They\'ll grow out of it', truth: 'Autism is a lifelong neurological difference, but with appropriate support, many people lead fulfilling, happy lives. The key is starting support early.' },
     { myth: 'Only boys get autism', truth: 'Girls can be autistic too, but because they often present differently (better at "masking"), they tend to be diagnosed later. The ratio is about 3-4:1, partly due to diagnostic bias.' },
-    { myth: 'Too much screen time causes autism', truth: 'Excessive screen time may affect all children\'s development, but it doesn\'t cause autism. Autism existed before screens. However, reducing screen time and increasing interaction benefits all children.' }
+    { myth: 'Too much screen time causes autism', truth: 'Excessive screen time may affect all children\'s development, but it doesn\'t cause autism. Autism existed before screens. However, reducing screen time and increasing interaction benefits all children.' },
+    { myth: 'Autism equals intellectual disability', truth: 'They are separate conditions. About 1/3 of autistic people also have intellectual disability, but many are of average or above-average intelligence. A child who doesn\'t speak is NOT necessarily "not understanding."' },
+    { myth: 'Autistic people can\'t love', truth: 'They love deeply — just express it differently. A child who doesn\'t like hugs still loves you. Love may show up as sharing a special interest, sitting near you quietly, or remembering every detail you\'ve told them.' },
+    { myth: 'ABA is abuse', truth: 'Nuanced. Early Lovaas-style ABA used punishment and has been rightly criticized. Modern high-quality ABA emphasizes respect, positive reinforcement, and child-led learning. The question is not "ABA or not" but "which ABA, and who is delivering it." Always observe sessions before enrolling.' },
+    { myth: 'Only boys have autism', truth: 'Girls are autistic too. They often "mask" — mimicking peers to fit in — leading to late diagnosis or missed diagnoses entirely. Current research suggests the true male-to-female ratio is closer than historically believed.' },
+    { myth: 'Vaccines cause autism (definitively debunked)', truth: 'Madsen et al. (2002) followed 530,000 children in Denmark and found no link between MMR vaccine and autism. Dozens of subsequent large-scale studies confirm this. The original "study" author Wakefield lost his medical license for data fraud.' },
+    { myth: 'The "refrigerator mother" theory', truth: 'In the 1940s, Bruno Bettelheim claimed autism was caused by "cold mothers." This was thoroughly debunked in the 1960s-70s but the myth still lingers. Tell family clearly: your parenting did not cause this.' }
   ]
 };
 

@@ -788,7 +788,17 @@ function renderBridging() {
       '让孩子参与食物准备过程（洗菜、搅拌）',
       '使用喜欢的蘸料搭配新食物',
       '先从相似质地的食物过渡（如：接受饼干→尝试吐司）',
-      '用有趣的模具将食物切成有趣的形状'
+      '用有趣的模具将食物切成有趣的形状',
+      '白粥 → 白粥+少量蛋花 → 皮蛋瘦肉粥（从单一到多层次）',
+      '清水面 → 番茄汤面 → 炸酱面（逐步增加风味和配料）',
+      '蒸蛋 → 西红柿炒蛋 → 番茄炒蛋盖饭（从单一质地到混合）',
+      '白馒头 → 夹一小片肉松的馒头 → 肉松小面包',
+      '清汤饺子 → 煎饺（改变质地）→ 小笼包',
+      '白米饭 → 米饭+一小勺酱油 → 酱油拌饭 → 简单炒饭',
+      '蒸胡萝卜 → 胡萝卜丁炒饭（藏进已接受的食物）',
+      '清蒸鱼（去刺）→ 鱼丸 → 鱼香茄子（接触鱼的味道但不是鱼的形状）',
+      '豆浆 → 豆腐花（甜）→ 麻婆豆腐（咸）',
+      '白开水 → 淡蜂蜜水 → 淡柠檬水（扩展饮品接受度）'
     ],
     en: [
       'If child accepts chips/crackers, try baking new vegetables as thin chips',
@@ -796,7 +806,17 @@ function renderBridging() {
       'Involve child in food preparation (washing, stirring)',
       'Use favorite dips/sauces with new foods',
       'Bridge through similar textures (e.g., crackers accepted → try toast)',
-      'Use fun cookie cutters to make food into interesting shapes'
+      'Use fun cookie cutters to make food into interesting shapes',
+      'Plain congee → congee with a little egg drop → century egg & pork congee (single to layered)',
+      'Plain noodles → tomato noodle soup → zhajiang noodles (gradually add flavor & toppings)',
+      'Steamed egg → scrambled egg with tomato → tomato-egg rice bowl (single to mixed textures)',
+      'Plain mantou → mantou with a sliver of pork floss → pork floss bread roll',
+      'Plain broth dumplings → pan-fried dumplings (texture change) → xiaolongbao',
+      'Plain rice → rice with a spoon of soy sauce → soy-sauce rice → simple fried rice',
+      'Steamed carrots → tiny carrot dice in fried rice (hidden in accepted food)',
+      'Steamed fish (boneless) → fish balls → yuxiang eggplant (fish flavor, different shape)',
+      'Soy milk → sweet tofu pudding → mapo tofu (savory)',
+      'Plain water → lightly honeyed water → diluted lemon water (expanding drinks)'
     ]
   };
   if (!data.sosFood.length) {
@@ -863,7 +883,12 @@ const TIPS = [
   { zh: '安全食物策略：每餐至少包含一种孩子已接受的食物，减少焦虑。', en: 'Safe food strategy: Include at least one accepted food at each meal to reduce anxiety.', source: 'SOS Approach' },
   { zh: '注意感觉问题：某些食物的质地、温度或气味可能引发感觉不适，不是"挑食"。', en: 'Sensory awareness: Some textures, temperatures, or smells may cause genuine sensory discomfort — it\'s not "picky eating".', source: 'Dunn 2014' },
   { zh: '积极描述食物：用描述性语言（"脆脆的""冰凉的"）而不是评价（"好吃""难吃"）。', en: 'Describe, don\'t judge: Use descriptive language ("crunchy", "cool") instead of judgments ("yummy", "gross").', source: 'SOS Approach' },
-  { zh: '用餐环境：确保座椅高度合适，脚能踩到支撑物，使用适合的餐具。', en: 'Seating & tools: Ensure proper chair height, foot support, and age-appropriate utensils.', source: 'OT Practice Guidelines' }
+  { zh: '用餐环境：确保座椅高度合适，脚能踩到支撑物，使用适合的餐具。', en: 'Seating & tools: Ensure proper chair height, foot support, and age-appropriate utensils.', source: 'OT Practice Guidelines' },
+  { zh: '白米饭问题：很多ASD孩子拒绝白米饭，因为每一口的质地都略有不同（一粒软、一粒硬），感觉不可预测。尝试改用寿司米或糯米（质地更一致），或压成饭团让质地稳定。', en: 'The plain rice problem: Many ASD children refuse plain rice because texture is inconsistent (some grains soft, some firm) — it feels unpredictable. Try sushi rice or sticky rice (more uniform), or press into rice balls for a stable texture.', source: 'Chinese family observation · Sensory processing' },
+  { zh: '混合菜挑战：炒饭、汤面、盖饭等让不同食材接触在一起的菜对很多ASD孩子很难接受——"食物不能碰"是真实的感觉困扰。解决方案：用分格盘分开摆，让孩子自己决定是否要混。', en: 'Mixed-dish challenge: Fried rice, noodle soups, rice bowls — dishes where ingredients touch — are genuinely hard for many ASD kids. "Foods can\'t touch" is a real sensory need. Solution: use a divided plate and let the child decide whether to mix.', source: 'Chinese cuisine adaptation' },
+  { zh: '中餐 vs 西餐的质地差异：中餐常见的"软烂"质地（炖菜、粥、蒸蛋）对某些ASD孩子反而困难——他们可能更偏好脆、硬、干的食物。不必强求"有营养的汤汤水水"，干的米饭+清蒸蔬菜+肉也是营养餐。', en: 'Chinese vs Western texture differences: Common Chinese textures (stews, congee, steamed egg) can actually be harder for some ASD kids — they may prefer crunchy, firm, dry foods. Don\'t force "nourishing soupy foods" — plain rice + steamed veg + meat is also nutritious.', source: 'Sensory-based selective eating' },
+  { zh: '应对"多吃点"文化：祖辈和亲戚的"多吃点"是爱的表达，但对ASD孩子是巨大压力。预先沟通：饭前私下告诉老人"医生说不能逼他吃，否则他会更抗拒"。把责任推给"医生说"比直接反对有效得多。', en: 'Handling the "eat more!" pressure: Grandparents\' "eat more!" is an expression of love, but it\'s enormous pressure on an ASD child. Pre-empt: privately tell elders before the meal, "the doctor said pressuring him will make him resist more." Deferring to "the doctor said" works better than direct pushback.', source: 'Chinese family dynamics' },
+  { zh: '温度偏好：中国传统认为"趁热吃"，但很多ASD孩子对温度极其敏感——太烫会惊吓，太凉会抗拒。固定孩子的"可接受温度范围"，比如温（不烫）的粥、常温的面条。别人觉得"凉了不好"，但孩子接受才最重要。', en: 'Temperature preference: Chinese tradition says "eat while hot," but many ASD kids are highly temperature-sensitive — too hot startles, too cold gets rejected. Lock in a "safe temperature range" — warm (not hot) congee, room-temp noodles. Others may say "it\'s gone cold" — but what the child accepts matters more.', source: 'Sensory integration' }
 ];
 
 function renderTips() {

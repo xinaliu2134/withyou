@@ -595,7 +595,13 @@ const SCENARIOS = [
   { id: 'grandparents', icon: '👴', zh: '看爷爷奶奶', en: 'Visiting Grandparents' },
   { id: 'plane', icon: '✈️', zh: '坐飞机', en: 'Taking a Plane' },
   { id: 'haircut', icon: '💇', zh: '理发', en: 'Getting a Haircut' },
-  { id: 'restaurant', icon: '🍽', zh: '去餐厅', en: 'Going to a Restaurant' }
+  { id: 'restaurant', icon: '🍽', zh: '去餐厅', en: 'Going to a Restaurant' },
+  { id: 'kindergarten1st', icon: '🎒', zh: '第一次上幼儿园', en: 'First Day of Kindergarten' },
+  { id: 'cny', icon: '🧧', zh: '春节家庭聚会', en: 'Chinese New Year Gathering' },
+  { id: 'amusement', icon: '🎡', zh: '去游乐场', en: 'Amusement Park Visit' },
+  { id: 'flighthome', icon: '🛫', zh: '搭飞机回国', en: 'Flying to Visit Family' },
+  { id: 'guests', icon: '🚪', zh: '家里来客人', en: 'Guests Coming Home' },
+  { id: 'chineseschool', icon: '🀄', zh: '去中文学校', en: 'Going to Chinese School' }
 ];
 
 const STORIES = {
@@ -622,6 +628,30 @@ const STORIES = {
   restaurant: {
     zh: ['{name}今天要和家人一起去餐厅吃饭。', '餐厅里可能会有很多人，声音可能比较大。', '到了餐厅，{name}会坐在一张桌子旁边。', '服务员会给{name}一份菜单，{name}可以选自己想吃的。', '点完菜后需要等一会儿，{name}可以画画或看书。', '食物端上来的时候，要慢慢吃，不用着急。', '吃完饭后，{name}可以和家人一起离开餐厅。', '在餐厅吃饭是一次很好的体验！'],
     en: ['{name} is going to a restaurant with family today.', 'The restaurant might be noisy with many people around.', 'At the restaurant, {name} will sit at a table.', 'A waiter will bring a menu, and {name} can choose what to eat.', 'After ordering, there will be some waiting. {name} can draw or read.', 'When the food arrives, {name} can eat slowly — no rush.', 'After eating, {name} and the family will leave together.', 'Eating at a restaurant is a great experience!']
+  },
+  kindergarten1st: {
+    zh: ['今天是{name}第一次去幼儿园。', '幼儿园是一个有很多小朋友和老师的地方。', '早上妈妈或爸爸会送{name}到幼儿园门口。', '老师会在门口等{name}，老师的名字我们可以一起记住。', '到教室后，{name}会有自己的小柜子放书包。', '幼儿园里会有玩玩具的时间、吃点心的时间、睡午觉的时间。', '如果{name}想妈妈，可以告诉老师——这是没关系的。', '下午爸爸妈妈一定会来接{name}回家。', '第一天可能会有一点点紧张，但{name}很勇敢。'],
+    en: ['Today is {name}\'s first day at kindergarten.', 'Kindergarten is a place with many children and teachers.', 'In the morning, mama or baba will take {name} to the door.', 'A teacher will be waiting. We can remember the teacher\'s name together.', 'In the classroom, {name} will have a small cubby for the backpack.', 'There will be toy time, snack time, and nap time.', 'If {name} misses mama, it is OK to tell the teacher.', 'In the afternoon, mama or baba will definitely come to pick {name} up.', 'The first day may feel a little scary, but {name} is brave.']
+  },
+  cny: {
+    zh: ['春节要到了，{name}家会来很多亲戚。', '亲戚里有爷爷奶奶、叔叔阿姨、堂哥堂姐。', '大家见面会说"新年好"，还会给{name}红包。', '{name}可以小声说"谢谢"或者点点头，不需要说很多话。', '家里会有很多食物：饺子、年糕、糖果。不喜欢的食物可以不吃。', '放鞭炮的声音会很大，如果害怕可以捂住耳朵或戴耳罩。', '如果人太多觉得累，{name}可以去自己的房间休息一会儿。', '春节是家人在一起的日子，{name}只要在就很好。'],
+    en: ['Chinese New Year is coming, and many relatives will visit {name}\'s home.', 'Relatives include grandparents, aunts, uncles, and cousins.', 'People will say "Happy New Year" and give {name} red envelopes.', '{name} can quietly say "thank you" or just nod — lots of words are not needed.', 'There will be lots of food: dumplings, rice cake, candy. If something is not liked, it is OK not to eat it.', 'Firecrackers will be loud. If scared, {name} can cover ears or wear headphones.', 'If too many people feels tiring, {name} can go to their own room to rest.', 'CNY is about family being together — just being there is enough.']
+  },
+  amusement: {
+    zh: ['{name}今天要去游乐场玩。', '游乐场里有很多好玩的东西，也可能会有很多人。', '游乐场里可能会有排队等候的时候，{name}可以带一个小玩具。', '有些游乐设施会发出很大的声音，可以戴耳罩。', '{name}可以选择想玩的项目，不想玩的可以不玩。', '如果觉得累或者不舒服，告诉爸爸妈妈，我们可以找一个安静的地方休息。', '中午我们会一起吃午饭，可以吃{name}喜欢的食物。', '玩完后我们会一起回家，今天是开心的一天。'],
+    en: ['{name} is going to an amusement park today.', 'The park has lots of fun things and may have many people.', 'Sometimes there will be lines to wait in. {name} can bring a small toy.', 'Some rides make loud sounds. Ear defenders are OK to wear.', '{name} can choose which rides to try. It is OK to say no to any ride.', 'If feeling tired or uncomfortable, tell mama or baba — we can find a quiet spot to rest.', 'At noon, we will eat lunch together. {name}\'s favorite food is OK to choose.', 'After playing, we will go home together. Today is a happy day.']
+  },
+  flighthome: {
+    zh: ['{name}今天要坐很长的飞机去看家人。', '长途飞机要飞很久（可能睡一觉还没到）。爸爸妈妈会准备好{name}的东西。', '飞机上{name}的位置会有小电视、毯子、枕头。', '耳朵不舒服的时候可以喝水、嚼东西。', '飞机上有两次饭和一次点心。不想吃的时候可以不吃。', '到了目的地下飞机时外面的声音、语言可能都不一样，这是正常的。', '家人在机场等{name}，他们很想见{name}。', '坐很远的飞机是一件很了不起的事情。'],
+    en: ['{name} is taking a long flight today to visit family.', 'Long flights take many hours (you may sleep and still not arrive). Mama and baba have everything ready.', 'On the plane, {name}\'s seat has a small TV, a blanket, and a pillow.', 'If ears feel funny, drinking water or chewing helps.', 'There will be two meals and one snack. It is OK to skip them.', 'When we land, the sounds and language may be different. That is normal.', 'Family is waiting at the airport — they have missed {name} very much.', 'Taking a long flight is a big, brave thing.']
+  },
+  guests: {
+    zh: ['今天家里要来客人。', '客人是爸爸妈妈的朋友，他们来看我们。', '客人进门时会说"你好"，{name}可以小声回答或者挥手。', '客人可能会想和{name}说话、摸{name}的头。如果不喜欢，可以告诉爸爸妈妈"我不想"。', '家里可能会比平时吵一点，也会有不一样的味道。', '如果觉得不舒服，{name}可以回自己的房间，这是允许的。', '客人不会一直待着，他们吃完饭或聊完天就会走。', '客人走后家里会恢复平常的样子。'],
+    en: ['Today, guests are coming to our home.', 'Guests are mama or baba\'s friends, visiting us.', 'When guests arrive, they will say hello. {name} can quietly reply or wave.', 'Guests may want to talk to {name} or touch {name}\'s head. If {name} doesn\'t like it, it is OK to tell mama or baba "I don\'t want to."', 'The house may be louder than usual and may smell different.', 'If it feels like too much, {name} can go to their own room. That is allowed.', 'Guests will not stay forever — after eating or chatting, they will leave.', 'After guests leave, the house will feel normal again.']
+  },
+  chineseschool: {
+    zh: ['{name}今天要去中文学校。', '中文学校和平时的学校不一样——这里的老师说中文。', '班里的小朋友可能也是"两种语言"的小朋友：一种在家说，一种在学校说。', '老师会教认字、写字、唱中文儿歌。', '如果{name}听不懂某个词，可以举手问老师。', '中文学校只上一小段时间，然后爸爸妈妈就会来接。', '学中文是{name}和家人、和中国文化的一种连接。', '不一定每次都很好玩，但每次去都是很棒的事情。'],
+    en: ['{name} is going to Chinese school today.', 'Chinese school is different from regular school — the teachers here speak Chinese.', 'Other kids in class may also be "two-language" kids: one at home, one at school.', 'Teachers will teach reading, writing, and Chinese songs.', 'If {name} doesn\'t understand a word, it is OK to raise a hand and ask.', 'Chinese school is only a short time. After it, mama or baba will come pick {name} up.', 'Learning Chinese is a way for {name} to connect with family and culture.', 'It may not always feel fun, but going is a great thing every time.']
   }
 };
 
