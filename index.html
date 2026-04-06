@@ -557,6 +557,7 @@ body {
     同路 WithYou
   </div>
   <div class="topbar-actions">
+    <button class="topbar-btn" onclick="toggleLang()" id="langBtn">EN</button>
     <button class="topbar-btn" onclick="toggleDark()" id="darkBtn">🌙</button>
     <button class="topbar-btn" onclick="showSetup()">⚙️</button>
   </div>
@@ -612,12 +613,13 @@ body {
     <ol class="activity-steps" id="activitySteps"></ol>
     <div class="activity-actions">
       <a class="activity-btn primary" id="activityLink" href="early-activities/index.html">去试试 Try this →</a>
+
       <button class="activity-btn secondary" onclick="nextActivity()">换一个 Next →</button>
     </div>
     <div class="activity-feedback hidden" id="activityFeedback">
       <span>感觉怎样？How did it go?</span>
-      <button class="feedback-btn" onclick="rateActivity(1)">👍</button>
-      <button class="feedback-btn" onclick="rateActivity(-1)">👎</button>
+      <button class="feedback-btn" onclick="rateActivity(1, event)">👍</button>
+      <button class="feedback-btn" onclick="rateActivity(-1, event)">👎</button>
     </div>
   </div>
 
@@ -767,9 +769,13 @@ body {
         <span class="icon">🆘</span>
         <span class="label">应急 SOS</span>
       </a>
-      <a href="red-flag-tracker/index.html" class="quick-btn">
+      <a href="doctor-report/index.html" class="quick-btn">
         <span class="icon">📊</span>
-        <span class="label">报告 Report</span>
+        <span class="label">医生报告 Report</span>
+      </a>
+      <a href="timeline/index.html" class="quick-btn">
+        <span class="icon">📈</span>
+        <span class="label">时间线 Timeline</span>
       </a>
       <a href="visual-schedule/index.html" class="quick-btn">
         <span class="icon">⏱</span>
@@ -869,7 +875,10 @@ function getProfile() { return JSON.parse(localStorage.getItem('wy_profile') || 
 function saveProfile(p) { localStorage.setItem('wy_profile', JSON.stringify(p)); }
 function getRecords() { return JSON.parse(localStorage.getItem('wy_records') || '{}'); }
 function saveRecords(r) { localStorage.setItem('wy_records', JSON.stringify(r)); }
-function todayKey() { return new Date().toISOString().slice(0,10); }
+function todayKey() {
+  const d = new Date();
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
 
 // ===== SETUP =====
 function showSetup() { document.getElementById('setupOverlay').classList.remove('hidden'); }
@@ -890,6 +899,17 @@ function toggleDark() {
   const dark = document.documentElement.classList.toggle('dark');
   localStorage.setItem('wy_dark', dark ? '1' : '0');
   document.getElementById('darkBtn').textContent = dark ? '☀️' : '🌙';
+}
+
+// ===== LANGUAGE TOGGLE =====
+let currentLang = localStorage.getItem('wy_lang') || 'zh';
+function toggleLang() {
+  currentLang = currentLang === 'zh' ? 'en' : 'zh';
+  localStorage.setItem('wy_lang', currentLang);
+  document.getElementById('langBtn').textContent = currentLang === 'zh' ? 'EN' : '中';
+  updateGreeting();
+  updateStreak();
+  updateInsights();
 }
 
 // ===== GREETING =====
@@ -1029,6 +1049,12 @@ function recommendActivity() {
     if (social.length > 0) pool = social;
   }
 
+  // Weather-based filtering: prefer indoor on rainy days
+  if (window.wyWeather === 'rainy') {
+    const indoorPool = pool.filter(a => a.indoor);
+    if (indoorPool.length > 0) pool = indoorPool;
+  }
+
   // Remove recently tried
   pool = pool.filter(a => !recent.includes(a.id));
 
@@ -1061,6 +1087,10 @@ function displayActivity() {
     stepsEl.appendChild(li);
   });
 
+  // Update activity link with mood context
+  const moodParam = selectedMoods.child ? `?mood=${selectedMoods.child}` : '';
+  document.getElementById('activityLink').href = `early-activities/index.html${moodParam}`;
+
   document.getElementById('activityFeedback').classList.add('hidden');
   document.querySelectorAll('.feedback-btn').forEach(b => b.classList.remove('chosen'));
 }
@@ -1070,7 +1100,7 @@ function nextActivity() {
   displayActivity();
 }
 
-function rateActivity(rating) {
+function rateActivity(rating, evt) {
   const a = filteredActivities[currentActivityIndex % filteredActivities.length];
   const records = getRecords();
   const today = records[todayKey()] || {};
@@ -1081,7 +1111,7 @@ function rateActivity(rating) {
 
   // Visual feedback
   document.querySelectorAll('.feedback-btn').forEach(b => b.classList.remove('chosen'));
-  event.target.classList.add('chosen');
+  if (evt && evt.target) evt.target.classList.add('chosen');
 }
 
 // Show feedback after clicking "Try this"
@@ -1221,6 +1251,10 @@ function initApp() {
     document.documentElement.classList.add('dark');
     document.getElementById('darkBtn').textContent = '☀️';
   }
+
+  // Language
+  currentLang = localStorage.getItem('wy_lang') || 'zh';
+  document.getElementById('langBtn').textContent = currentLang === 'zh' ? 'EN' : '中';
 
   // Profile check
   const profile = getProfile();
