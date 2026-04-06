@@ -186,24 +186,36 @@ function sectionSummary(data, range) {
   const strengths = [];
   let dataPoints = 0;
 
-  if (data.redflag && data.redflag.answers) {
-    const ans = data.redflag.answers;
-    Object.values(ans).forEach(v => { if (v) dataPoints++; });
-    Object.entries(ans).forEach(([k,v]) => {
+  // Red flag — support both {answers} and {checkins:[{responses}]} shapes
+  let rfAns = null;
+  if (data.redflag) {
+    if (data.redflag.answers) rfAns = data.redflag.answers;
+    else if (Array.isArray(data.redflag.checkins) && data.redflag.checkins.length) {
+      const latest = data.redflag.checkins[data.redflag.checkins.length - 1];
+      rfAns = {};
+      Object.entries(latest.responses || {}).forEach(([k, r]) => {
+        rfAns[k] = r && typeof r === 'object' ? r.value : r;
+      });
+    }
+  }
+  if (rfAns) {
+    Object.values(rfAns).forEach(v => { if (v) dataPoints++; });
+    Object.entries(rfAns).forEach(([k,v]) => {
       if (v === 'no' || v === 'notyet') concerns.push(k);
       if (v === 'yes') strengths.push(k);
     });
   }
   const meltdowns = (data.meltdownLogs || []).filter(l => inRange(l.date || l.timestamp || l.createdAt, range));
   dataPoints += meltdowns.length;
-  const sleepEntries = Object.values(data.sleep?.entries || data.sleep || {}).filter(e => e && typeof e === 'object');
+  const sleepEntries = (data.sleep && Array.isArray(data.sleep.entries)) ? data.sleep.entries : [];
   dataPoints += sleepEntries.length;
-  const mealEntries = Object.values(data.mealtime?.entries || data.mealtime || {}).filter(e => e && typeof e === 'object');
+  const mealEntries = (data.mealtime && Array.isArray(data.mealtime.meals)) ? data.mealtime.meals : [];
   dataPoints += mealEntries.length;
-  const commMilestones = (data.communication?.milestones || []);
-  dataPoints += commMilestones.length;
+  const commMilestones = (data.communication && data.communication.milestones) || [];
+  const commLogs = (data.communication && data.communication.logs) || [];
+  dataPoints += commMilestones.length + commLogs.length;
   const recordDays = Object.keys(data.records || {}).filter(k => {
-    const r = data.records[k]; return r && (r.childMood || r.moment || r.challenge);
+    const r = data.records[k]; return r && (r.childMood || (r.bestMoment||r.moment) || r.challenge);
   });
   dataPoints += recordDays.length;
   dataPoints += (data.activities || []).length;
@@ -240,11 +252,23 @@ function sectionSummary(data, range) {
 
 function sectionDevelopment(data) {
   let html = `<div class="section"><h2>2. ${bi('Development Observation','发展观察')}</h2>`;
-  if (!data.redflag || !data.redflag.answers) {
+  const rf = data.redflag || {};
+  const checkins = Array.isArray(rf.checkins) ? rf.checkins : [];
+  // Support legacy {answers} shape too
+  let ans = rf.answers || null;
+  let latestDate = rf.updatedAt || rf.lastUpdated;
+  if (!ans && checkins.length) {
+    const latest = checkins[checkins.length - 1];
+    latestDate = latest.date;
+    ans = {};
+    Object.entries(latest.responses || {}).forEach(([itemId, resp]) => {
+      ans[itemId] = resp && typeof resp === 'object' ? resp.value : resp;
+    });
+  }
+  if (!ans || !Object.keys(ans).length) {
     html += `<p class="muted">${bi('No data recorded','暂无记录')}</p></div>`;
     return html;
   }
-  const ans = data.redflag.answers || {};
   const counts = { yes:0, sometimes:0, notyet:0, total:0 };
   Object.values(ans).forEach(v => {
     if (!v) return;
@@ -252,7 +276,8 @@ function sectionDevelopment(data) {
     if (counts[v] !== undefined) counts[v]++;
   });
   html += `<dl class="kv">`;
-  html += `<dt>${bi('Last check-in','最近一次评估')}</dt><dd>${fmtDate(data.redflag.updatedAt || data.redflag.lastUpdated)}</dd>`;
+  html += `<dt>${bi('Total check-ins','评估次数')}</dt><dd>${checkins.length || 1}</dd>`;
+  html += `<dt>${bi('Last check-in','最近一次评估')}</dt><dd>${fmtDate(latestDate)}</dd>`;
   html += `<dt>${bi('Items answered','已回答项目')}</dt><dd>${counts.total}</dd>`;
   html += `<dt>${bi('Yes / Emerging','已出现/正在出现')}</dt><dd>${counts.yes}</dd>`;
   html += `<dt>${bi('Sometimes','有时')}</dt><dd>${counts.sometimes}</dd>`;
@@ -287,15 +312,21 @@ function sectionBehavior(data, range) {
   const triggers = {}, strategies = {}, byDow = [0,0,0,0,0,0,0], intensity = {low:0,med:0,high:0};
   let totalDur = 0, durCount = 0;
   logs.forEach(l => {
-    (Array.isArray(l.triggers)?l.triggers:[l.trigger]).filter(Boolean).forEach(t => triggers[t]=(triggers[t]||0)+1);
-    (Array.isArray(l.strategies)?l.strategies:[l.strategy]).filter(Boolean).forEach(s => strategies[s]=(strategies[s]||0)+1);
+    const trig = Array.isArray(l.antecedents) ? l.antecedents
+               : Array.isArray(l.triggers) ? l.triggers
+               : (l.trigger ? [l.trigger] : []);
+    trig.filter(Boolean).forEach(t => triggers[t]=(triggers[t]||0)+1);
+    const strat = Array.isArray(l.helped) ? l.helped
+                : Array.isArray(l.strategies) ? l.strategies
+                : (l.strategy ? [l.strategy] : []);
+    strat.filter(Boolean).forEach(s => strategies[s]=(strategies[s]||0)+1);
     const d = parseDate(l.date || l.timestamp || l.createdAt);
     if (d) byDow[d.getDay()]++;
     if (l.duration) { totalDur += Number(l.duration)||0; durCount++; }
-    const i = (l.intensity||'').toLowerCase();
-    if (i.includes('high') || i === '3') intensity.high++;
-    else if (i.includes('med') || i === '2') intensity.med++;
-    else if (i) intensity.low++;
+    const iv = l.intensity;
+    if (iv === 2 || iv === '2' || (typeof iv === 'string' && iv.toLowerCase().includes('high'))) intensity.high++;
+    else if (iv === 1 || iv === '1' || (typeof iv === 'string' && iv.toLowerCase().includes('med'))) intensity.med++;
+    else if (iv === 0 || iv === '0' || (typeof iv === 'string' && iv)) intensity.low++;
   });
   html += `<dl class="kv">`;
   html += `<dt>${bi('Total incidents','事件总数')}</dt><dd>${logs.length}</dd>`;
@@ -329,7 +360,7 @@ function sectionSleep(data, range) {
   const store = data.sleep || {};
   const entries = Array.isArray(store.entries) ? store.entries
     : (store.entries && typeof store.entries === 'object') ? Object.values(store.entries)
-    : Object.values(store).filter(v => v && typeof v === 'object' && (v.bedtime || v.total || v.wakeTime));
+    : Object.values(store).filter(v => v && typeof v === 'object' && (v.bedtime || v.totalSleep || v.total || v.wake));
   const filtered = entries.filter(e => !e.date || inRange(e.date, range));
   if (!filtered.length) {
     html += `<p class="muted">${bi('No sleep data recorded','暂无睡眠记录')}</p></div>`;
@@ -337,8 +368,8 @@ function sectionSleep(data, range) {
   }
   let totSleep=0, totLat=0, totWake=0, tsCount=0, tlCount=0, twCount=0;
   filtered.forEach(e => {
-    const t = parseFloat(e.totalHours || e.total || e.duration); if (!isNaN(t)) { totSleep+=t; tsCount++; }
-    const l = parseFloat(e.latency || e.sleepOnset); if (!isNaN(l)) { totLat+=l; tlCount++; }
+    const t = parseFloat(e.totalSleep || e.totalHours || e.total || e.duration); if (!isNaN(t)) { totSleep+=t; tsCount++; }
+    const l = parseFloat(e.latency || e.onset || e.sleepOnset); if (!isNaN(l)) { totLat+=l; tlCount++; }
     const w = parseFloat(e.wakings || e.nightWakings); if (!isNaN(w)) { totWake+=w; twCount++; }
   });
   const avgSleep = tsCount ? (totSleep/tsCount).toFixed(1) : '—';
@@ -359,24 +390,29 @@ function sectionCommunication(data) {
   let html = `<div class="section"><h2>5. ${bi('Communication','沟通发展')}</h2>`;
   const c = data.communication || {};
   const milestones = c.milestones || [];
-  const vocab = c.vocabulary || c.wordCount || (c.words && c.words.length) || '—';
-  const modes = c.modes || c.communicationModes || [];
+  const wordBank = c.wordBank || [];
   const dailyLogs = c.logs || c.dailyLogs || [];
-  if (!milestones.length && vocab === '—' && !dailyLogs.length) {
+  const regressions = c.regressions || [];
+  if (!milestones.length && !wordBank.length && !dailyLogs.length && !regressions.length) {
     html += `<p class="muted">${bi('No data recorded','暂无记录')}</p></div>`;
     return html;
   }
+  // Derive communication modes from milestone commType field
+  const modes = [...new Set(milestones.map(m => m.commType).filter(Boolean))];
   html += `<dl class="kv">`;
-  html += `<dt>${bi('Estimated vocabulary','词汇量估计')}</dt><dd>${vocab}</dd>`;
-  html += `<dt>${bi('Communication modes','沟通方式')}</dt><dd>${(Array.isArray(modes)?modes:[]).join(', ') || '—'}</dd>`;
+  html += `<dt>${bi('Word bank size','词汇量')}</dt><dd>${wordBank.length || '—'}</dd>`;
+  html += `<dt>${bi('Communication modes','沟通方式')}</dt><dd>${modes.join(', ') || '—'}</dd>`;
   html += `<dt>${bi('Milestones logged','里程碑数')}</dt><dd>${milestones.length}</dd>`;
+  html += `<dt>${bi('Daily logs','日常记录')}</dt><dd>${dailyLogs.length}</dd>`;
   html += `</dl>`;
-  if (c.regression || c.regressionFlag) {
-    html += `<div class="warn"><strong>${bi('Regression flag','退步警示')}:</strong> ${c.regressionNote || bi('Parent reported possible regression','家长报告可能存在退步')}</div>`;
+  if (regressions.length) {
+    html += `<div class="warn"><strong>${bi('Regression flag','退步警示')}:</strong> `;
+    html += regressions.slice(-3).map(r => `${fmtDate(r.date)} — ${r.words || ''} ${r.notes ? '('+r.notes+')' : ''}`).join('; ');
+    html += `</div>`;
   }
   if (milestones.length) {
-    html += `<h3>${bi('Recent milestones','近期里程碑')}</h3><table><tr><th>Date</th><th>Milestone</th></tr>`;
-    milestones.slice(-10).forEach(m => html += `<tr><td>${fmtDate(m.date)}</td><td>${m.name || m.label || m.text || ''}</td></tr>`);
+    html += `<h3>${bi('Recent milestones','近期里程碑')}</h3><table><tr><th>Date</th><th>Type</th><th>Detail</th></tr>`;
+    milestones.slice(0,10).forEach(m => html += `<tr><td>${fmtDate(m.date)}</td><td>${m.type || ''}</td><td>${m.detail || ''}</td></tr>`);
     html += `</table>`;
   }
   html += `</div>`;
@@ -386,21 +422,53 @@ function sectionCommunication(data) {
 function sectionSensory(data) {
   let html = `<div class="section"><h2>6. ${bi('Sensory Profile','感官概况')}</h2>`;
   const s = data.sensory || {};
-  const channels = s.channels || s.profile || s;
-  const names = ['visual','auditory','tactile','vestibular','proprioceptive','gustatory','olfactory'];
-  const zhNames = {visual:'视觉',auditory:'听觉',tactile:'触觉',vestibular:'前庭',proprioceptive:'本体',gustatory:'味觉',olfactory:'嗅觉'};
-  let any = false;
-  html += `<table><tr><th>${bi('Channel','通道')}</th><th>${bi('Response','反应模式')}</th></tr>`;
-  names.forEach(n => {
-    const v = channels[n];
-    if (v) { any = true; html += `<tr><td>${n} / ${zhNames[n]}</td><td>${typeof v === 'object' ? (v.type || v.response || JSON.stringify(v)) : v}</td></tr>`; }
+  const assessment = s.assessment || {};
+  const strategies = s.strategies || [];
+  const assessedCount = Object.keys(assessment).length;
+  if (!assessedCount && !strategies.length) {
+    html += `<p class="muted">${bi('No data recorded','暂无记录')}</p></div>`;
+    return html;
+  }
+  // Group assessment items by channel prefix — order matters: 'vt' before 'v'
+  const channels = [
+    { prefix: 'vt', en: 'Vestibular', zh: '前庭' },
+    { prefix: 'v',  en: 'Visual',     zh: '视觉' },
+    { prefix: 'a',  en: 'Auditory',   zh: '听觉' },
+    { prefix: 't',  en: 'Tactile',    zh: '触觉' },
+    { prefix: 'p',  en: 'Proprioceptive', zh: '本体' },
+    { prefix: 'g',  en: 'Gustatory',  zh: '味觉' },
+    { prefix: 'o',  en: 'Olfactory',  zh: '嗅觉' },
+  ];
+  // Assign each assessed item to first matching channel
+  const buckets = channels.map(c => ({ ...c, count: 0, sum: 0 }));
+  Object.entries(assessment).forEach(([id, rating]) => {
+    for (const b of buckets) {
+      if (id.startsWith(b.prefix)) {
+        b.count++;
+        const n = Number(rating);
+        if (!isNaN(n)) b.sum += n;
+        break;
+      }
+    }
   });
-  html += `</table>`;
-  if (!any) html = `<div class="section"><h2>6. ${bi('Sensory Profile','感官概况')}</h2><p class="muted">${bi('No data recorded','暂无记录')}</p>`;
-  if (s.strategies && s.strategies.length) {
-    html += `<h3>${bi('Effective strategies','有效策略')}</h3><ul>`;
-    s.strategies.slice(0,8).forEach(x => html += `<li>${typeof x === 'string' ? x : (x.name || JSON.stringify(x))}</li>`);
-    html += `</ul>`;
+  if (assessedCount) {
+    html += `<dl class="kv"><dt>${bi('Items assessed','已评估项目')}</dt><dd>${assessedCount}</dd></dl>`;
+    html += `<table><tr><th>${bi('Channel','通道')}</th><th>${bi('Items','项目数')}</th><th>${bi('Avg rating','平均评分')}</th></tr>`;
+    buckets.forEach(b => {
+      if (b.count) {
+        const avg = b.count ? (b.sum / b.count).toFixed(1) : '—';
+        html += `<tr><td>${b.en} / ${b.zh}</td><td>${b.count}</td><td>${avg}</td></tr>`;
+      }
+    });
+    html += `</table>`;
+  }
+  if (strategies.length) {
+    html += `<h3>${bi('Effective strategies','有效策略')}</h3><table><tr><th>Date</th><th>Strategy</th><th>Effect.</th><th>Context</th></tr>`;
+    strategies.slice(0,10).forEach(x => {
+      if (typeof x === 'string') { html += `<tr><td>—</td><td>${x}</td><td>—</td><td>—</td></tr>`; return; }
+      html += `<tr><td>${fmtDate(x.date)}</td><td>${x.name || ''}</td><td>${x.effectiveness || '—'}/5</td><td>${x.context || ''}</td></tr>`;
+    });
+    html += `</table>`;
   }
   html += `</div>`;
   return html;
@@ -409,24 +477,51 @@ function sectionSensory(data) {
 function sectionFeeding(data) {
   let html = `<div class="section"><h2>7. ${bi('Feeding','饮食')}</h2>`;
   const m = data.mealtime || {};
-  const accepted = m.accepted || m.acceptedFoods || [];
-  const refused = m.refused || m.refusedFoods || [];
-  const sensory = m.foodSensory || m.preferences || {};
-  if (!accepted.length && !refused.length) {
+  const meals = Array.isArray(m.meals) ? m.meals : [];
+  // Aggregate eaten/refused across meal logs
+  const eatenCounts = {}, refusedCounts = {};
+  meals.forEach(meal => {
+    (meal.eaten || meal.accepted || []).forEach(f => {
+      const k = typeof f === 'string' ? f : (f.name || '');
+      if (k) eatenCounts[k] = (eatenCounts[k] || 0) + 1;
+    });
+    (meal.refused || []).forEach(f => {
+      const k = typeof f === 'string' ? f : (f.name || '');
+      if (k) refusedCounts[k] = (refusedCounts[k] || 0) + 1;
+    });
+  });
+  const sosFood = m.sosFood || [];
+  const sensory = m.sensory || m.foodSensory || m.preferences || {};
+  if (!meals.length && !sosFood.length && !Object.keys(sensory).length) {
     html += `<p class="muted">${bi('No data recorded','暂无记录')}</p></div>`;
     return html;
   }
-  html += `<h3>${bi('Accepted foods (top 20)','接受的食物（前20）')}</h3>`;
-  html += `<p>${accepted.slice(0,20).map(f => `<span class="tag">${typeof f==='string'?f:(f.name||'')}</span>`).join('') || '<span class="muted">—</span>'}</p>`;
-  html += `<h3>${bi('Refused foods','拒绝的食物')}</h3>`;
-  html += `<p>${refused.slice(0,20).map(f => `<span class="tag">${typeof f==='string'?f:(f.name||'')}</span>`).join('') || '<span class="muted">—</span>'}</p>`;
-  if (Object.keys(sensory).length) {
-    html += `<h3>${bi('Food sensory preferences','食物感官偏好')}</h3><dl class="kv">`;
-    Object.entries(sensory).forEach(([k,v]) => html += `<dt>${k}</dt><dd>${v}</dd>`);
-    html += `</dl>`;
+  html += `<dl class="kv">`;
+  html += `<dt>${bi('Meals logged','记录的餐次')}</dt><dd>${meals.length}</dd>`;
+  html += `<dt>${bi('Unique foods eaten','接受的不同食物')}</dt><dd>${Object.keys(eatenCounts).length}</dd>`;
+  html += `<dt>${bi('Unique foods refused','拒绝的不同食物')}</dt><dd>${Object.keys(refusedCounts).length}</dd>`;
+  html += `</dl>`;
+  const topEaten = Object.entries(eatenCounts).sort((a,b)=>b[1]-a[1]).slice(0,20);
+  if (topEaten.length) {
+    html += `<h3>${bi('Most-accepted foods','最常接受的食物')}</h3><p>`;
+    html += topEaten.map(([f,c])=>`<span class="tag">${f} ×${c}</span>`).join('');
+    html += `</p>`;
   }
-  if (m.nutritionalConcerns) {
-    html += `<div class="warn">${m.nutritionalConcerns}</div>`;
+  const topRefused = Object.entries(refusedCounts).sort((a,b)=>b[1]-a[1]).slice(0,20);
+  if (topRefused.length) {
+    html += `<h3>${bi('Frequently refused','常被拒绝的食物')}</h3><p>`;
+    html += topRefused.map(([f,c])=>`<span class="tag">${f} ×${c}</span>`).join('');
+    html += `</p>`;
+  }
+  if (sosFood.length) {
+    html += `<h3>${bi('SOS food list','SOS 食物清单')}</h3><p>`;
+    html += sosFood.slice(0,20).map(f => `<span class="tag">${typeof f==='string'?f:(f.name||'')}</span>`).join('');
+    html += `</p>`;
+  }
+  if (sensory && Object.keys(sensory).length) {
+    html += `<h3>${bi('Food sensory preferences','食物感官偏好')}</h3><dl class="kv">`;
+    Object.entries(sensory).forEach(([k,v]) => html += `<dt>${k}</dt><dd>${typeof v === 'object' ? JSON.stringify(v) : v}</dd>`);
+    html += `</dl>`;
   }
   html += `</div>`;
   return html;
@@ -446,7 +541,7 @@ function sectionDaily(data, range) {
     const r = records[k] || {};
     const cm = Number(r.childMood); if (!isNaN(cm)) { childMoodSum+=cm; childMoodN++; if (cm>=4) good++; if (cm<=2) tough++; }
     const pm = Number(r.parentMood); if (!isNaN(pm)) { parentMoodSum+=pm; parentMoodN++; }
-    if (r.moment) moments.push({date:k, text:r.moment});
+    if ((r.bestMoment||r.moment)) moments.push({date:k, text:(r.bestMoment||r.moment)});
     if (r.challenge) challenges.push({date:k, text:r.challenge});
   });
   html += `<dl class="kv">`;
@@ -491,7 +586,7 @@ function sectionRaw(data, range) {
     html += `<table>`;
     if (title === 'Daily records') {
       html += `<tr><th>Date</th><th>Child mood</th><th>Parent mood</th><th>Moment</th><th>Challenge</th></tr>`;
-      rows.forEach(([k,r])=> html += `<tr><td>${k}</td><td>${r.childMood||''}</td><td>${r.parentMood||''}</td><td>${(r.moment||'').replace(/</g,'&lt;')}</td><td>${(r.challenge||'').replace(/</g,'&lt;')}</td></tr>`);
+      rows.forEach(([k,r])=> html += `<tr><td>${k}</td><td>${r.childMood||''}</td><td>${r.parentMood||''}</td><td>${((r.bestMoment||r.moment)||'').replace(/</g,'&lt;')}</td><td>${(r.challenge||'').replace(/</g,'&lt;')}</td></tr>`);
     } else {
       html += `<tr><th>#</th><th>Data</th></tr>`;
       rows.forEach((r,i)=> html += `<tr><td>${i+1}</td><td><code style="font-size:11px;">${JSON.stringify(r).replace(/</g,'&lt;').slice(0,300)}</code></td></tr>`);

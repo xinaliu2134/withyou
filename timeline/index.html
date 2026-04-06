@@ -744,8 +744,8 @@ function loadAllEvents() {
         ts: dateKey + 'T' + (entry.bedtime || '20:00'),
         icon: '\uD83C\uDF1B',
         bedtime: entry.bedtime,
-        wakeTime: entry.wakeTime,
-        quality: entry.quality,
+        wakeTime: entry.wake,
+        totalSleep: entry.totalSleep,
         nightWakings: entry.wakings,
         onset: entry.onset,
         notes: entry.notes,
@@ -766,7 +766,7 @@ function loadAllEvents() {
         ts: meal.date && meal.time ? meal.date + 'T' + meal.time : (dateKey + 'T12:00:00'),
         icon: '\uD83C\uDF4E',
         mealType: meal.type,
-        accepted: meal.accepted,
+        eaten: meal.eaten,
         refused: meal.refused,
         notes: meal.notes,
         mood: meal.mood,
@@ -787,9 +787,9 @@ function loadAllEvents() {
         ts: dateKey + 'T10:00:00',
         icon: '\uD83D\uDCAC',
         subType: 'milestone',
-        category: m.category,
-        text: m.text || m.label,
-        notes: m.notes,
+        msType: m.type,
+        commType: m.commType,
+        detail: m.detail,
         summary: buildCommSummary(m, 'milestone'),
         details: buildCommDetails(m, 'milestone'),
       });
@@ -799,13 +799,13 @@ function loadAllEvents() {
       events.push({
         type: 'comm',
         date: dateKey,
-        ts: dateKey + 'T' + (l.time || '12:00'),
+        ts: dateKey + 'T12:00:00',
         icon: '\uD83D\uDCAC',
         subType: 'log',
-        context: l.context,
-        method: l.method,
-        content: l.content,
-        notes: l.notes,
+        newWords: l.newWords,
+        attempts: l.attempts,
+        best: l.best,
+        challenges: l.challenges,
         summary: buildCommSummary(l, 'log'),
         details: buildCommDetails(l, 'log'),
       });
@@ -842,7 +842,7 @@ function loadAllEvents() {
         date: dateKey,
         ts: dateKey + 'T12:00:00',
         icon: '\uD83E\uDDE9',
-        strategy: s.strategy || s.text,
+        strategy: s.name || s.strategy || s.text,
         effectiveness: s.effectiveness,
         context: s.context,
         notes: s.notes,
@@ -871,6 +871,7 @@ const MOOD_LABELS = {
   sad: { zh: '\uD83D\uDE22 难过', en: '\uD83D\uDE22 Sad' },
   angry: { zh: '\uD83D\uDE21 生气', en: '\uD83D\uDE21 Angry' },
   overwhelmed: { zh: '\uD83D\uDE16 不安', en: '\uD83D\uDE16 Overwhelmed' },
+  tired: { zh: '\uD83D\uDE34 疲惫', en: '\uD83D\uDE34 Tired' },
 };
 
 function moodLabel(mood) {
@@ -912,8 +913,8 @@ function buildMeltdownDetails(log) {
 function buildSleepSummary(entry) {
   const parts = [];
   if (entry.bedtime) parts.push((lang === 'zh' ? '入睡 ' : 'Bed ') + entry.bedtime);
-  if (entry.wakeTime) parts.push((lang === 'zh' ? '起床 ' : 'Wake ') + entry.wakeTime);
-  if (entry.quality !== undefined) parts.push((lang === 'zh' ? '质量 ' : 'Quality ') + entry.quality + '/5');
+  if (entry.wake) parts.push((lang === 'zh' ? '起床 ' : 'Wake ') + entry.wake);
+  if (entry.totalSleep) parts.push((lang === 'zh' ? '总 ' : 'Total ') + entry.totalSleep + 'h');
   return parts.join(' | ') || (lang === 'zh' ? '睡眠记录' : 'Sleep record');
 }
 
@@ -927,16 +928,16 @@ function buildSleepDetails(entry) {
 
 function buildFoodSummary(meal) {
   const typeLabel = meal.type ? (lang === 'zh' ? ({breakfast:'早餐',lunch:'午餐',dinner:'晚餐',snack:'零食'}[meal.type]||meal.type) : meal.type) : '';
-  const accepted = (meal.accepted || []).length;
+  const eaten = (meal.eaten || []).length;
   const refused = (meal.refused || []).length;
   return typeLabel + (lang === 'zh'
-    ? ` — 接受${accepted}种, 拒绝${refused}种`
-    : ` — ${accepted} accepted, ${refused} refused`);
+    ? ` — 吃${eaten}种, 拒绝${refused}种`
+    : ` — ${eaten} eaten, ${refused} refused`);
 }
 
 function buildFoodDetails(meal) {
   const parts = [];
-  if (meal.accepted && meal.accepted.length) parts.push((lang === 'zh' ? '接受: ' : 'Accepted: ') + meal.accepted.join(', '));
+  if (meal.eaten && meal.eaten.length) parts.push((lang === 'zh' ? '吃了: ' : 'Eaten: ') + meal.eaten.join(', '));
   if (meal.refused && meal.refused.length) parts.push((lang === 'zh' ? '拒绝: ' : 'Refused: ') + meal.refused.join(', '));
   if (meal.notes) parts.push((lang === 'zh' ? '备注: ' : 'Notes: ') + meal.notes);
   return parts.join('\n');
@@ -944,20 +945,26 @@ function buildFoodDetails(meal) {
 
 function buildCommSummary(item, subType) {
   if (subType === 'milestone') {
-    return (lang === 'zh' ? '\u{1F3C6} 里程碑: ' : '\u{1F3C6} Milestone: ') + (item.text || item.label || '');
+    const label = item.detail || item.type || '';
+    return (lang === 'zh' ? '\u{1F3C6} 里程碑: ' : '\u{1F3C6} Milestone: ') + label;
   }
-  const method = item.method || '';
-  const content = item.content || '';
-  return (lang === 'zh' ? '沟通记录' : 'Communication log') + (method ? ` (${method})` : '') + (content ? ': ' + content.slice(0, 40) : '');
+  const nw = item.newWords ? (lang === 'zh' ? `新词: ${item.newWords}` : `New: ${item.newWords}`) : '';
+  const at = item.attempts ? (lang === 'zh' ? ` · 尝试${item.attempts}` : ` · ${item.attempts} attempts`) : '';
+  return (lang === 'zh' ? '沟通记录' : 'Comm log') + (nw ? ' — ' + nw : '') + at;
 }
 
 function buildCommDetails(item, subType) {
   const parts = [];
-  if (item.category) parts.push((lang === 'zh' ? '类别: ' : 'Category: ') + item.category);
-  if (item.context) parts.push((lang === 'zh' ? '情境: ' : 'Context: ') + item.context);
-  if (item.method) parts.push((lang === 'zh' ? '方式: ' : 'Method: ') + item.method);
-  if (item.content) parts.push((lang === 'zh' ? '内容: ' : 'Content: ') + item.content);
-  if (item.notes) parts.push((lang === 'zh' ? '备注: ' : 'Notes: ') + item.notes);
+  if (subType === 'milestone') {
+    if (item.type) parts.push((lang === 'zh' ? '类型: ' : 'Type: ') + item.type);
+    if (item.commType) parts.push((lang === 'zh' ? '沟通方式: ' : 'Mode: ') + item.commType);
+    if (item.detail) parts.push((lang === 'zh' ? '内容: ' : 'Detail: ') + item.detail);
+  } else {
+    if (item.newWords) parts.push((lang === 'zh' ? '新词: ' : 'New words: ') + item.newWords);
+    if (item.attempts) parts.push((lang === 'zh' ? '尝试: ' : 'Attempts: ') + item.attempts);
+    if (item.best) parts.push((lang === 'zh' ? '最佳时刻: ' : 'Best: ') + item.best);
+    if (item.challenges) parts.push((lang === 'zh' ? '挑战: ' : 'Challenges: ') + item.challenges);
+  }
   return parts.join('\n');
 }
 
@@ -975,14 +982,14 @@ function buildActivityDetails(h) {
 }
 
 function buildSensorySummary(s) {
-  const strategy = s.strategy || s.text || '';
+  const strategy = s.name || s.strategy || s.text || '';
   const eff = s.effectiveness ? ` (${s.effectiveness}/5)` : '';
   return (lang === 'zh' ? '感觉策略: ' : 'Sensory strategy: ') + strategy.slice(0, 40) + eff;
 }
 
 function buildSensoryDetails(s) {
   const parts = [];
-  if (s.strategy || s.text) parts.push((lang === 'zh' ? '策略: ' : 'Strategy: ') + (s.strategy || s.text));
+  if (s.name || s.strategy || s.text) parts.push((lang === 'zh' ? '策略: ' : 'Strategy: ') + (s.name || s.strategy || s.text));
   if (s.effectiveness) parts.push((lang === 'zh' ? '有效性: ' : 'Effectiveness: ') + s.effectiveness + '/5');
   if (s.context) parts.push((lang === 'zh' ? '情境: ' : 'Context: ') + s.context);
   if (s.notes) parts.push((lang === 'zh' ? '备注: ' : 'Notes: ') + s.notes);
