@@ -1,0 +1,595 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Doctor Report · WithYou 同路</title>
+<style>
+  :root { --ink:#111; --mute:#666; --line:#d8d8d8; --accent:#1e3a5f; --bg:#fff; --soft:#f6f6f6; }
+  * { box-sizing:border-box; }
+  body { margin:0; font-family:'Inter',-apple-system,'Helvetica Neue',Arial,sans-serif; color:var(--ink); background:#eceef1; line-height:1.5; }
+  h1,h2,h3,h4 { font-family:'Merriweather','Georgia',serif; color:var(--accent); margin:0 0 8px; }
+  h1 { font-size:28px; }
+  h2 { font-size:20px; border-bottom:2px solid var(--accent); padding-bottom:6px; margin-top:24px; }
+  h3 { font-size:15px; color:var(--ink); margin-top:14px; }
+  p { margin:6px 0; }
+  small { color:var(--mute); }
+  .controls { max-width:880px; margin:16px auto; background:#fff; border:1px solid var(--line); border-radius:6px; padding:16px; }
+  .controls h2 { border:none; color:var(--ink); font-family:'Inter',sans-serif; font-size:16px; margin:0 0 10px; }
+  .row { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin:8px 0; }
+  .row label { font-size:13px; color:var(--mute); }
+  select, input[type=text], input[type=date], textarea { font:inherit; border:1px solid var(--line); border-radius:4px; padding:6px 8px; background:#fff; }
+  textarea { width:100%; min-height:80px; resize:vertical; }
+  button { font:inherit; border:1px solid var(--accent); background:var(--accent); color:#fff; padding:8px 14px; border-radius:4px; cursor:pointer; }
+  button.secondary { background:#fff; color:var(--accent); }
+  button:hover { opacity:0.9; }
+  .sections-toggle label { display:inline-flex; align-items:center; gap:4px; margin-right:10px; font-size:12px; color:var(--ink); }
+  .report { max-width:880px; margin:16px auto; background:#fff; padding:48px 56px; border:1px solid var(--line); box-shadow:0 2px 8px rgba(0,0,0,0.05); }
+  .cover { text-align:center; padding:80px 0 60px; border-bottom:3px double var(--accent); margin-bottom:30px; }
+  .cover h1 { font-size:34px; margin-bottom:6px; }
+  .cover .sub { color:var(--mute); font-size:14px; }
+  .cover .meta { margin-top:40px; font-size:15px; }
+  .cover .meta div { margin:4px 0; }
+  table { width:100%; border-collapse:collapse; margin:10px 0; font-size:13px; }
+  th, td { border:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top; }
+  th { background:var(--soft); font-weight:600; }
+  .muted { color:var(--mute); font-style:italic; }
+  .kv { display:grid; grid-template-columns:180px 1fr; gap:4px 12px; font-size:13px; margin:8px 0; }
+  .kv dt { color:var(--mute); }
+  .kv dd { margin:0; }
+  .warn { background:#fff8e1; border-left:3px solid #e6a800; padding:8px 12px; margin:10px 0; font-size:13px; }
+  .tag { display:inline-block; padding:2px 8px; border-radius:10px; font-size:11px; background:var(--soft); margin:2px; }
+  .bar { display:flex; align-items:center; gap:6px; font-size:12px; margin:2px 0; }
+  .bar .lbl { width:140px; color:var(--mute); }
+  .bar .fill { background:var(--accent); height:10px; border-radius:2px; }
+  .bar .val { width:32px; text-align:right; color:var(--mute); }
+  details { margin:8px 0; }
+  summary { cursor:pointer; font-size:13px; color:var(--accent); }
+  .footer-disclaimer { margin-top:40px; padding-top:16px; border-top:1px solid var(--line); font-size:11px; color:var(--mute); font-style:italic; }
+  .section { page-break-inside:avoid; }
+  .zh { color:var(--mute); font-size:0.9em; }
+  .bi-block .en { display:block; }
+  .bi-block .zh { display:block; margin-top:2px; }
+  .hide { display:none !important; }
+  @media print {
+    body { background:#fff; }
+    .controls, .no-print { display:none !important; }
+    .report { max-width:none; margin:0; padding:2cm; border:none; box-shadow:none; }
+    h2 { page-break-after:avoid; }
+    .section { page-break-inside:avoid; }
+    .page-break { page-break-before:always; }
+    @page { size:A4; margin:2cm; @bottom-center { content:counter(page) " / " counter(pages); } }
+  }
+</style>
+</head>
+<body>
+
+<div class="controls no-print">
+  <h2>Doctor Report Generator · 医生报告生成器</h2>
+  <div class="row">
+    <label>Language:</label>
+    <select id="langSel">
+      <option value="en">English</option>
+      <option value="zh">中文</option>
+      <option value="bi" selected>Bilingual · 双语</option>
+    </select>
+    <label>Date range:</label>
+    <select id="rangeSel">
+      <option value="7">Last 7 days</option>
+      <option value="30" selected>Last 30 days</option>
+      <option value="90">Last 90 days</option>
+      <option value="all">All time</option>
+      <option value="custom">Custom…</option>
+    </select>
+    <input type="date" id="fromDate" class="hide">
+    <input type="date" id="toDate" class="hide">
+  </div>
+  <div class="row sections-toggle">
+    <strong style="font-size:12px;">Sections:</strong>
+    <label><input type="checkbox" data-sec="summary" checked> Summary</label>
+    <label><input type="checkbox" data-sec="development" checked> Development</label>
+    <label><input type="checkbox" data-sec="behavior" checked> Behavior</label>
+    <label><input type="checkbox" data-sec="sleep" checked> Sleep</label>
+    <label><input type="checkbox" data-sec="communication" checked> Communication</label>
+    <label><input type="checkbox" data-sec="sensory" checked> Sensory</label>
+    <label><input type="checkbox" data-sec="feeding" checked> Feeding</label>
+    <label><input type="checkbox" data-sec="daily" checked> Daily</label>
+    <label><input type="checkbox" data-sec="observations" checked> Observations</label>
+    <label><input type="checkbox" id="rawToggle"> Include raw data</label>
+  </div>
+  <div class="row">
+    <button id="genBtn">Generate Report</button>
+    <button class="secondary" id="printBtn">Print / Save as PDF</button>
+    <button class="secondary" id="copyBtn">Copy as plain text</button>
+  </div>
+</div>
+
+<div class="report" id="report">
+  <div class="cover">
+    <h1 id="titleEn">Development Observation Report</h1>
+    <h1 id="titleZh" style="font-size:22px;">儿童发展观察报告</h1>
+    <div class="sub">Generated by 同路 WithYou · withyou.app</div>
+    <div class="meta" id="coverMeta"></div>
+  </div>
+  <div id="sections"></div>
+  <div class="footer-disclaimer">
+    This report is a parent-generated observation summary. It is not a clinical assessment or diagnostic report. The information should be discussed with qualified healthcare professionals.<br>
+    本报告为家长自行记录的观察总结，并非临床评估或诊断报告。相关信息应与合格的医疗专业人员讨论。
+  </div>
+</div>
+
+<script>
+/* ---------- Safe localStorage helpers ---------- */
+function safeParse(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key);
+    if (!raw) return fallback;
+    return JSON.parse(raw);
+  } catch (e) {
+    console.warn('parse fail', key, e);
+    return fallback;
+  }
+}
+
+/* ---------- Load all data sources ---------- */
+function loadAll() {
+  return {
+    profile: safeParse('wy_profile', null),
+    records: safeParse('wy_records', {}),
+    redflag: safeParse('withyou_rft', null),
+    meltdownLogs: safeParse('mn-logs', []),
+    sleep: safeParse('withyou_sleep', {}),
+    mealtime: safeParse('withyou_mealtime', {}),
+    communication: safeParse('withyou_communication', {}),
+    sensory: safeParse('withyou_sensory_profile', {}),
+    activities: safeParse('wy_ea_history', []),
+    extraObs: localStorage.getItem('withyou_report_observations') || '',
+  };
+}
+
+/* ---------- Date utilities ---------- */
+function parseDate(v) { if (!v) return null; const d = new Date(v); return isNaN(d) ? null : d; }
+function daysAgo(n) { const d = new Date(); d.setDate(d.getDate() - n); d.setHours(0,0,0,0); return d; }
+function fmtDate(d) { if (!d) return '—'; const x = (typeof d === 'string') ? new Date(d) : d; if (isNaN(x)) return String(d); return x.toISOString().slice(0,10); }
+
+function getRange() {
+  const sel = document.getElementById('rangeSel').value;
+  if (sel === 'all') return { from:null, to:new Date() };
+  if (sel === 'custom') {
+    return {
+      from: parseDate(document.getElementById('fromDate').value) || daysAgo(30),
+      to: parseDate(document.getElementById('toDate').value) || new Date()
+    };
+  }
+  return { from: daysAgo(parseInt(sel,10)), to: new Date() };
+}
+
+function inRange(dateLike, r) {
+  const d = parseDate(dateLike);
+  if (!d) return false;
+  if (r.from && d < r.from) return false;
+  if (r.to && d > new Date(r.to.getTime() + 86400000)) return false;
+  return true;
+}
+
+/* ---------- i18n wrapper ---------- */
+let LANG = 'bi';
+function bi(en, zh) {
+  if (LANG === 'en') return en;
+  if (LANG === 'zh') return zh;
+  return `${en} <span class="zh">${zh}</span>`;
+}
+
+/* ---------- Sections ---------- */
+function sectionSummary(data, range) {
+  const concerns = [];
+  const strengths = [];
+  let dataPoints = 0;
+
+  if (data.redflag && data.redflag.answers) {
+    const ans = data.redflag.answers;
+    Object.values(ans).forEach(v => { if (v) dataPoints++; });
+    Object.entries(ans).forEach(([k,v]) => {
+      if (v === 'no' || v === 'notyet') concerns.push(k);
+      if (v === 'yes') strengths.push(k);
+    });
+  }
+  const meltdowns = (data.meltdownLogs || []).filter(l => inRange(l.date || l.timestamp || l.createdAt, range));
+  dataPoints += meltdowns.length;
+  const sleepEntries = Object.values(data.sleep?.entries || data.sleep || {}).filter(e => e && typeof e === 'object');
+  dataPoints += sleepEntries.length;
+  const mealEntries = Object.values(data.mealtime?.entries || data.mealtime || {}).filter(e => e && typeof e === 'object');
+  dataPoints += mealEntries.length;
+  const commMilestones = (data.communication?.milestones || []);
+  dataPoints += commMilestones.length;
+  const recordDays = Object.keys(data.records || {}).filter(k => {
+    const r = data.records[k]; return r && (r.childMood || r.moment || r.challenge);
+  });
+  dataPoints += recordDays.length;
+  dataPoints += (data.activities || []).length;
+
+  const observationDays = range.from
+    ? Math.ceil((new Date() - range.from) / 86400000)
+    : recordDays.length;
+
+  let html = `<div class="section"><h2>1. ${bi('Executive Summary','执行摘要')}</h2>`;
+  html += `<dl class="kv">`;
+  html += `<dt>${bi('Observation period','观察周期')}</dt><dd>${observationDays} ${bi('days','天')}</dd>`;
+  html += `<dt>${bi('Total data points','数据点总数')}</dt><dd>${dataPoints}</dd>`;
+  html += `<dt>${bi('Meltdown incidents','情绪爆发记录')}</dt><dd>${meltdowns.length}</dd>`;
+  html += `<dt>${bi('Daily records','每日记录')}</dt><dd>${recordDays.length}</dd>`;
+  html += `<dt>${bi('Sleep entries','睡眠记录')}</dt><dd>${sleepEntries.length}</dd>`;
+  html += `</dl>`;
+
+  if (concerns.length) {
+    html += `<h3>${bi('Top concerns flagged','主要关注点')}</h3><ul>`;
+    concerns.slice(0,3).forEach(c => html += `<li>${c}</li>`);
+    html += `</ul>`;
+  }
+  if (strengths.length) {
+    html += `<h3>${bi('Observed strengths','观察到的优势')}</h3><ul>`;
+    strengths.slice(0,3).forEach(c => html += `<li>${c}</li>`);
+    html += `</ul>`;
+  }
+  if (dataPoints < 10) {
+    html += `<div class="warn">${bi('This report is based on limited data. More observations over time will provide a clearer picture.','本报告基于有限的数据。持续的观察将提供更清晰的画面。')}</div>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+function sectionDevelopment(data) {
+  let html = `<div class="section"><h2>2. ${bi('Development Observation','发展观察')}</h2>`;
+  if (!data.redflag || !data.redflag.answers) {
+    html += `<p class="muted">${bi('No data recorded','暂无记录')}</p></div>`;
+    return html;
+  }
+  const ans = data.redflag.answers || {};
+  const counts = { yes:0, sometimes:0, notyet:0, total:0 };
+  Object.values(ans).forEach(v => {
+    if (!v) return;
+    counts.total++;
+    if (counts[v] !== undefined) counts[v]++;
+  });
+  html += `<dl class="kv">`;
+  html += `<dt>${bi('Last check-in','最近一次评估')}</dt><dd>${fmtDate(data.redflag.updatedAt || data.redflag.lastUpdated)}</dd>`;
+  html += `<dt>${bi('Items answered','已回答项目')}</dt><dd>${counts.total}</dd>`;
+  html += `<dt>${bi('Yes / Emerging','已出现/正在出现')}</dt><dd>${counts.yes}</dd>`;
+  html += `<dt>${bi('Sometimes','有时')}</dt><dd>${counts.sometimes}</dd>`;
+  html += `<dt>${bi('Not yet','尚未')}</dt><dd>${counts.notyet}</dd>`;
+  html += `</dl>`;
+  const max = Math.max(counts.yes, counts.sometimes, counts.notyet, 1);
+  html += `<h3>${bi('Distribution','分布')}</h3>`;
+  [['Yes 已出现','yes'],['Sometimes 有时','sometimes'],['Not yet 尚未','notyet']].forEach(([lbl,k]) => {
+    const w = (counts[k]/max)*240;
+    html += `<div class="bar"><div class="lbl">${lbl}</div><div class="fill" style="width:${w}px"></div><div class="val">${counts[k]}</div></div>`;
+  });
+  const notYet = Object.entries(ans).filter(([,v])=>v==='notyet').slice(0,10);
+  if (notYet.length) {
+    html += `<h3>${bi('Items warranting discussion','建议讨论的项目')}</h3><ul>`;
+    notYet.forEach(([k]) => html += `<li>${k}</li>`);
+    html += `</ul>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+function sectionBehavior(data, range) {
+  let html = `<div class="section"><h2>3. ${bi('Behavior Patterns','行为模式')}</h2>`;
+  const logs = (data.meltdownLogs || []).filter(l => {
+    const d = l.date || l.timestamp || l.createdAt;
+    return !d || inRange(d, range);
+  });
+  if (!logs.length) {
+    html += `<p class="muted">${bi('No incidents recorded in this period','本周期暂无记录')}</p></div>`;
+    return html;
+  }
+  const triggers = {}, strategies = {}, byDow = [0,0,0,0,0,0,0], intensity = {low:0,med:0,high:0};
+  let totalDur = 0, durCount = 0;
+  logs.forEach(l => {
+    (Array.isArray(l.triggers)?l.triggers:[l.trigger]).filter(Boolean).forEach(t => triggers[t]=(triggers[t]||0)+1);
+    (Array.isArray(l.strategies)?l.strategies:[l.strategy]).filter(Boolean).forEach(s => strategies[s]=(strategies[s]||0)+1);
+    const d = parseDate(l.date || l.timestamp || l.createdAt);
+    if (d) byDow[d.getDay()]++;
+    if (l.duration) { totalDur += Number(l.duration)||0; durCount++; }
+    const i = (l.intensity||'').toLowerCase();
+    if (i.includes('high') || i === '3') intensity.high++;
+    else if (i.includes('med') || i === '2') intensity.med++;
+    else if (i) intensity.low++;
+  });
+  html += `<dl class="kv">`;
+  html += `<dt>${bi('Total incidents','事件总数')}</dt><dd>${logs.length}</dd>`;
+  html += `<dt>${bi('Average duration (min)','平均持续时间(分钟)')}</dt><dd>${durCount?(totalDur/durCount).toFixed(1):'—'}</dd>`;
+  html += `<dt>${bi('Intensity','强度分布')}</dt><dd>High ${intensity.high} · Med ${intensity.med} · Low ${intensity.low}</dd>`;
+  html += `</dl>`;
+  const topTriggers = Object.entries(triggers).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  if (topTriggers.length) {
+    html += `<h3>${bi('Top triggers','主要触发因素')}</h3><table><tr><th>Trigger</th><th>Count</th></tr>`;
+    topTriggers.forEach(([k,v]) => html += `<tr><td>${k}</td><td>${v}</td></tr>`);
+    html += `</table>`;
+  }
+  const topStrat = Object.entries(strategies).sort((a,b)=>b[1]-a[1]).slice(0,5);
+  if (topStrat.length) {
+    html += `<h3>${bi('Most-used strategies','常用应对策略')}</h3><table><tr><th>Strategy</th><th>Count</th></tr>`;
+    topStrat.forEach(([k,v]) => html += `<tr><td>${k}</td><td>${v}</td></tr>`);
+    html += `</table>`;
+  }
+  const dowNames = ['Sun','Mon','Tue','Wed','Thu','Fri','Sat'];
+  const maxDow = Math.max(...byDow,1);
+  html += `<h3>${bi('By day of week','按星期分布')}</h3>`;
+  byDow.forEach((v,i)=>{
+    html += `<div class="bar"><div class="lbl">${dowNames[i]}</div><div class="fill" style="width:${(v/maxDow)*200}px"></div><div class="val">${v}</div></div>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+function sectionSleep(data, range) {
+  let html = `<div class="section"><h2>4. ${bi('Sleep Profile','睡眠概况')}</h2>`;
+  const store = data.sleep || {};
+  const entries = Array.isArray(store.entries) ? store.entries
+    : (store.entries && typeof store.entries === 'object') ? Object.values(store.entries)
+    : Object.values(store).filter(v => v && typeof v === 'object' && (v.bedtime || v.total || v.wakeTime));
+  const filtered = entries.filter(e => !e.date || inRange(e.date, range));
+  if (!filtered.length) {
+    html += `<p class="muted">${bi('No sleep data recorded','暂无睡眠记录')}</p></div>`;
+    return html;
+  }
+  let totSleep=0, totLat=0, totWake=0, tsCount=0, tlCount=0, twCount=0;
+  filtered.forEach(e => {
+    const t = parseFloat(e.totalHours || e.total || e.duration); if (!isNaN(t)) { totSleep+=t; tsCount++; }
+    const l = parseFloat(e.latency || e.sleepOnset); if (!isNaN(l)) { totLat+=l; tlCount++; }
+    const w = parseFloat(e.wakings || e.nightWakings); if (!isNaN(w)) { totWake+=w; twCount++; }
+  });
+  const avgSleep = tsCount ? (totSleep/tsCount).toFixed(1) : '—';
+  html += `<dl class="kv">`;
+  html += `<dt>${bi('Entries','记录数')}</dt><dd>${filtered.length}</dd>`;
+  html += `<dt>${bi('Avg total sleep (hrs)','平均总睡眠(小时)')}</dt><dd>${avgSleep}</dd>`;
+  html += `<dt>${bi('Avg sleep onset latency (min)','平均入睡潜伏期(分钟)')}</dt><dd>${tlCount?(totLat/tlCount).toFixed(1):'—'}</dd>`;
+  html += `<dt>${bi('Avg night wakings','平均夜醒次数')}</dt><dd>${twCount?(totWake/twCount).toFixed(1):'—'}</dd>`;
+  html += `</dl>`;
+  if (avgSleep !== '—' && parseFloat(avgSleep) < 9) {
+    html += `<div class="warn">${bi('Average sleep may be below age-typical norms. Discuss with pediatrician.','平均睡眠时间可能低于同龄常模，建议与儿科医生讨论。')}</div>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+function sectionCommunication(data) {
+  let html = `<div class="section"><h2>5. ${bi('Communication','沟通发展')}</h2>`;
+  const c = data.communication || {};
+  const milestones = c.milestones || [];
+  const vocab = c.vocabulary || c.wordCount || (c.words && c.words.length) || '—';
+  const modes = c.modes || c.communicationModes || [];
+  const dailyLogs = c.logs || c.dailyLogs || [];
+  if (!milestones.length && vocab === '—' && !dailyLogs.length) {
+    html += `<p class="muted">${bi('No data recorded','暂无记录')}</p></div>`;
+    return html;
+  }
+  html += `<dl class="kv">`;
+  html += `<dt>${bi('Estimated vocabulary','词汇量估计')}</dt><dd>${vocab}</dd>`;
+  html += `<dt>${bi('Communication modes','沟通方式')}</dt><dd>${(Array.isArray(modes)?modes:[]).join(', ') || '—'}</dd>`;
+  html += `<dt>${bi('Milestones logged','里程碑数')}</dt><dd>${milestones.length}</dd>`;
+  html += `</dl>`;
+  if (c.regression || c.regressionFlag) {
+    html += `<div class="warn"><strong>${bi('Regression flag','退步警示')}:</strong> ${c.regressionNote || bi('Parent reported possible regression','家长报告可能存在退步')}</div>`;
+  }
+  if (milestones.length) {
+    html += `<h3>${bi('Recent milestones','近期里程碑')}</h3><table><tr><th>Date</th><th>Milestone</th></tr>`;
+    milestones.slice(-10).forEach(m => html += `<tr><td>${fmtDate(m.date)}</td><td>${m.name || m.label || m.text || ''}</td></tr>`);
+    html += `</table>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+function sectionSensory(data) {
+  let html = `<div class="section"><h2>6. ${bi('Sensory Profile','感官概况')}</h2>`;
+  const s = data.sensory || {};
+  const channels = s.channels || s.profile || s;
+  const names = ['visual','auditory','tactile','vestibular','proprioceptive','gustatory','olfactory'];
+  const zhNames = {visual:'视觉',auditory:'听觉',tactile:'触觉',vestibular:'前庭',proprioceptive:'本体',gustatory:'味觉',olfactory:'嗅觉'};
+  let any = false;
+  html += `<table><tr><th>${bi('Channel','通道')}</th><th>${bi('Response','反应模式')}</th></tr>`;
+  names.forEach(n => {
+    const v = channels[n];
+    if (v) { any = true; html += `<tr><td>${n} / ${zhNames[n]}</td><td>${typeof v === 'object' ? (v.type || v.response || JSON.stringify(v)) : v}</td></tr>`; }
+  });
+  html += `</table>`;
+  if (!any) html = `<div class="section"><h2>6. ${bi('Sensory Profile','感官概况')}</h2><p class="muted">${bi('No data recorded','暂无记录')}</p>`;
+  if (s.strategies && s.strategies.length) {
+    html += `<h3>${bi('Effective strategies','有效策略')}</h3><ul>`;
+    s.strategies.slice(0,8).forEach(x => html += `<li>${typeof x === 'string' ? x : (x.name || JSON.stringify(x))}</li>`);
+    html += `</ul>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+function sectionFeeding(data) {
+  let html = `<div class="section"><h2>7. ${bi('Feeding','饮食')}</h2>`;
+  const m = data.mealtime || {};
+  const accepted = m.accepted || m.acceptedFoods || [];
+  const refused = m.refused || m.refusedFoods || [];
+  const sensory = m.foodSensory || m.preferences || {};
+  if (!accepted.length && !refused.length) {
+    html += `<p class="muted">${bi('No data recorded','暂无记录')}</p></div>`;
+    return html;
+  }
+  html += `<h3>${bi('Accepted foods (top 20)','接受的食物（前20）')}</h3>`;
+  html += `<p>${accepted.slice(0,20).map(f => `<span class="tag">${typeof f==='string'?f:(f.name||'')}</span>`).join('') || '<span class="muted">—</span>'}</p>`;
+  html += `<h3>${bi('Refused foods','拒绝的食物')}</h3>`;
+  html += `<p>${refused.slice(0,20).map(f => `<span class="tag">${typeof f==='string'?f:(f.name||'')}</span>`).join('') || '<span class="muted">—</span>'}</p>`;
+  if (Object.keys(sensory).length) {
+    html += `<h3>${bi('Food sensory preferences','食物感官偏好')}</h3><dl class="kv">`;
+    Object.entries(sensory).forEach(([k,v]) => html += `<dt>${k}</dt><dd>${v}</dd>`);
+    html += `</dl>`;
+  }
+  if (m.nutritionalConcerns) {
+    html += `<div class="warn">${m.nutritionalConcerns}</div>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+function sectionDaily(data, range) {
+  let html = `<div class="section"><h2>8. ${bi('Daily Functioning','日常功能')}</h2>`;
+  const records = data.records || {};
+  const keys = Object.keys(records).filter(k => inRange(k, range));
+  if (!keys.length) {
+    html += `<p class="muted">${bi('No daily records','暂无每日记录')}</p></div>`;
+    return html;
+  }
+  let good=0, tough=0, childMoodSum=0, childMoodN=0, parentMoodSum=0, parentMoodN=0;
+  const moments=[], challenges=[];
+  keys.forEach(k => {
+    const r = records[k] || {};
+    const cm = Number(r.childMood); if (!isNaN(cm)) { childMoodSum+=cm; childMoodN++; if (cm>=4) good++; if (cm<=2) tough++; }
+    const pm = Number(r.parentMood); if (!isNaN(pm)) { parentMoodSum+=pm; parentMoodN++; }
+    if (r.moment) moments.push({date:k, text:r.moment});
+    if (r.challenge) challenges.push({date:k, text:r.challenge});
+  });
+  html += `<dl class="kv">`;
+  html += `<dt>${bi('Days recorded','记录天数')}</dt><dd>${keys.length}</dd>`;
+  html += `<dt>${bi('Avg child mood','平均儿童情绪')}</dt><dd>${childMoodN?(childMoodSum/childMoodN).toFixed(2):'—'} / 5</dd>`;
+  html += `<dt>${bi('Avg parent mood','平均家长情绪')}</dt><dd>${parentMoodN?(parentMoodSum/parentMoodN).toFixed(2):'—'} / 5</dd>`;
+  html += `<dt>${bi('Good days / Tough days','好日子 / 困难日子')}</dt><dd>${good} / ${tough}</dd>`;
+  html += `</dl>`;
+  if (moments.length) {
+    html += `<h3>${bi('Notable moments','值得记录的时刻')}</h3><ul>`;
+    moments.slice(-5).forEach(m => html += `<li><small>${m.date}</small> — ${m.text}</li>`);
+    html += `</ul>`;
+  }
+  if (challenges.length) {
+    html += `<h3>${bi('Recurring challenges','反复出现的挑战')}</h3><ul>`;
+    challenges.slice(-5).forEach(m => html += `<li><small>${m.date}</small> — ${m.text}</li>`);
+    html += `</ul>`;
+  }
+  html += `</div>`;
+  return html;
+}
+
+function sectionObservations(data) {
+  const txt = data.extraObs || '';
+  let html = `<div class="section"><h2>9. ${bi("Parent's Observations",'家长补充观察')}</h2>`;
+  html += `<textarea id="parentObs" class="no-print" placeholder="${bi('Add anything else you want the clinician to know…','请在此补充任何您想让临床医生了解的信息…')}">${txt.replace(/</g,'&lt;')}</textarea>`;
+  html += `<div class="print-only" style="display:none;white-space:pre-wrap;border:1px solid var(--line);padding:10px;min-height:60px;">${txt.replace(/</g,'&lt;')||'—'}</div>`;
+  html += `</div>`;
+  return html;
+}
+
+function sectionRaw(data, range) {
+  let html = `<div class="section page-break"><h2>10. ${bi('Appendix — Raw Data','附录——原始数据')}</h2>`;
+  const blocks = [
+    ['Daily records', Object.entries(data.records||{}).filter(([k])=>inRange(k,range)).slice(-30)],
+    ['Meltdown logs', (data.meltdownLogs||[]).slice(-30)],
+    ['Activities', (data.activities||[]).slice(-30)],
+  ];
+  blocks.forEach(([title, rows]) => {
+    html += `<details open><summary>${title} (${rows.length})</summary>`;
+    if (!rows.length) { html += `<p class="muted">—</p></details>`; return; }
+    html += `<table>`;
+    if (title === 'Daily records') {
+      html += `<tr><th>Date</th><th>Child mood</th><th>Parent mood</th><th>Moment</th><th>Challenge</th></tr>`;
+      rows.forEach(([k,r])=> html += `<tr><td>${k}</td><td>${r.childMood||''}</td><td>${r.parentMood||''}</td><td>${(r.moment||'').replace(/</g,'&lt;')}</td><td>${(r.challenge||'').replace(/</g,'&lt;')}</td></tr>`);
+    } else {
+      html += `<tr><th>#</th><th>Data</th></tr>`;
+      rows.forEach((r,i)=> html += `<tr><td>${i+1}</td><td><code style="font-size:11px;">${JSON.stringify(r).replace(/</g,'&lt;').slice(0,300)}</code></td></tr>`);
+    }
+    html += `</table></details>`;
+  });
+  html += `</div>`;
+  return html;
+}
+
+/* ---------- Main render ---------- */
+function generate() {
+  const data = loadAll();
+  LANG = document.getElementById('langSel').value;
+  const range = getRange();
+
+  // Cover
+  const profile = data.profile || {};
+  const childName = profile.childName || profile.name || bi('(Child name not set)','(未设置儿童姓名)');
+  const parentName = profile.parentName || profile.parent || bi('(Parent name not set)','(未设置家长姓名)');
+  const age = profile.age || profile.childAge || '—';
+  const birthdate = profile.birthdate || profile.childBirthdate || '—';
+  const today = fmtDate(new Date());
+  const fromStr = range.from ? fmtDate(range.from) : bi('All time','全部时间');
+  const toStr = fmtDate(range.to);
+
+  document.getElementById('coverMeta').innerHTML = `
+    <div><strong>${bi('Child','儿童')}:</strong> ${childName}</div>
+    <div><strong>${bi('Age','年龄')}:</strong> ${age} &nbsp; <strong>${bi('Birthdate','出生日期')}:</strong> ${birthdate}</div>
+    <div><strong>${bi('Parent','家长')}:</strong> ${parentName}</div>
+    <div><strong>${bi('Report period','报告周期')}:</strong> ${fromStr} → ${toStr}</div>
+    <div><strong>${bi('Generated','生成日期')}:</strong> ${today}</div>
+  `;
+
+  const enabled = {};
+  document.querySelectorAll('.sections-toggle input[data-sec]').forEach(el => enabled[el.dataset.sec] = el.checked);
+  const includeRaw = document.getElementById('rawToggle').checked;
+
+  const hasAny = data.profile || Object.keys(data.records).length || data.redflag || (data.meltdownLogs||[]).length;
+  if (!hasAny) {
+    document.getElementById('sections').innerHTML = `<div class="warn">${bi('Not enough data to generate a report. Please use the WithYou modules to record observations first.','数据不足，无法生成报告。请先使用 WithYou 模块记录观察。')}</div>`;
+    return;
+  }
+
+  let html = '';
+  if (enabled.summary) html += sectionSummary(data, range);
+  if (enabled.development) html += sectionDevelopment(data);
+  if (enabled.behavior) html += sectionBehavior(data, range);
+  if (enabled.sleep) html += sectionSleep(data, range);
+  if (enabled.communication) html += sectionCommunication(data);
+  if (enabled.sensory) html += sectionSensory(data);
+  if (enabled.feeding) html += sectionFeeding(data);
+  if (enabled.daily) html += sectionDaily(data, range);
+  if (enabled.observations) html += sectionObservations(data);
+  if (includeRaw) html += sectionRaw(data, range);
+
+  document.getElementById('sections').innerHTML = html;
+
+  // Update language visibility on cover titles
+  document.getElementById('titleEn').style.display = (LANG === 'zh') ? 'none' : 'block';
+  document.getElementById('titleZh').style.display = (LANG === 'en') ? 'none' : 'block';
+
+  // Wire parent obs textarea
+  const ta = document.getElementById('parentObs');
+  if (ta) {
+    ta.addEventListener('input', () => {
+      localStorage.setItem('withyou_report_observations', ta.value);
+    });
+  }
+}
+
+/* ---------- Plain text copy ---------- */
+function toPlainText() {
+  const r = document.getElementById('report');
+  const txt = r.innerText.replace(/\n{3,}/g,'\n\n');
+  return txt;
+}
+
+/* ---------- Events ---------- */
+document.getElementById('genBtn').addEventListener('click', generate);
+document.getElementById('printBtn').addEventListener('click', () => { generate(); setTimeout(()=>window.print(), 100); });
+document.getElementById('copyBtn').addEventListener('click', async () => {
+  try {
+    await navigator.clipboard.writeText(toPlainText());
+    alert('Copied to clipboard');
+  } catch (e) { alert('Copy failed: ' + e.message); }
+});
+document.getElementById('rangeSel').addEventListener('change', e => {
+  const custom = e.target.value === 'custom';
+  document.getElementById('fromDate').classList.toggle('hide', !custom);
+  document.getElementById('toDate').classList.toggle('hide', !custom);
+});
+document.querySelectorAll('.sections-toggle input, #langSel, #rangeSel, #fromDate, #toDate').forEach(el => {
+  el.addEventListener('change', generate);
+});
+
+// Initial render
+generate();
+</script>
+</body>
+</html>
