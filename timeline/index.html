@@ -1,0 +1,1503 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Unified Timeline | 统一时间线 — 同路 WithYou</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Noto+Sans+SC:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  --sage: #6B8F7B;
+  --sage-light: #8FB09D;
+  --sage-pale: #E8F0EB;
+  --sage-dark: #4A6B56;
+  --cream: #FAF7F0;
+  --cream-dark: #F0EBDF;
+  --blue: #7BA7BC;
+  --blue-light: #A5C7D6;
+  --blue-pale: #E4EFF4;
+  --warm-text: #3D3D3D;
+  --warm-text-light: #6B6B6B;
+  --coral: #D4917B;
+  --coral-pale: #F5E0D8;
+  --yellow: #C9A84C;
+  --yellow-bg: #FDF6E3;
+  --shadow: 0 2px 16px rgba(107,143,123,0.10);
+  --shadow-hover: 0 6px 28px rgba(107,143,123,0.18);
+  --radius: 20px;
+  --radius-sm: 12px;
+  /* Type colors */
+  --c-mood: #5B8FB9;
+  --c-mood-bg: #E4EFF4;
+  --c-meltdown: #C0524D;
+  --c-meltdown-bg: #FDECEA;
+  --c-sleep: #8B6BAE;
+  --c-sleep-bg: #F0E8F5;
+  --c-food: #5A9A6B;
+  --c-food-bg: #E8F5E9;
+  --c-comm: #3D9B8F;
+  --c-comm-bg: #E0F2F1;
+  --c-activity: #C49A3C;
+  --c-activity-bg: #FFF8E1;
+  --c-sensory: #9575CD;
+  --c-sensory-bg: #EDE7F6;
+  --c-pattern: linear-gradient(135deg, #6B8F7B 0%, #7BA7BC 100%);
+}
+
+:root.dark {
+  --cream: #1a1f1c;
+  --cream-dark: #252b27;
+  --sage-pale: #2a3a30;
+  --blue-pale: #243038;
+  --warm-text: #e0ddd6;
+  --warm-text-light: #9a9a8e;
+  --shadow: 0 2px 16px rgba(0,0,0,0.25);
+  --shadow-hover: 0 6px 28px rgba(0,0,0,0.35);
+  --c-mood-bg: #1e2d36;
+  --c-meltdown-bg: #2d1f1e;
+  --c-sleep-bg: #261e30;
+  --c-food-bg: #1e2d20;
+  --c-comm-bg: #1e2d2a;
+  --c-activity-bg: #2d2a1a;
+  --c-sensory-bg: #241e30;
+}
+
+.dark .card, .dark .insight-card, .dark .filter-bar { background: #222822 !important; }
+.dark .topbar { background: #1a1f1c; border-color: #2a3a30; }
+.dark .filter-chip { background: #2a3a30; color: var(--warm-text); }
+.dark .filter-chip.active { background: var(--sage); color: #fff; }
+.dark .timeline-entry { background: #222822; }
+.dark .weekly-card { background: #222822; }
+.dark input, .dark select { background: #2a3a30; color: var(--warm-text); border-color: #3a4a40; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'Inter', 'Noto Sans SC', -apple-system, sans-serif;
+  background: var(--cream);
+  color: var(--warm-text);
+  line-height: 1.6;
+  min-height: 100vh;
+  padding-bottom: env(safe-area-inset-bottom, 20px);
+  transition: background 0.3s, color 0.3s;
+}
+
+.hidden { display: none !important; }
+.container { max-width: 600px; margin: 0 auto; padding: 0 16px; }
+
+/* ===== Top Bar ===== */
+.topbar {
+  background: rgba(250,247,240,0.92);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--cream-dark);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.topbar-brand {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--sage);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+}
+.topbar-brand svg { width: 24px; height: 24px; }
+.topbar-actions { display: flex; gap: 6px; }
+.topbar-btn {
+  background: var(--sage-pale);
+  border: none;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  color: var(--sage);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.topbar-btn:hover { background: var(--sage-light); color: #fff; }
+
+/* ===== Page Header ===== */
+.page-header {
+  text-align: center;
+  padding: 24px 16px 16px;
+}
+.page-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--sage-dark);
+}
+.page-sub {
+  font-size: 0.85rem;
+  color: var(--warm-text-light);
+  margin-top: 4px;
+}
+
+/* ===== Tabs ===== */
+.tab-row {
+  display: flex;
+  gap: 8px;
+  padding: 0 16px;
+  margin-bottom: 12px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.tab-row::-webkit-scrollbar { display: none; }
+.tab-item {
+  flex-shrink: 0;
+  padding: 8px 16px;
+  border-radius: 20px;
+  border: none;
+  background: var(--sage-pale);
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--sage);
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.tab-item.active {
+  background: var(--sage);
+  color: #fff;
+}
+
+/* ===== Filters ===== */
+.filter-bar {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 14px 16px;
+  margin: 0 16px 12px;
+  box-shadow: var(--shadow);
+}
+.filter-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+.filter-label {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: var(--warm-text-light);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  width: 100%;
+  margin-bottom: 4px;
+}
+.filter-chip {
+  padding: 5px 12px;
+  border-radius: 16px;
+  border: 1px solid var(--cream-dark);
+  background: var(--cream);
+  font-size: 0.75rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  white-space: nowrap;
+}
+.filter-chip.active {
+  background: var(--sage);
+  color: #fff;
+  border-color: var(--sage);
+}
+.filter-date {
+  padding: 5px 10px;
+  border: 1px solid var(--cream-dark);
+  border-radius: 10px;
+  font-size: 0.78rem;
+  font-family: inherit;
+  color: var(--warm-text);
+  background: var(--cream);
+}
+
+/* ===== Insight Cards (Pattern Detection) ===== */
+.insight-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 16px;
+  margin: 0 16px 12px;
+  box-shadow: var(--shadow);
+  border-left: 4px solid var(--sage);
+  position: relative;
+  overflow: hidden;
+}
+.insight-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: var(--c-pattern);
+  opacity: 0.04;
+}
+.insight-icon {
+  font-size: 1.2rem;
+  margin-right: 8px;
+}
+.insight-title {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--sage-dark);
+  margin-bottom: 4px;
+  display: flex;
+  align-items: center;
+}
+.insight-text {
+  font-size: 0.82rem;
+  color: var(--warm-text);
+  line-height: 1.5;
+  position: relative;
+}
+.insight-meta {
+  font-size: 0.7rem;
+  color: var(--warm-text-light);
+  margin-top: 6px;
+  position: relative;
+}
+
+/* ===== Timeline ===== */
+.timeline-container {
+  padding: 0 16px;
+}
+.timeline-date-header {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--sage);
+  padding: 12px 0 6px;
+  border-bottom: 1px solid var(--cream-dark);
+  margin-bottom: 8px;
+  position: sticky;
+  top: 52px;
+  background: var(--cream);
+  z-index: 10;
+}
+.timeline-entry {
+  background: #fff;
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  margin-bottom: 8px;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.timeline-entry:hover {
+  box-shadow: var(--shadow-hover);
+  transform: translateY(-1px);
+}
+.entry-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}
+.entry-body { flex: 1; min-width: 0; }
+.entry-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2px;
+}
+.entry-source {
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.entry-time {
+  font-size: 0.7rem;
+  color: var(--warm-text-light);
+}
+.entry-summary {
+  font-size: 0.82rem;
+  color: var(--warm-text);
+  line-height: 1.4;
+}
+.entry-details {
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px solid var(--cream-dark);
+  font-size: 0.78rem;
+  color: var(--warm-text-light);
+  line-height: 1.5;
+  display: none;
+}
+.entry-details.open { display: block; }
+
+.entry-tag {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 8px;
+  font-size: 0.68rem;
+  font-weight: 500;
+  margin-top: 4px;
+  margin-right: 4px;
+}
+
+/* Type-specific colors */
+.type-mood .entry-icon { background: var(--c-mood-bg); }
+.type-mood .entry-source { color: var(--c-mood); }
+.type-meltdown .entry-icon { background: var(--c-meltdown-bg); }
+.type-meltdown .entry-source { color: var(--c-meltdown); }
+.type-sleep .entry-icon { background: var(--c-sleep-bg); }
+.type-sleep .entry-source { color: var(--c-sleep); }
+.type-food .entry-icon { background: var(--c-food-bg); }
+.type-food .entry-source { color: var(--c-food); }
+.type-comm .entry-icon { background: var(--c-comm-bg); }
+.type-comm .entry-source { color: var(--c-comm); }
+.type-activity .entry-icon { background: var(--c-activity-bg); }
+.type-activity .entry-source { color: var(--c-activity); }
+.type-sensory .entry-icon { background: var(--c-sensory-bg); }
+.type-sensory .entry-source { color: var(--c-sensory); }
+
+/* ===== Weekly Summary ===== */
+.weekly-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 20px;
+  margin: 0 16px 16px;
+  box-shadow: var(--shadow);
+}
+.weekly-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--sage-dark);
+  margin-bottom: 12px;
+}
+.weekly-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+.weekly-stat {
+  background: var(--sage-pale);
+  border-radius: var(--radius-sm);
+  padding: 12px;
+  text-align: center;
+}
+.weekly-stat-num {
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: var(--sage-dark);
+}
+.weekly-stat-label {
+  font-size: 0.7rem;
+  color: var(--warm-text-light);
+  margin-top: 2px;
+}
+.weekly-list {
+  margin-bottom: 10px;
+}
+.weekly-list-title {
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: var(--warm-text-light);
+  margin-bottom: 4px;
+}
+.weekly-list-item {
+  font-size: 0.82rem;
+  color: var(--warm-text);
+  padding: 2px 0;
+}
+.weekly-share-btn {
+  width: 100%;
+  padding: 10px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--sage);
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.weekly-share-btn:hover { background: var(--sage-dark); }
+
+/* ===== Load More ===== */
+.load-more {
+  text-align: center;
+  padding: 16px;
+}
+.load-more-btn {
+  padding: 10px 28px;
+  border: 2px solid var(--sage-pale);
+  border-radius: 20px;
+  background: transparent;
+  color: var(--sage);
+  font-size: 0.82rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+/* ===== Empty State ===== */
+.empty-state {
+  text-align: center;
+  padding: 48px 16px;
+  color: var(--warm-text-light);
+}
+.empty-state-icon { font-size: 2.5rem; margin-bottom: 12px; }
+.empty-state-text { font-size: 0.9rem; }
+
+/* ===== Mood filter slider ===== */
+.mood-filter-row {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+}
+
+/* ===== Share overlay ===== */
+.share-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.6);
+  z-index: 200;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+}
+.share-card {
+  background: #fff;
+  border-radius: var(--radius);
+  padding: 24px;
+  max-width: 400px;
+  width: 100%;
+  max-height: 80vh;
+  overflow-y: auto;
+}
+.share-close {
+  float: right;
+  border: none;
+  background: none;
+  font-size: 1.2rem;
+  cursor: pointer;
+  color: var(--warm-text-light);
+}
+</style>
+</head>
+<body>
+
+<!-- Top Bar -->
+<div class="topbar">
+  <a href="../index.html" class="topbar-brand">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    <span data-i18n="brand">同路 WithYou</span>
+  </a>
+  <div class="topbar-actions">
+    <button class="topbar-btn" onclick="toggleLang()" id="langBtn">EN</button>
+    <button class="topbar-btn" onclick="toggleDark()" id="darkBtn">&#x1F319;</button>
+  </div>
+</div>
+
+<!-- Page Header -->
+<div class="page-header">
+  <div class="page-title" data-i18n="title">统一时间线</div>
+  <div class="page-sub" data-i18n="subtitle">跨模块事件流，发现隐藏模式</div>
+</div>
+
+<!-- Tabs: Timeline / Weekly / Insights -->
+<div class="tab-row">
+  <button class="tab-item active" onclick="switchView('timeline')" data-i18n="tab_timeline">时间线</button>
+  <button class="tab-item" onclick="switchView('weekly')" data-i18n="tab_weekly">每周总结</button>
+  <button class="tab-item" onclick="switchView('insights')" data-i18n="tab_insights">模式洞察</button>
+</div>
+
+<!-- Filter Bar -->
+<div class="filter-bar" id="filterBar">
+  <div class="filter-row" style="margin-bottom:8px;">
+    <span class="filter-label" data-i18n="filter_date">日期范围</span>
+    <input type="date" class="filter-date" id="dateFrom" onchange="applyFilters()">
+    <span style="font-size:0.8rem;color:var(--warm-text-light);">—</span>
+    <input type="date" class="filter-date" id="dateTo" onchange="applyFilters()">
+  </div>
+  <div class="filter-row" style="margin-bottom:8px;">
+    <span class="filter-label" data-i18n="filter_module">模块</span>
+    <button class="filter-chip active" data-type="all" onclick="toggleTypeFilter(this)" data-i18n="filter_all">全部</button>
+    <button class="filter-chip" data-type="mood" onclick="toggleTypeFilter(this)">&#x1F60A; <span data-i18n="f_mood">心情</span></button>
+    <button class="filter-chip" data-type="meltdown" onclick="toggleTypeFilter(this)">&#x1F525; <span data-i18n="f_meltdown">崩溃</span></button>
+    <button class="filter-chip" data-type="sleep" onclick="toggleTypeFilter(this)">&#x1F31B; <span data-i18n="f_sleep">睡眠</span></button>
+    <button class="filter-chip" data-type="food" onclick="toggleTypeFilter(this)">&#x1F34E; <span data-i18n="f_food">饮食</span></button>
+    <button class="filter-chip" data-type="comm" onclick="toggleTypeFilter(this)">&#x1F4AC; <span data-i18n="f_comm">沟通</span></button>
+    <button class="filter-chip" data-type="activity" onclick="toggleTypeFilter(this)">&#x2B50; <span data-i18n="f_activity">活动</span></button>
+    <button class="filter-chip" data-type="sensory" onclick="toggleTypeFilter(this)">&#x1F9E9; <span data-i18n="f_sensory">感觉</span></button>
+  </div>
+  <div class="filter-row">
+    <span class="filter-label" data-i18n="filter_mood">儿童心情</span>
+    <button class="filter-chip active" data-mood="all" onclick="toggleMoodFilter(this)" data-i18n="filter_all2">全部</button>
+    <button class="filter-chip" data-mood="happy" onclick="toggleMoodFilter(this)">&#x1F60A;</button>
+    <button class="filter-chip" data-mood="neutral" onclick="toggleMoodFilter(this)">&#x1F610;</button>
+    <button class="filter-chip" data-mood="sad" onclick="toggleMoodFilter(this)">&#x1F622;</button>
+    <button class="filter-chip" data-mood="angry" onclick="toggleMoodFilter(this)">&#x1F621;</button>
+    <button class="filter-chip" data-mood="overwhelmed" onclick="toggleMoodFilter(this)">&#x1F616;</button>
+  </div>
+</div>
+
+<!-- Insights Panel -->
+<div id="insightsPanel" class="hidden"></div>
+
+<!-- Weekly Summary Panel -->
+<div id="weeklyPanel" class="hidden"></div>
+
+<!-- Timeline Feed -->
+<div id="timelinePanel">
+  <div class="timeline-container" id="timelineFeed"></div>
+  <div class="load-more" id="loadMore">
+    <button class="load-more-btn" onclick="loadMore()" data-i18n="load_more">加载更多 / Load More</button>
+  </div>
+</div>
+
+<!-- Empty state -->
+<div class="empty-state hidden" id="emptyState">
+  <div class="empty-state-icon">&#x1F4C5;</div>
+  <div class="empty-state-text" data-i18n="empty">还没有数据。使用各个模块记录后，事件会在这里汇集。</div>
+</div>
+
+<!-- Share overlay -->
+<div class="share-overlay hidden" id="shareOverlay" onclick="closeShare(event)">
+  <div class="share-card" id="shareCard" onclick="event.stopPropagation()">
+    <button class="share-close" onclick="document.getElementById('shareOverlay').classList.add('hidden')">&#10005;</button>
+    <div id="shareContent"></div>
+  </div>
+</div>
+
+<script>
+// ===================================================================
+//  I18N
+// ===================================================================
+let lang = localStorage.getItem('withyou-lang') || 'zh';
+
+const I18N = {
+  zh: {
+    brand: '同路 WithYou',
+    title: '统一时间线',
+    subtitle: '跨模块事件流，发现隐藏模式',
+    tab_timeline: '时间线',
+    tab_weekly: '每周总结',
+    tab_insights: '模式洞察',
+    filter_date: '日期范围',
+    filter_module: '模块',
+    filter_mood: '儿童心情',
+    filter_all: '全部',
+    filter_all2: '全部',
+    f_mood: '心情', f_meltdown: '崩溃', f_sleep: '睡眠', f_food: '饮食',
+    f_comm: '沟通', f_activity: '活动', f_sensory: '感觉',
+    load_more: '加载更多',
+    empty: '还没有数据。使用各个模块记录后，事件会在这里汇集。',
+    src_mood: '每日记录', src_meltdown: '崩溃记录', src_sleep: '睡眠',
+    src_food: '饮食', src_comm: '沟通', src_activity: '活动', src_sensory: '感觉策略',
+    mood_happy: '开心', mood_neutral: '平静', mood_sad: '难过', mood_angry: '生气', mood_overwhelmed: '不安',
+    weekly_title: '每周总结',
+    weekly_good: '好的日子', weekly_tough: '艰难的日子', weekly_no_data: '本周无数据',
+    weekly_triggers: '主要触发因素', weekly_strategies: '有效策略',
+    weekly_comm: '沟通进步', weekly_sleep_avg: '平均睡眠质量',
+    weekly_share: '分享为图片',
+    weekly_select: '选择周',
+    insight_title: '发现的模式',
+    insight_none: '需要更多数据来发现模式（至少3个数据点）',
+    insight_datapoints: '数据点',
+    pattern_sleep_meltdown: '睡眠不好的晚上，第二天更容易发生崩溃',
+    pattern_food_sensory: '感觉过载的日子，进食拒绝增加',
+    pattern_comm_activity: '共同注意活动后，沟通尝试增加',
+    pattern_mood_sleep: '儿童心情好的日子，睡眠质量更好',
+    pattern_meltdown_time: '崩溃主要发生在特定时间段',
+    click_expand: '点击展开详情',
+    of_times: '次中',
+    times: '次',
+  },
+  en: {
+    brand: 'WithYou',
+    title: 'Unified Timeline',
+    subtitle: 'Cross-module event stream, discover hidden patterns',
+    tab_timeline: 'Timeline',
+    tab_weekly: 'Weekly Summary',
+    tab_insights: 'Pattern Insights',
+    filter_date: 'Date Range',
+    filter_module: 'Module',
+    filter_mood: 'Child Mood',
+    filter_all: 'All',
+    filter_all2: 'All',
+    f_mood: 'Mood', f_meltdown: 'Meltdown', f_sleep: 'Sleep', f_food: 'Food',
+    f_comm: 'Comm', f_activity: 'Activity', f_sensory: 'Sensory',
+    load_more: 'Load More',
+    empty: 'No data yet. Use individual modules to record, and events will aggregate here.',
+    src_mood: 'Daily Record', src_meltdown: 'Meltdown', src_sleep: 'Sleep',
+    src_food: 'Food', src_comm: 'Communication', src_activity: 'Activity', src_sensory: 'Sensory Strategy',
+    mood_happy: 'Happy', mood_neutral: 'Neutral', mood_sad: 'Sad', mood_angry: 'Angry', mood_overwhelmed: 'Overwhelmed',
+    weekly_title: 'Weekly Summary',
+    weekly_good: 'Good Days', weekly_tough: 'Tough Days', weekly_no_data: 'No data this week',
+    weekly_triggers: 'Top Triggers', weekly_strategies: 'Effective Strategies',
+    weekly_comm: 'Communication Progress', weekly_sleep_avg: 'Avg Sleep Quality',
+    weekly_share: 'Share as Image',
+    weekly_select: 'Select Week',
+    insight_title: 'Discovered Patterns',
+    insight_none: 'Need more data to discover patterns (at least 3 data points)',
+    insight_datapoints: 'data points',
+    pattern_sleep_meltdown: 'Poor sleep nights are followed by more meltdowns',
+    pattern_food_sensory: 'Mealtime refusals increase on days with sensory overload',
+    pattern_comm_activity: 'Communication attempts increase after joint attention activities',
+    pattern_mood_sleep: 'Better child mood correlates with better sleep quality',
+    pattern_meltdown_time: 'Meltdowns tend to occur at specific times of day',
+    click_expand: 'Click to expand details',
+    of_times: 'out of',
+    times: 'times',
+  }
+};
+
+function t(key) { return (I18N[lang] || I18N.zh)[key] || key; }
+
+function applyI18n() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    const key = el.getAttribute('data-i18n');
+    const txt = t(key);
+    if (txt) el.textContent = txt;
+  });
+  document.getElementById('langBtn').textContent = lang === 'zh' ? 'EN' : '中';
+}
+
+function toggleLang() {
+  lang = lang === 'zh' ? 'en' : 'zh';
+  localStorage.setItem('withyou-lang', lang);
+  applyI18n();
+  renderCurrentView();
+}
+
+// ===================================================================
+//  DARK MODE
+// ===================================================================
+function toggleDark() {
+  const dark = document.documentElement.classList.toggle('dark');
+  localStorage.setItem('wy_dark', dark ? '1' : '0');
+  document.getElementById('darkBtn').textContent = dark ? '\u2600\uFE0F' : '\uD83C\uDF19';
+}
+
+// ===================================================================
+//  DATA AGGREGATION
+// ===================================================================
+function loadAllEvents() {
+  const events = [];
+
+  // 1. Daily quick records (wy_records)
+  try {
+    const records = JSON.parse(localStorage.getItem('wy_records') || '{}');
+    for (const [dateKey, rec] of Object.entries(records)) {
+      const ts = rec.ts || dateKey + 'T12:00:00';
+      events.push({
+        type: 'mood',
+        date: dateKey,
+        ts: ts,
+        icon: '\uD83D\uDE0A',
+        childMood: rec.childMood,
+        parentMood: rec.parentMood,
+        bestMoment: rec.bestMoment,
+        challenge: rec.challenge,
+        activityId: rec.activityId,
+        summary: buildMoodSummary(rec),
+        details: buildMoodDetails(rec),
+      });
+    }
+  } catch(e) { console.warn('Timeline: error loading daily records', e); }
+
+  // 2. Meltdown incidents (mn-logs)
+  try {
+    const logs = JSON.parse(localStorage.getItem('mn-logs') || '[]');
+    logs.forEach(log => {
+      const dateKey = log.date || (log.id ? new Date(log.id).toISOString().slice(0,10) : '');
+      events.push({
+        type: 'meltdown',
+        date: dateKey,
+        ts: log.date && log.time ? log.date + 'T' + log.time : (dateKey + 'T12:00:00'),
+        icon: '\uD83D\uDD25',
+        intensity: log.intensity,
+        duration: log.duration,
+        antecedents: log.antecedents,
+        behaviors: log.behaviors,
+        helped: log.helped,
+        notHelped: log.notHelped,
+        notes: log.notes,
+        summary: buildMeltdownSummary(log),
+        details: buildMeltdownDetails(log),
+      });
+    });
+  } catch(e) { console.warn('Timeline: error loading meltdown logs', e); }
+
+  // 3. Sleep data (withyou_sleep)
+  try {
+    const sleepData = JSON.parse(localStorage.getItem('withyou_sleep') || '{}');
+    (sleepData.entries || []).forEach(entry => {
+      const dateKey = entry.date || '';
+      events.push({
+        type: 'sleep',
+        date: dateKey,
+        ts: dateKey + 'T' + (entry.bedtime || '20:00'),
+        icon: '\uD83C\uDF1B',
+        bedtime: entry.bedtime,
+        wakeTime: entry.wakeTime,
+        quality: entry.quality,
+        nightWakings: entry.wakings,
+        onset: entry.onset,
+        notes: entry.notes,
+        summary: buildSleepSummary(entry),
+        details: buildSleepDetails(entry),
+      });
+    });
+  } catch(e) { console.warn('Timeline: error loading sleep data', e); }
+
+  // 4. Food diary (withyou_mealtime)
+  try {
+    const mealtimeData = JSON.parse(localStorage.getItem('withyou_mealtime') || '{}');
+    (mealtimeData.meals || []).forEach(meal => {
+      const dateKey = meal.date || '';
+      events.push({
+        type: 'food',
+        date: dateKey,
+        ts: meal.date && meal.time ? meal.date + 'T' + meal.time : (dateKey + 'T12:00:00'),
+        icon: '\uD83C\uDF4E',
+        mealType: meal.type,
+        accepted: meal.accepted,
+        refused: meal.refused,
+        notes: meal.notes,
+        mood: meal.mood,
+        summary: buildFoodSummary(meal),
+        details: buildFoodDetails(meal),
+      });
+    });
+  } catch(e) { console.warn('Timeline: error loading mealtime data', e); }
+
+  // 5. Communication milestones & logs (withyou_communication)
+  try {
+    const commData = JSON.parse(localStorage.getItem('withyou_communication') || '{}');
+    (commData.milestones || []).forEach(m => {
+      const dateKey = m.date || '';
+      events.push({
+        type: 'comm',
+        date: dateKey,
+        ts: dateKey + 'T10:00:00',
+        icon: '\uD83D\uDCAC',
+        subType: 'milestone',
+        category: m.category,
+        text: m.text || m.label,
+        notes: m.notes,
+        summary: buildCommSummary(m, 'milestone'),
+        details: buildCommDetails(m, 'milestone'),
+      });
+    });
+    (commData.logs || []).forEach(l => {
+      const dateKey = l.date || '';
+      events.push({
+        type: 'comm',
+        date: dateKey,
+        ts: dateKey + 'T' + (l.time || '12:00'),
+        icon: '\uD83D\uDCAC',
+        subType: 'log',
+        context: l.context,
+        method: l.method,
+        content: l.content,
+        notes: l.notes,
+        summary: buildCommSummary(l, 'log'),
+        details: buildCommDetails(l, 'log'),
+      });
+    });
+  } catch(e) { console.warn('Timeline: error loading communication data', e); }
+
+  // 6. Activity completions (wy_ea_history)
+  try {
+    const history = JSON.parse(localStorage.getItem('wy_ea_history') || '[]');
+    history.forEach(h => {
+      const dateKey = h.date || (h.ts ? new Date(h.ts).toISOString().slice(0,10) : '');
+      events.push({
+        type: 'activity',
+        date: dateKey,
+        ts: h.ts || (dateKey + 'T12:00:00'),
+        icon: '\u2B50',
+        activityId: h.id || h.activityId,
+        name: h.name || h.nameZh || '',
+        nameEn: h.nameEn || h.name || '',
+        feedback: h.feedback,
+        summary: buildActivitySummary(h),
+        details: buildActivityDetails(h),
+      });
+    });
+  } catch(e) { console.warn('Timeline: error loading activity data', e); }
+
+  // 7. Sensory strategy effectiveness (withyou_sensory_profile)
+  try {
+    const sensoryData = JSON.parse(localStorage.getItem('withyou_sensory_profile') || '{}');
+    (sensoryData.strategies || []).forEach(s => {
+      const dateKey = s.date || '';
+      events.push({
+        type: 'sensory',
+        date: dateKey,
+        ts: dateKey + 'T12:00:00',
+        icon: '\uD83E\uDDE9',
+        strategy: s.strategy || s.text,
+        effectiveness: s.effectiveness,
+        context: s.context,
+        notes: s.notes,
+        summary: buildSensorySummary(s),
+        details: buildSensoryDetails(s),
+      });
+    });
+  } catch(e) { console.warn('Timeline: error loading sensory data', e); }
+
+  // Sort reverse chronological
+  events.sort((a, b) => {
+    const ta = new Date(a.ts || a.date).getTime() || 0;
+    const tb = new Date(b.ts || b.date).getTime() || 0;
+    return tb - ta;
+  });
+
+  return events;
+}
+
+// ===================================================================
+//  SUMMARY BUILDERS
+// ===================================================================
+const MOOD_LABELS = {
+  happy: { zh: '\uD83D\uDE0A 开心', en: '\uD83D\uDE0A Happy' },
+  neutral: { zh: '\uD83D\uDE10 平静', en: '\uD83D\uDE10 Neutral' },
+  sad: { zh: '\uD83D\uDE22 难过', en: '\uD83D\uDE22 Sad' },
+  angry: { zh: '\uD83D\uDE21 生气', en: '\uD83D\uDE21 Angry' },
+  overwhelmed: { zh: '\uD83D\uDE16 不安', en: '\uD83D\uDE16 Overwhelmed' },
+};
+
+function moodLabel(mood) {
+  if (!mood) return '';
+  const m = MOOD_LABELS[mood];
+  return m ? (lang === 'zh' ? m.zh : m.en) : mood;
+}
+
+function buildMoodSummary(rec) {
+  const parts = [];
+  if (rec.childMood) parts.push((lang === 'zh' ? '孩子: ' : 'Child: ') + moodLabel(rec.childMood));
+  if (rec.parentMood) parts.push((lang === 'zh' ? '家长: ' : 'Parent: ') + moodLabel(rec.parentMood));
+  return parts.join(' | ') || (lang === 'zh' ? '每日记录' : 'Daily record');
+}
+
+function buildMoodDetails(rec) {
+  const parts = [];
+  if (rec.bestMoment) parts.push((lang === 'zh' ? '最佳时刻: ' : 'Best moment: ') + rec.bestMoment);
+  if (rec.challenge) parts.push((lang === 'zh' ? '挑战: ' : 'Challenge: ') + rec.challenge);
+  return parts.join('\n');
+}
+
+function buildMeltdownSummary(log) {
+  const intensity = log.intensity >= 0 ? (' ' + '\u26A0\uFE0F'.repeat(Math.min(log.intensity + 1, 3))) : '';
+  const dur = log.duration ? ` (${log.duration}min)` : '';
+  return (lang === 'zh' ? '崩溃事件' : 'Meltdown incident') + intensity + dur;
+}
+
+function buildMeltdownDetails(log) {
+  const parts = [];
+  if (log.antecedents && log.antecedents.length) parts.push((lang === 'zh' ? '触发: ' : 'Triggers: ') + log.antecedents.join(', '));
+  if (log.behaviors && log.behaviors.length) parts.push((lang === 'zh' ? '行为: ' : 'Behaviors: ') + log.behaviors.join(', '));
+  if (log.helped && log.helped.length) parts.push((lang === 'zh' ? '有效: ' : 'Helped: ') + log.helped.join(', '));
+  if (log.notHelped && log.notHelped.length) parts.push((lang === 'zh' ? '无效: ' : 'Didn\'t help: ') + log.notHelped.join(', '));
+  if (log.notes) parts.push((lang === 'zh' ? '备注: ' : 'Notes: ') + log.notes);
+  return parts.join('\n');
+}
+
+function buildSleepSummary(entry) {
+  const parts = [];
+  if (entry.bedtime) parts.push((lang === 'zh' ? '入睡 ' : 'Bed ') + entry.bedtime);
+  if (entry.wakeTime) parts.push((lang === 'zh' ? '起床 ' : 'Wake ') + entry.wakeTime);
+  if (entry.quality !== undefined) parts.push((lang === 'zh' ? '质量 ' : 'Quality ') + entry.quality + '/5');
+  return parts.join(' | ') || (lang === 'zh' ? '睡眠记录' : 'Sleep record');
+}
+
+function buildSleepDetails(entry) {
+  const parts = [];
+  if (entry.wakings) parts.push((lang === 'zh' ? '夜醒次数: ' : 'Night wakings: ') + entry.wakings);
+  if (entry.onset) parts.push((lang === 'zh' ? '入睡时间: ' : 'Onset latency: ') + entry.onset + 'min');
+  if (entry.notes) parts.push((lang === 'zh' ? '备注: ' : 'Notes: ') + entry.notes);
+  return parts.join('\n');
+}
+
+function buildFoodSummary(meal) {
+  const typeLabel = meal.type ? (lang === 'zh' ? ({breakfast:'早餐',lunch:'午餐',dinner:'晚餐',snack:'零食'}[meal.type]||meal.type) : meal.type) : '';
+  const accepted = (meal.accepted || []).length;
+  const refused = (meal.refused || []).length;
+  return typeLabel + (lang === 'zh'
+    ? ` — 接受${accepted}种, 拒绝${refused}种`
+    : ` — ${accepted} accepted, ${refused} refused`);
+}
+
+function buildFoodDetails(meal) {
+  const parts = [];
+  if (meal.accepted && meal.accepted.length) parts.push((lang === 'zh' ? '接受: ' : 'Accepted: ') + meal.accepted.join(', '));
+  if (meal.refused && meal.refused.length) parts.push((lang === 'zh' ? '拒绝: ' : 'Refused: ') + meal.refused.join(', '));
+  if (meal.notes) parts.push((lang === 'zh' ? '备注: ' : 'Notes: ') + meal.notes);
+  return parts.join('\n');
+}
+
+function buildCommSummary(item, subType) {
+  if (subType === 'milestone') {
+    return (lang === 'zh' ? '\u{1F3C6} 里程碑: ' : '\u{1F3C6} Milestone: ') + (item.text || item.label || '');
+  }
+  const method = item.method || '';
+  const content = item.content || '';
+  return (lang === 'zh' ? '沟通记录' : 'Communication log') + (method ? ` (${method})` : '') + (content ? ': ' + content.slice(0, 40) : '');
+}
+
+function buildCommDetails(item, subType) {
+  const parts = [];
+  if (item.category) parts.push((lang === 'zh' ? '类别: ' : 'Category: ') + item.category);
+  if (item.context) parts.push((lang === 'zh' ? '情境: ' : 'Context: ') + item.context);
+  if (item.method) parts.push((lang === 'zh' ? '方式: ' : 'Method: ') + item.method);
+  if (item.content) parts.push((lang === 'zh' ? '内容: ' : 'Content: ') + item.content);
+  if (item.notes) parts.push((lang === 'zh' ? '备注: ' : 'Notes: ') + item.notes);
+  return parts.join('\n');
+}
+
+function buildActivitySummary(h) {
+  const name = lang === 'zh' ? (h.name || h.nameZh || h.nameEn || '') : (h.nameEn || h.name || '');
+  const fb = h.feedback ? ` — ${h.feedback}` : '';
+  return (lang === 'zh' ? '完成活动: ' : 'Completed: ') + name + fb;
+}
+
+function buildActivityDetails(h) {
+  const parts = [];
+  if (h.name && h.nameEn) parts.push(h.name + ' / ' + h.nameEn);
+  if (h.feedback) parts.push((lang === 'zh' ? '反馈: ' : 'Feedback: ') + h.feedback);
+  return parts.join('\n');
+}
+
+function buildSensorySummary(s) {
+  const strategy = s.strategy || s.text || '';
+  const eff = s.effectiveness ? ` (${s.effectiveness}/5)` : '';
+  return (lang === 'zh' ? '感觉策略: ' : 'Sensory strategy: ') + strategy.slice(0, 40) + eff;
+}
+
+function buildSensoryDetails(s) {
+  const parts = [];
+  if (s.strategy || s.text) parts.push((lang === 'zh' ? '策略: ' : 'Strategy: ') + (s.strategy || s.text));
+  if (s.effectiveness) parts.push((lang === 'zh' ? '有效性: ' : 'Effectiveness: ') + s.effectiveness + '/5');
+  if (s.context) parts.push((lang === 'zh' ? '情境: ' : 'Context: ') + s.context);
+  if (s.notes) parts.push((lang === 'zh' ? '备注: ' : 'Notes: ') + s.notes);
+  return parts.join('\n');
+}
+
+// ===================================================================
+//  FILTERING
+// ===================================================================
+let allEvents = [];
+let filteredEvents = [];
+let displayCount = 20;
+let activeTypeFilter = 'all';
+let activeMoodFilter = 'all';
+
+function toggleTypeFilter(chip) {
+  const type = chip.dataset.type;
+  if (type === 'all') {
+    activeTypeFilter = 'all';
+    document.querySelectorAll('.filter-chip[data-type]').forEach(c => c.classList.remove('active'));
+    chip.classList.add('active');
+  } else {
+    document.querySelector('.filter-chip[data-type="all"]').classList.remove('active');
+    if (activeTypeFilter === 'all') activeTypeFilter = '';
+    chip.classList.toggle('active');
+    const active = Array.from(document.querySelectorAll('.filter-chip[data-type].active')).map(c => c.dataset.type);
+    if (active.length === 0 || active.includes('all')) {
+      activeTypeFilter = 'all';
+      document.querySelector('.filter-chip[data-type="all"]').classList.add('active');
+    } else {
+      activeTypeFilter = active.join(',');
+    }
+  }
+  applyFilters();
+}
+
+function toggleMoodFilter(chip) {
+  const mood = chip.dataset.mood;
+  document.querySelectorAll('.filter-chip[data-mood]').forEach(c => c.classList.remove('active'));
+  chip.classList.add('active');
+  activeMoodFilter = mood;
+  applyFilters();
+}
+
+function applyFilters() {
+  const fromDate = document.getElementById('dateFrom').value;
+  const toDate = document.getElementById('dateTo').value;
+  const types = activeTypeFilter === 'all' ? null : activeTypeFilter.split(',');
+
+  filteredEvents = allEvents.filter(ev => {
+    if (fromDate && ev.date < fromDate) return false;
+    if (toDate && ev.date > toDate) return false;
+    if (types && !types.includes(ev.type)) return false;
+    if (activeMoodFilter !== 'all') {
+      if (ev.type === 'mood' && ev.childMood !== activeMoodFilter) return false;
+      if (ev.type !== 'mood' && activeMoodFilter !== 'all') {
+        // For non-mood events, check if there's a matching daily mood on the same day
+        const dayMood = allEvents.find(e => e.type === 'mood' && e.date === ev.date);
+        if (dayMood && dayMood.childMood !== activeMoodFilter) return false;
+        // If no daily record, show the event
+      }
+    }
+    return true;
+  });
+
+  displayCount = 20;
+  renderTimeline();
+}
+
+// ===================================================================
+//  RENDERING
+// ===================================================================
+let currentView = 'timeline';
+
+function switchView(view) {
+  currentView = view;
+  document.querySelectorAll('.tab-item').forEach((el, i) => {
+    el.classList.toggle('active', ['timeline','weekly','insights'][i] === view);
+  });
+  document.getElementById('timelinePanel').classList.toggle('hidden', view !== 'timeline');
+  document.getElementById('weeklyPanel').classList.toggle('hidden', view !== 'weekly');
+  document.getElementById('insightsPanel').classList.toggle('hidden', view !== 'insights');
+  document.getElementById('filterBar').classList.toggle('hidden', view === 'insights');
+  renderCurrentView();
+}
+
+function renderCurrentView() {
+  applyI18n();
+  if (currentView === 'timeline') renderTimeline();
+  else if (currentView === 'weekly') renderWeekly();
+  else if (currentView === 'insights') renderInsights();
+}
+
+function renderTimeline() {
+  const container = document.getElementById('timelineFeed');
+  const events = filteredEvents.slice(0, displayCount);
+
+  if (allEvents.length === 0) {
+    container.innerHTML = '';
+    document.getElementById('emptyState').classList.remove('hidden');
+    document.getElementById('loadMore').classList.add('hidden');
+    return;
+  }
+
+  document.getElementById('emptyState').classList.add('hidden');
+  document.getElementById('loadMore').classList.toggle('hidden', filteredEvents.length <= displayCount);
+
+  let html = '';
+  let lastDate = '';
+
+  events.forEach((ev, idx) => {
+    if (ev.date !== lastDate) {
+      lastDate = ev.date;
+      const d = new Date(ev.date + 'T00:00:00');
+      const dateStr = lang === 'zh'
+        ? `${d.getFullYear()}年${d.getMonth()+1}月${d.getDate()}日 ${weekdayZh(d.getDay())}`
+        : d.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+      html += `<div class="timeline-date-header">${dateStr}</div>`;
+    }
+
+    const timeStr = ev.ts ? formatTime(ev.ts) : '';
+
+    html += `
+      <div class="timeline-entry type-${ev.type}" onclick="toggleDetails(this)">
+        <div class="entry-icon">${ev.icon}</div>
+        <div class="entry-body">
+          <div class="entry-header">
+            <span class="entry-source">${t('src_' + ev.type)}</span>
+            <span class="entry-time">${timeStr}</span>
+          </div>
+          <div class="entry-summary">${escapeHtml(ev.summary)}</div>
+          ${ev.details ? `<div class="entry-details">${escapeHtml(ev.details).replace(/\n/g, '<br>')}</div>` : ''}
+        </div>
+      </div>`;
+  });
+
+  container.innerHTML = html;
+}
+
+function toggleDetails(el) {
+  const details = el.querySelector('.entry-details');
+  if (details) details.classList.toggle('open');
+}
+
+function loadMore() {
+  displayCount += 20;
+  renderTimeline();
+}
+
+function weekdayZh(d) { return ['日','一','二','三','四','五','六'][d]; }
+
+function formatTime(ts) {
+  try {
+    const d = new Date(ts);
+    if (isNaN(d.getTime())) return '';
+    return d.toLocaleTimeString(lang === 'zh' ? 'zh-CN' : 'en-US', { hour: '2-digit', minute: '2-digit', hour12: false });
+  } catch(e) { return ''; }
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+// ===================================================================
+//  WEEKLY SUMMARY
+// ===================================================================
+function renderWeekly() {
+  const panel = document.getElementById('weeklyPanel');
+
+  // Find available weeks
+  const dates = allEvents.map(e => e.date).filter(Boolean);
+  if (dates.length === 0) {
+    panel.innerHTML = `<div class="empty-state"><div class="empty-state-icon">\uD83D\uDCCA</div><div class="empty-state-text">${t('weekly_no_data')}</div></div>`;
+    return;
+  }
+
+  const minDate = dates.reduce((a,b) => a < b ? a : b);
+  const maxDate = dates.reduce((a,b) => a > b ? a : b);
+
+  // Default to current week
+  const now = new Date();
+  const monday = new Date(now);
+  monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+  const weekStart = monday.toISOString().slice(0,10);
+  const weekEndDate = new Date(monday);
+  weekEndDate.setDate(weekEndDate.getDate() + 6);
+  const weekEnd = weekEndDate.toISOString().slice(0,10);
+
+  // Build week selector
+  let weekSelectorHtml = `<div style="text-align:center;margin:0 16px 12px;">
+    <label style="font-size:0.8rem;color:var(--warm-text-light);">${t('weekly_select')}: </label>
+    <input type="date" class="filter-date" id="weekPick" value="${weekStart}" onchange="renderWeeklyForDate(this.value)" style="margin-left:8px;">
+  </div>`;
+
+  panel.innerHTML = weekSelectorHtml + '<div id="weeklyContent"></div>';
+  renderWeeklyForDate(weekStart);
+}
+
+function renderWeeklyForDate(startStr) {
+  const start = new Date(startStr + 'T00:00:00');
+  const monday = new Date(start);
+  monday.setDate(monday.getDate() - ((monday.getDay() + 6) % 7));
+  const sunday = new Date(monday);
+  sunday.setDate(sunday.getDate() + 6);
+  const weekStartKey = monday.toISOString().slice(0,10);
+  const weekEndKey = sunday.toISOString().slice(0,10);
+
+  const weekEvents = allEvents.filter(e => e.date >= weekStartKey && e.date <= weekEndKey);
+
+  const container = document.getElementById('weeklyContent');
+
+  if (weekEvents.length === 0) {
+    container.innerHTML = `<div class="empty-state"><div class="empty-state-text">${t('weekly_no_data')}</div></div>`;
+    return;
+  }
+
+  // Analyze
+  const moodEvents = weekEvents.filter(e => e.type === 'mood');
+  const goodDays = moodEvents.filter(e => e.childMood === 'happy' || e.childMood === 'neutral').length;
+  const toughDays = moodEvents.filter(e => e.childMood === 'sad' || e.childMood === 'angry' || e.childMood === 'overwhelmed').length;
+
+  const meltdowns = weekEvents.filter(e => e.type === 'meltdown');
+  const triggers = {};
+  meltdowns.forEach(m => {
+    (m.antecedents || []).forEach(a => { triggers[a] = (triggers[a]||0) + 1; });
+  });
+  const topTriggers = Object.entries(triggers).sort((a,b) => b[1]-a[1]).slice(0,3);
+
+  const strategies = {};
+  meltdowns.forEach(m => {
+    (m.helped || []).forEach(h => { strategies[h] = (strategies[h]||0) + 1; });
+  });
+  const topStrategies = Object.entries(strategies).sort((a,b) => b[1]-a[1]).slice(0,3);
+
+  const commEvents = weekEvents.filter(e => e.type === 'comm');
+  const milestones = commEvents.filter(e => e.subType === 'milestone');
+
+  const sleepEvents = weekEvents.filter(e => e.type === 'sleep');
+  const avgSleepQuality = sleepEvents.length > 0
+    ? (sleepEvents.reduce((sum, e) => sum + (e.quality || 0), 0) / sleepEvents.length).toFixed(1)
+    : '-';
+
+  const dateRange = lang === 'zh'
+    ? `${monday.getMonth()+1}/${monday.getDate()} - ${sunday.getMonth()+1}/${sunday.getDate()}`
+    : `${monday.toLocaleDateString('en-US', {month:'short',day:'numeric'})} - ${sunday.toLocaleDateString('en-US', {month:'short',day:'numeric'})}`;
+
+  let html = `<div class="weekly-card">
+    <div class="weekly-title">${t('weekly_title')} (${dateRange})</div>
+    <div class="weekly-grid">
+      <div class="weekly-stat">
+        <div class="weekly-stat-num">${goodDays}</div>
+        <div class="weekly-stat-label">${t('weekly_good')}</div>
+      </div>
+      <div class="weekly-stat">
+        <div class="weekly-stat-num">${toughDays}</div>
+        <div class="weekly-stat-label">${t('weekly_tough')}</div>
+      </div>
+      <div class="weekly-stat">
+        <div class="weekly-stat-num">${meltdowns.length}</div>
+        <div class="weekly-stat-label">${t('src_meltdown')}</div>
+      </div>
+      <div class="weekly-stat">
+        <div class="weekly-stat-num">${avgSleepQuality}</div>
+        <div class="weekly-stat-label">${t('weekly_sleep_avg')}</div>
+      </div>
+    </div>`;
+
+  if (topTriggers.length > 0) {
+    html += `<div class="weekly-list"><div class="weekly-list-title">${t('weekly_triggers')}</div>`;
+    topTriggers.forEach(([name, count]) => {
+      html += `<div class="weekly-list-item">\u2022 ${escapeHtml(name)} (${count}${t('times')})</div>`;
+    });
+    html += '</div>';
+  }
+
+  if (topStrategies.length > 0) {
+    html += `<div class="weekly-list"><div class="weekly-list-title">${t('weekly_strategies')}</div>`;
+    topStrategies.forEach(([name, count]) => {
+      html += `<div class="weekly-list-item">\u2713 ${escapeHtml(name)} (${count}${t('times')})</div>`;
+    });
+    html += '</div>';
+  }
+
+  if (milestones.length > 0) {
+    html += `<div class="weekly-list"><div class="weekly-list-title">${t('weekly_comm')}</div>`;
+    milestones.forEach(m => {
+      html += `<div class="weekly-list-item">\u{1F3C6} ${escapeHtml(m.text || m.summary)}</div>`;
+    });
+    html += '</div>';
+  }
+
+  html += `<button class="weekly-share-btn" onclick="shareWeekly('${weekStartKey}')">${t('weekly_share')}</button>`;
+  html += '</div>';
+
+  container.innerHTML = html;
+}
+
+function shareWeekly(weekStartKey) {
+  const content = document.getElementById('weeklyContent').innerHTML;
+  const shareContent = document.getElementById('shareContent');
+  shareContent.innerHTML = `<div style="padding:16px;font-family:Inter,sans-serif;">
+    <div style="text-align:center;margin-bottom:16px;">
+      <div style="font-size:1.2rem;font-weight:700;color:#4A6B56;">${lang === 'zh' ? '同路 WithYou' : 'WithYou'}</div>
+      <div style="font-size:0.75rem;color:#6B6B6B;">${lang === 'zh' ? '每周总结' : 'Weekly Summary'}</div>
+    </div>
+    ${content}
+    <div style="text-align:center;margin-top:12px;font-size:0.7rem;color:#aaa;">withyou.app</div>
+  </div>`;
+  document.getElementById('shareOverlay').classList.remove('hidden');
+}
+
+function closeShare(e) {
+  if (e.target === document.getElementById('shareOverlay')) {
+    document.getElementById('shareOverlay').classList.add('hidden');
+  }
+}
+
+// ===================================================================
+//  PATTERN DETECTION
+// ===================================================================
+function detectPatterns() {
+  const patterns = [];
+
+  // Pattern 1: Poor sleep -> meltdowns next day
+  const sleepEvents = allEvents.filter(e => e.type === 'sleep');
+  const meltdownEvents = allEvents.filter(e => e.type === 'meltdown');
+  if (sleepEvents.length >= 3 && meltdownEvents.length >= 1) {
+    let poorSleepDays = 0;
+    let poorSleepMeltdownDays = 0;
+    sleepEvents.forEach(se => {
+      if (se.quality && se.quality <= 2) {
+        poorSleepDays++;
+        const nextDay = nextDate(se.date);
+        if (meltdownEvents.some(m => m.date === nextDay)) {
+          poorSleepMeltdownDays++;
+        }
+      }
+    });
+    if (poorSleepDays >= 3) {
+      patterns.push({
+        id: 'sleep_meltdown',
+        text: t('pattern_sleep_meltdown'),
+        stat: `${poorSleepMeltdownDays} ${t('of_times')} ${poorSleepDays} ${t('times')}`,
+        dataPoints: poorSleepDays,
+        strength: poorSleepDays > 0 ? poorSleepMeltdownDays / poorSleepDays : 0,
+      });
+    }
+  }
+
+  // Pattern 2: Sensory overload days -> food refusals
+  const sensoryEvents = allEvents.filter(e => e.type === 'sensory');
+  const foodEvents = allEvents.filter(e => e.type === 'food');
+  if (sensoryEvents.length >= 2 && foodEvents.length >= 3) {
+    const sensoryDays = new Set(sensoryEvents.map(e => e.date));
+    let sensoryFoodRefusalDays = 0;
+    let totalSensoryDays = sensoryDays.size;
+    sensoryDays.forEach(day => {
+      const dayMeals = foodEvents.filter(f => f.date === day);
+      const refusals = dayMeals.reduce((sum, m) => sum + (m.refused || []).length, 0);
+      if (refusals > 0) sensoryFoodRefusalDays++;
+    });
+    if (totalSensoryDays >= 3) {
+      patterns.push({
+        id: 'food_sensory',
+        text: t('pattern_food_sensory'),
+        stat: `${sensoryFoodRefusalDays} ${t('of_times')} ${totalSensoryDays} ${t('times')}`,
+        dataPoints: totalSensoryDays,
+        strength: totalSensoryDays > 0 ? sensoryFoodRefusalDays / totalSensoryDays : 0,
+      });
+    }
+  }
+
+  // Pattern 3: Joint attention activities -> communication attempts
+  const activityEvents = allEvents.filter(e => e.type === 'activity');
+  const commLogs = allEvents.filter(e => e.type === 'comm' && e.subType === 'log');
+  if (activityEvents.length >= 3 && commLogs.length >= 2) {
+    let activityDays = new Set(activityEvents.map(e => e.date));
+    let activityCommDays = 0;
+    let totalDays = activityDays.size;
+    activityDays.forEach(day => {
+      const dayComm = commLogs.filter(c => c.date === day);
+      if (dayComm.length > 0) activityCommDays++;
+    });
+    if (totalDays >= 3) {
+      patterns.push({
+        id: 'comm_activity',
+        text: t('pattern_comm_activity'),
+        stat: `${activityCommDays} ${t('of_times')} ${totalDays} ${t('times')}`,
+        dataPoints: totalDays,
+        strength: totalDays > 0 ? activityCommDays / totalDays : 0,
+      });
+    }
+  }
+
+  // Pattern 4: Mood and sleep correlation
+  const moodEvents = allEvents.filter(e => e.type === 'mood');
+  if (moodEvents.length >= 3 && sleepEvents.length >= 3) {
+    let goodMoodGoodSleep = 0;
+    let goodMoodDays = 0;
+    moodEvents.forEach(m => {
+      if (m.childMood === 'happy') {
+        goodMoodDays++;
+        const prevNight = prevDate(m.date);
+        const sleep = sleepEvents.find(s => s.date === prevNight || s.date === m.date);
+        if (sleep && sleep.quality >= 4) goodMoodGoodSleep++;
+      }
+    });
+    if (goodMoodDays >= 3) {
+      patterns.push({
+        id: 'mood_sleep',
+        text: t('pattern_mood_sleep'),
+        stat: `${goodMoodGoodSleep} ${t('of_times')} ${goodMoodDays} ${t('times')}`,
+        dataPoints: goodMoodDays,
+        strength: goodMoodDays > 0 ? goodMoodGoodSleep / goodMoodDays : 0,
+      });
+    }
+  }
+
+  // Pattern 5: Meltdown time clustering
+  if (meltdownEvents.length >= 3) {
+    const hours = {};
+    meltdownEvents.forEach(m => {
+      try {
+        const h = new Date(m.ts).getHours();
+        const block = h < 12 ? 'morning' : h < 17 ? 'afternoon' : 'evening';
+        hours[block] = (hours[block] || 0) + 1;
+      } catch(e) {}
+    });
+    const topBlock = Object.entries(hours).sort((a,b) => b[1]-a[1])[0];
+    if (topBlock && topBlock[1] >= 3) {
+      const blockLabel = lang === 'zh'
+        ? ({morning:'上午',afternoon:'下午',evening:'晚上'}[topBlock[0]]||topBlock[0])
+        : topBlock[0];
+      patterns.push({
+        id: 'meltdown_time',
+        text: t('pattern_meltdown_time') + ` (${blockLabel})`,
+        stat: `${topBlock[1]} ${t('of_times')} ${meltdownEvents.length} ${t('times')}`,
+        dataPoints: meltdownEvents.length,
+        strength: topBlock[1] / meltdownEvents.length,
+      });
+    }
+  }
+
+  return patterns.filter(p => p.dataPoints >= 3);
+}
+
+function nextDate(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  d.setDate(d.getDate() + 1);
+  return d.toISOString().slice(0,10);
+}
+
+function prevDate(dateStr) {
+  const d = new Date(dateStr + 'T00:00:00');
+  d.setDate(d.getDate() - 1);
+  return d.toISOString().slice(0,10);
+}
+
+function renderInsights() {
+  const panel = document.getElementById('insightsPanel');
+  const patterns = detectPatterns();
+
+  if (patterns.length === 0) {
+    panel.innerHTML = `<div class="empty-state">
+      <div class="empty-state-icon">\uD83D\uDD0D</div>
+      <div class="empty-state-text">${t('insight_none')}</div>
+    </div>`;
+    return;
+  }
+
+  let html = `<div style="padding:0 16px 8px;"><div style="font-size:0.82rem;font-weight:600;color:var(--sage-dark);margin-bottom:8px;">${t('insight_title')}</div></div>`;
+
+  patterns.sort((a,b) => b.strength - a.strength);
+
+  patterns.forEach(p => {
+    const strengthPct = Math.round(p.strength * 100);
+    html += `
+    <div class="insight-card">
+      <div class="insight-title"><span class="insight-icon">\uD83D\uDCA1</span> ${escapeHtml(p.text)}</div>
+      <div class="insight-text">${escapeHtml(p.stat)} (${strengthPct}%)</div>
+      <div style="margin-top:8px;height:4px;background:var(--cream-dark);border-radius:2px;overflow:hidden;position:relative;">
+        <div style="height:100%;width:${strengthPct}%;background:var(--sage);border-radius:2px;"></div>
+      </div>
+      <div class="insight-meta">${p.dataPoints} ${t('insight_datapoints')}</div>
+    </div>`;
+  });
+
+  panel.innerHTML = html;
+}
+
+// ===================================================================
+//  INIT
+// ===================================================================
+function init() {
+  if (localStorage.getItem('wy_dark') === '1') {
+    document.documentElement.classList.add('dark');
+    document.getElementById('darkBtn').textContent = '\u2600\uFE0F';
+  }
+
+  // Set default date range (last 30 days)
+  const now = new Date();
+  const thirtyAgo = new Date(now);
+  thirtyAgo.setDate(thirtyAgo.getDate() - 30);
+  document.getElementById('dateTo').value = now.toISOString().slice(0,10);
+  document.getElementById('dateFrom').value = thirtyAgo.toISOString().slice(0,10);
+
+  allEvents = loadAllEvents();
+  filteredEvents = [...allEvents];
+
+  applyI18n();
+  applyFilters();
+}
+
+init();
+</script>
+</body>
+</html>
